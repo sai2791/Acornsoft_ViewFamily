@@ -1,0 +1,7 @@
+cpu 65c02
+load $8000 ViewSheet.rom
+symbols bbc.sym
+symbols ViewSheet.sym
+save ViewSheet.asm
+hexdump ViewSheet.hex
+

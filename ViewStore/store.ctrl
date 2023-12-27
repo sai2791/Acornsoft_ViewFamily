@@ -1,0 +1,7 @@
+cpu 65c02
+load $8000 ViewStore-1.5.rom
+symbols bbc.sym
+symbols ViewStore-1.5.sym
+save ViewStore-1.5.asm
+hexdump ViewStore-1.5.hex
+
