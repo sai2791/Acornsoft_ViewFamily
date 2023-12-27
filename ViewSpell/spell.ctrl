@@ -1,0 +1,8 @@
+cpu 65c02
+verbose 3
+load $8000 viewspell-1.1.rom
+symbols bbc.sym
+symbols viewspell-1.1.sym
+save viewspell-1.1.asm
+hexdump viewspell-1.1.hex
+
