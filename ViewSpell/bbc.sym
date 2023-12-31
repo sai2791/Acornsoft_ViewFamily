@@ -1,5 +1,5 @@
-langent=$8000
-servent=$8003
+langent=$80DE
+servent=$8029
 defvec=$D940
 OSRDRM=$FFB9
 VDUCHR=$FFBC

@@ -1,4 +1,29 @@
-entry $8000
-notme $8084
+entry $8136
+entry $88E8
+entry $8862
+entry $80D3
 
+byte $830D
 
+notme = $8084
+curr_scr_mode = $808A
+command = $80C0
+comm_line = $00F2
+rom_name = $8009
+
+prt_rom_nme = $8072
+brch_osbyte = $805F
+
+txt_cur_pos = $8090
+call_osasci = $89DB
+
+rom_wkspace = $0DF0
+rd_hiord_add = $8BC0
+
+help_cmd = $806A
+ukn_osbyte = $80A0
+clm_prv_ram = $8094
+ukn_osbyte = $80A0
+clm_prv_ram = $8094
+
+ukn_entry = $882E

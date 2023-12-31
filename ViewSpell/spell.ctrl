@@ -2,32 +2,48 @@ cpu 65C02
 load $8000 viewspell-1.1.rom
 save viewspell-1.1.asm
 symbols viewspell-1.1.sym
-;symbols bbc.sym
+symbols bbc.sym
 hexdump viewspell-1.1.hex
+
+
+entry $8000
+entry $8003
+entry $8136
+entry $8203
+
+entry $8136
+entry $88E8
+entry $8862
+entry $80D3
+
+entry $9D65
+entry $9F8D
+
+
 
 string $8009 9 ; "ViewSpell"
 string $8013 3 ; "1.1"
 string $8017 17 ; "(C)1985 Acornsoft"
-string $8058 3 ; "+hh"
-string $80BF 6 ; "`SPELL"
+string $80C0 5 ; "SPELL"
 string $80CA 9 ; "W.MASTER1"
-string $8117 7 ; "_Insert"
+string $8118 6 ; "Insert"
+entry $811E
 string $8125 16 ; "disc & hit a key"
-string $8175 7 ; "_Escape"
+string $8176 6 ; "Escape"
 string $81D5 7 ; "Mistake"
-string $81FF 3 ; "nam"
+strinhi $81FF  ; "name"
 string $82A5 8 ; " unique`"
-string $8301 12 ; "_Memory full"
-string $833C 4 ; "mode"
+string $8302 11 ; "Memory full"
+strin $833C 4 ; "mode"
 string $837B 9 ; "ViewSpell"
 string $8390 10 ; "Bytes free"
 string $83CF 6 ; "Source"
 string $83EA 11 ; "Screen mode"
-string $8859 8 ; "Nick Dea"
-string $88E3 5 ; "Savin"
-string $899B 6 ; "Markin"
-string $8E0B 9 ; "_Checking"
-string $90FE 6 ; "Loadin"
+stringhi $8859  ; "Nick Dea"
+stringhi $88E3  ; "Savin"
+stringhi $899B  ; "Markin"
+string $8E0C 8 ; "Checking"
+stringhi $90FE ; "Loading"
 string $9354 6 ; "letter"
 string $937C 7 ; "M)aster"
 string $938F 5 ; "U)ser"
@@ -47,12 +63,16 @@ stringhi $99CA  ; "MAR"
 stringhi $99CE  ; "SAv"
 stringhi $99D2  ; "SCree"
 stringhi $99D8  ; "NAm"
+stringhi $99DC  ; "ADD"
+stringhi $99DF  ; "AW"
 stringhi $99E1  ; "CHec"
 stringhi $99E6  ; "CONtex"
+stringhi $99ED  ; "DW"
 stringhi $99EF  ; "LIs"
 stringhi $99F3  ; "Searc"
 stringhi $99F9  ; "Loa"
 stringhi $99FD  ; "Mod"
+stringhi $9A00  ; ??
 stringhi $9A04  ; "REa"
 stringhi $9A08  ; "PREfi"
 stringhi $9A0E  ; "MARKE"
@@ -63,6 +83,7 @@ string $9CCD 4 ; "file"
 string $9D61 4 ; "word"
 stringhi $9F87  ; "strin"
 string $A55E 20 ; "Cache checksum error"
+entry $A578
 string $A582 26 ; "Channel on buffered handle"
 string $A5AA 27 ; "End of file on fast channel"
 string $A798 11 ; "Interrupted"
@@ -85,6 +106,7 @@ string $AAEA 47 ; "Entering Supervisor because of branch through 0"
 string $B0CE 24 ; "Non-intercepted vector ("
 string $B0E7 8 ; ") called"
 string $B356 34 ; "No room to load relocatable module"
+entry $B37A
 string $B772 14 ; "File not found"
 string $B78E 14 ; "Is a directory"
 string $B7AA 32 ; "This is not a relocatable module"
@@ -94,3 +116,6 @@ string $B9F6 25 ; "!!!! CAM Map Corrupt !!!!"
 string $BA2A 8 ; "SYS$Time"
 string $BA8A 8 ; "SYS$Year"
 string $BAFA 8 ; "SYS$Date"
+entry $BB0B
+entry $808A
+entry $882B
