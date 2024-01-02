@@ -1,3 +1,17 @@
-entry $8000
-entry $8003
-entry $8180
+lang_start = $8180
+serv_start = $807B
+comm_line = $00F2
+ukn_status = $80BA
+ukn_config = $8033
+help_serv = $80A5
+ukn_osbyte = $80E2
+clm_prv_wk = $80DD
+ukn_command = $80B6
+
+cap_sym_lower = $8D56
+set_carry_flg = $8D6D
+ret_carry_clr = $8D6C
+
+char_type = $8D5E
+prt_view = $AA42
+

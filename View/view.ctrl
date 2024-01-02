@@ -5,21 +5,27 @@ symbols view-b3.3.sym
 save view-b3.3.asm
 hexdump view-b3.3.hex
 
-
+entry $8000 
+entry $8447
 string $8009 4 ; "VIEW"
 string $800E 18 ; "(C) 1982 Acornsoft"
+entry $8021
 string $814E 11 ; "View setup "
 string $8163 4 ; "WORD"
 string $8168 10 ; "VIEW SETUP"
 string $8173 11 ; "[F],[J],[I]"
+entry $8180
 string $81E7 11 ; "Bytes free "
 string $820B 14 ; "Input file is "
 string $8221 4 ; "not "
 string $8229 5 ; "empty"
 string $8233 12 ; "Screen mode "
+entry $8240
 string $8252 8 ; "Printer "
+entry $825B
 string $8271 4 ; " (m)"
 string $8289 14 ; "Marker(s) set "
+entry $8298
 string $8329 7 ; "Mistake"
 string $8397 18 ; " string(s) changed"
 string $83AD 15 ; "No target given"
@@ -27,15 +33,21 @@ string $83C0 15 ; "No string found"
 string $860D 17 ; "Not enough memory"
 string $864F 15 ; "Not all read in"
 string $86B7 8 ; "Bad mode"
+entry $86C0
 string $86E2 36 ; "Driver does not support microspacing"
+entry $8707
 string $8728 8 ; "Bad flag"
 string $8745 3 ; "FJI"
+entry $874C
 string $875A 6 ; "Frump!"
 string $87FD 17 ; " word(s) counted."
 string $880F 6 ; "RJCELJ"
+entry $8816
 string $887F 8 ; "Folding "
+entry $8888
 string $888F 3 ; "off"
 string $889C 8 ; "Bad file"
+entry $88A5
 string $895D 14 ; "File not found"
 string $8AAB 10 ; "Bad marker"
 string $8AB9 14 ; "Marker not set"
@@ -45,12 +57,16 @@ string $8B19 7 ; "No File"
 string $8F03 12 ; "Bad filename"
 string $8F5C 17 ; "Not with cassette"
 string $8FA5 7 ; "No text"
+entry $8FAE
 string $9108 17 ; "Nested macro call"
+entry $911A
 string $9399 5 ; "Page "
+entry $939F
 string $96CE 5 ; "Epson"
-string $99B6 4 ; "8`ON"
+entry $96D5
+string $99B8 2 ; "ON"
 string $99BB 3 ; "OFF"
-string $AA54 5 ; "`VIEW"
+string $AA55 4 ; "VIEW"
 string $AA5A 4 ; "B3.3"
 string $ABAC 26 ; "Memory full - Press ESCAPE"
 string $B43B 11 ; "Mark Colton"
