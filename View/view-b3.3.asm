@@ -83,10 +83,6 @@ L0051           = $0051
 L0052           = $0052
 L0053           = $0053
 L0054           = $0054
-L0055           = $0055
-L0058           = $0058
-L0059           = $0059
-L005C           = $005C
 L005D           = $005D
 L005F           = $005F
 L0060           = $0060
@@ -139,51 +135,35 @@ L008E           = $008E
 L008F           = $008F
 L0090           = $0090
 L0092           = $0092
-L0094           = $0094
 L0095           = $0095
-L0098           = $0098
 L009C           = $009C
 L009D           = $009D
 L009F           = $009F
 L00A0           = $00A0
-L00A1           = $00A1
-L00A2           = $00A2
 L00A3           = $00A3
 L00A8           = $00A8
 L00A9           = $00A9
 L00AA           = $00AA
 L00AB           = $00AB
-L00B2           = $00B2
 L00B3           = $00B3
 L00B4           = $00B4
 L00B5           = $00B5
 L00B6           = $00B6
 L00B8           = $00B8
-L00B9           = $00B9
-L00BA           = $00BA
-L00BD           = $00BD
 L00C0           = $00C0
-L00C1           = $00C1
 L00C2           = $00C2
-L00CB           = $00CB
-L00D1           = $00D1
-L00D4           = $00D4
-L00D5           = $00D5
 L00E0           = $00E0
-L00E1           = $00E1
 L00E4           = $00E4
-L00E9           = $00E9
 L00EA           = $00EA
 L00EF           = $00EF
 L00F0           = $00F0
 L00F1           = $00F1
 comm_line       = $00F2
 L00F7           = $00F7
-L00F9           = $00F9
 L00FB           = $00FB
+L00FD           = $00FD
 L00FE           = $00FE
 L00FF           = $00FF
-L0100           = $0100
 L0101           = $0101
 L0102           = $0102
 L0103           = $0103
@@ -224,7 +204,6 @@ L0400           = $0400
 L040D           = $040D
 L0437           = $0437
 L043C           = $043C
-L0448           = $0448
 L045D           = $045D
 L0461           = $0461
 L0469           = $0469
@@ -249,14 +228,9 @@ L050A           = $050A
 L050B           = $050B
 L050C           = $050C
 L050D           = $050D
-L050E           = $050E
-L050F           = $050F
-L0510           = $0510
-L0511           = $0511
 L0545           = $0545
 L05CE           = $05CE
 L05CF           = $05CF
-L0600           = $0600
 L0654           = $0654
 L06D8           = $06D8
 L071A           = $071A
@@ -273,28 +247,19 @@ L07CD           = $07CD
 L07EC           = $07EC
 L0800           = $0800
 L086A           = $086A
-L0908           = $0908
 L0945           = $0945
 L097F           = $097F
 L0A26           = $0A26
-L0C00           = $0C00
 L0C89           = $0C89
 L0DF0           = $0DF0
 L1000           = $1000
-L1004           = $1004
 L1017           = $1017
 L10A8           = $10A8
-L2004           = $2004
 L2008           = $2008
 L2084           = $2084
-L208E           = $208E
 L20FF           = $20FF
-L22D2           = $22D2
 L2430           = $2430
-L2491           = $2491
 L2A1C           = $2A1C
-L2D8C           = $2D8C
-L305D           = $305D
 L4010           = $4010
 L4200           = $4200
 L420D           = $420D
@@ -302,14 +267,11 @@ L4880           = $4880
 L48A0           = $48A0
 L4B01           = $4B01
 L4C95           = $4C95
-L5000           = $5000
 L53E8           = $53E8
-L5554           = $5554
 L5580           = $5580
 L5607           = $5607
 L5A0B           = $5A0B
 L6150           = $6150
-L6D03           = $6D03
 L7000           = $7000
 L7686           = $7686
 L78A2           = $78A2
@@ -317,15 +279,9 @@ L7981           = $7981
 L79A2           = $79A2
 L7BA2           = $7BA2
 L7D5C           = $7D5C
-LC017           = $C017
-LC05A           = $C05A
 LC800           = $C800
 LD048           = $D048
 defvec          = $D940
-LE001           = $E001
-LE125           = $E125
-LEA0D           = $EA0D
-LF150           = $F150
 LF67F           = $F67F
 LFFA3           = $FFA3
 OSRDRM          = $FFB9
@@ -353,7 +309,6 @@ LFFFF           = $FFFF
                 org     $8000
 .langent        JMP     lang_start
 
-L8001 = langent+1
                 JMP     serv_start
 
                 ORA     L5607
@@ -413,7 +368,7 @@ L8024 = L8023+1
                 STX     L0084
                 LDX     #$FF
 .L8067          INX
-.L8068          CMP     L8021,X
+                CMP     L8021,X
                 BEQ     L8075
 
                 ASL     L0084
@@ -547,7 +502,7 @@ L8024 = L8023+1
 .L8121          DEY
 .L8122          INX
                 INY
-.L8124          LDA     L8163,X
+                LDA     L8163,X
                 BMI     L813C
 
                 LDA     (comm_line),Y
@@ -738,9 +693,8 @@ L8024 = L8023+1
 .L8279          LDX     #$00
                 LDY     #$00
 .L827D          LDA     L0054,X
-.L827F          BEQ     L82AA
+                BEQ     L82AA
 
-L8280 = L827F+1
                 TYA
                 BNE     L829E
 
@@ -1828,24 +1782,84 @@ L8899 = L8897+2
 
                 EQUS    "File not found"
 
-                EQUB    $FF,$20,$3A,$8F,$20,$54,$8F,$20
-                EQUB    $EE,$B1,$20,$10,$8F,$20,$3E,$89
-                EQUB    $F0,$B0,$AD,$0C,$05,$0D,$0D,$05
-                EQUB    $D0,$1C,$AD,$0A,$05,$18,$65,$0B
-                EQUB    $85,$8D,$AA,$AD,$0B,$05,$65,$0C
-                EQUB    $85,$8E,$B0,$0A,$C5,$10,$90,$09
-                EQUB    $D0,$04,$E4,$0F,$90,$03,$4C,$07
-                EQUB    $86,$A9,$82,$20,$F4,$FF,$8E,$04
-                EQUB    $05,$8C,$05,$05,$A5,$0B,$8D,$02
-                EQUB    $05,$A5,$0C,$8D,$03,$05,$A9,$00
-                EQUB    $8D,$06,$05,$A9,$FF,$20,$4B,$8A
-                EQUB    $A5,$8D,$85,$0D,$A5,$8E,$85,$0E
-                EQUB    $A0,$00,$98,$91,$0D,$84,$40,$20
-                EQUB    $E9,$89,$20,$D3,$B2,$4C,$BC,$B2
-                EQUB    $20,$3A,$8F,$20,$E5,$8E,$08,$A9
-                EQUB    $00,$85,$3C,$28,$F0,$11,$A9,$40
-                EQUB    $85,$3C
+                EQUB    $FF
 
+.L896C          JSR     L8F3A
+
+                JSR     L8F54
+
+                JSR     LB1EE
+
+                JSR     L8F10
+
+                JSR     L893E
+
+                BEQ     L892D
+
+                LDA     L050C
+                ORA     L050D
+                BNE     L89A1
+
+                LDA     L050A
+                CLC
+                ADC     L000B
+                STA     L008D
+                TAX
+                LDA     L050B
+                ADC     L000C
+                STA     L008E
+                BCS     L89A1
+
+                CMP     L0010
+                BCC     L89A4
+
+                BNE     L89A1
+
+                CPX     L000F
+                BCC     L89A4
+
+.L89A1          JMP     L8607
+
+.L89A4          LDA     #$82
+                JSR     OSBYTE
+
+                STX     L0504
+                STY     L0505
+                LDA     L000B
+                STA     L0502
+                LDA     L000C
+                STA     L0503
+                LDA     #$00
+                STA     L0506
+                LDA     #$FF
+                JSR     L8A4B
+
+                LDA     L008D
+                STA     L000D
+                LDA     L008E
+                STA     L000E
+                LDY     #$00
+                TYA
+                STA     (L000D),Y
+                STY     L0040
+                JSR     L89E9
+
+                JSR     LB2D3
+
+                JMP     LB2BC
+
+                JSR     L8F3A
+
+                JSR     L8EE5
+
+                PHP
+                LDA     #$00
+                STA     L003C
+                PLP
+                BEQ     L89FA
+
+.L89E9          LDA     #$40
+                STA     L003C
 .L89ED          LDX     #$00
 .L89EF          LDA     L075C,X
                 STA     L07EC,X
@@ -1853,49 +1867,27 @@ L8899 = L8897+2
                 CMP     #$0D
                 BNE     L89EF
 
-                RTS
+.L89FA          RTS
 
                 JSR     L8EE5
 
-                BNE     L8A14
+                EQUB    $D0
 
-                BIT     L003C
-                BVS     L8A07
-
-                JMP     L8F00
-
-.L8A07          LDX     #$00
-.L8A09          LDA     L07EC,X
-                STA     L075C,X
-                INX
-                CMP     #$0D
-                BNE     L8A09
-
-.L8A14          LDA     L000B
-                STA     L050A
-                LDA     L000C
-                STA     L050B
-                LDA     L000D
-                STA     L050E
-                LDA     L000E
-                STA     L050F
-                LDA     #$82
-                JSR     OSBYTE
-
-                STX     L050C
-                STY     L050D
-                STX     L0510
-                STY     L0511
-                LDA     #$00
-                JSR     L8A41
-
-                JMP     L82B9
+                EQUB    $14,$24,$3C,$70,$03,$4C,$00,$8F
+                EQUB    $A2,$00,$BD,$EC,$07,$9D,$5C,$07
+                EQUB    $E8,$C9,$0D,$D0,$F5,$A5,$0B,$8D
+                EQUB    $0A,$05,$A5,$0C,$8D,$0B,$05,$A5
+                EQUB    $0D,$8D,$0E,$05,$A5,$0E,$8D,$0F
+                EQUB    $05,$A9,$82,$20,$F4,$FF,$8E,$0C
+                EQUB    $05,$8C,$0D,$05,$8E,$10,$05,$8C
+                EQUB    $11,$05,$A9,$00,$20,$41,$8A,$4C
+                EQUB    $B9,$82
 
 .L8A41          LDX     #$5C
                 STX     L0500
                 LDY     #$07
                 STY     L0501
-                LDX     #$00
+.L8A4B          LDX     #$00
                 LDY     #$05
                 JMP     OSFILE
 
@@ -1987,24 +1979,69 @@ L8899 = L8897+2
 
                 EQUS    "Editing "
 
-                EQUB    $00,$A5,$3C,$F0,$29,$A0,$00,$B9
-                EQUB    $EC,$07,$C9,$0D,$F0,$06,$20,$E3
-                EQUB    $FF,$C8,$D0,$F3,$24,$3C,$70,$0E
-                EQUB    $20,$12,$AA
+                EQUB    $00
+
+.L8AE9          LDA     L003C
+                BEQ     L8B16
+
+                LDY     #$00
+.L8AEF          LDA     L07EC,Y
+                CMP     #$0D
+                BEQ     L8AFC
+
+                JSR     OSASCI
+
+                INY
+                BNE     L8AEF
+
+.L8AFC          BIT     L003C
+                BVS     L8B0E
+
+                JSR     LAA12
 
                 EQUS    " to "
 
-                EQUB    $00,$A0,$00,$B9,$70,$07,$C8,$20
-                EQUB    $E3,$FF,$C9,$0D,$D0,$F5,$60,$20
-                EQUB    $12,$AA
+                EQUB    $00,$A0,$00
+
+.L8B0A          LDA     L0770,Y
+                INY
+.L8B0E          JSR     OSASCI
+
+                CMP     #$0D
+                BNE     L8B0A
+
+                RTS
+
+.L8B16          JSR     LAA12
 
                 EQUS    "No File"
 
-                EQUB    $0D,$00,$60,$20,$13,$85,$20,$E7
-                EQUB    $FF,$A0,$01,$B1,$FD,$F0,$06,$20
-                EQUB    $E3,$FF,$C8,$D0,$F6,$20,$E7,$FF
-                EQUB    $A5,$4E,$30,$05,$A0,$06,$4C,$AA
-                EQUB    $AA,$4C,$B9,$82
+                EQUB    $0D,$00
+
+.L8B22          RTS
+
+                JSR     L8513
+
+                JSR     OSNEWL
+
+                LDY     #$01
+.L8B2B          LDA     (L00FD),Y
+                BEQ     L8B35
+
+                JSR     OSASCI
+
+                INY
+                BNE     L8B2B
+
+.L8B35          JSR     OSNEWL
+
+                LDA     L004E
+                BMI     L8B41
+
+                LDY     #$06
+                JMP     LAAAA
+
+.L8B41          JMP     L82B9
 
 .L8B44          LDA     #$00
                 STA     L0082
@@ -2706,9 +2743,7 @@ L8899 = L8897+2
 
                 JSR     LAA12
 
-                EQUS    "Not with ca"
-
-.L8F67          EQUS    "ssette"
+                EQUS    "Not with cassette"
 
                 EQUB    $FF
 
@@ -2882,8 +2917,7 @@ L8899 = L8897+2
 
 .L906C          LDA     L0019
                 STA     L008B
-.L9070          LDA     L001A
-L9071 = L9070+1
+                LDA     L001A
                 STA     L008C
                 LDY     #$01
                 LDA     (L0004),Y
@@ -5087,7 +5121,6 @@ L96FC = L96FB+1
                 BCS     L9CF1
 
 .L9D0E          LDA     (L0089),Y
-L9D0F = L9D0E+1
                 CMP     #$20
                 BNE     L9D22
 
@@ -5348,7 +5381,7 @@ L9D0F = L9D0E+1
                 LDA     L004F
                 BNE     L9E8A
 
-.L9E80          STA     L008C
+                STA     L008C
                 TYA
                 BEQ     L9E8A
 
@@ -5770,8 +5803,7 @@ L9D0F = L9D0E+1
                 STA     L0080
                 STA     L0081
 .LA101          LDX     L0080
-.LA103          LDY     L0077
-LA104 = LA103+1
+                LDY     L0077
                 JSR     LAA02
 
                 JSR     LA970
@@ -5932,9 +5964,8 @@ LA104 = LA103+1
 
                 STY     L0080
                 CPY     L0040
-.LA1FF          BCC     LA1B8
+                BCC     LA1B8
 
-LA200 = LA1FF+1
                 BEQ     LA1B8
 
                 LDY     L0040
@@ -5969,9 +6000,8 @@ LA200 = LA1FF+1
                 TAX
                 JSR     LAF5B
 
-.LA22E          JMP     LA242
+                JMP     LA242
 
-LA230 = LA22E+2
                 JSR     LAB51
 
                 JSR     LAEE9
@@ -6965,7 +6995,7 @@ LA4A0 = LA49F+1
                 TAX
                 BEQ     LA807
 
-.LA805          BCS     LA809
+                BCS     LA809
 
 .LA807          LDX     #$01
 .LA809          LDA     #$20
@@ -7908,7 +7938,7 @@ LA4A0 = LA49F+1
                 INC     L0086
 .LAD7C          JSR     LAD86
 
-.LAD7F          BNE     LAD84
+                BNE     LAD84
 
                 JSR     LADA3
 
@@ -8352,7 +8382,7 @@ LA4A0 = LA49F+1
 
                 INY
                 DEC     L0083
-.LAFFF          BNE     LAFF1
+                BNE     LAFF1
 
                 BRA     LB009
 
@@ -9044,16 +9074,15 @@ LB3AF = LB3AE+1
                 EQUB    $09,$12,$15,$0F,$1E,$29,$81,$08
                 EQUB    $3E,$3A,$29,$38,$33,$81,$18,$17
                 EQUB    $3E,$3A,$29,$81,$16,$12,$38,$29
-                EQUB    $34,$28,$2B
-
-.LB4A2          EQUB    $3A,$38,$3E,$81,$1D,$14,$37,$3F
-                EQUB    $81,$15,$3A,$36,$3E,$81,$16,$34
-                EQUB    $3F,$3E,$80,$1D,$32,$35,$32,$28
-                EQUB    $33,$81,$0B,$29,$32,$35,$2F,$81
-                EQUB    $18,$33,$3A,$35,$3C,$3E,$81,$0C
-                EQUB    $29,$32,$2F,$3E,$81,$1E,$3F,$32
-                EQUB    $2F,$80,$09,$3E,$2B,$37,$3A,$38
-                EQUB    $3E,$81,$17,$34,$3A,$3F,$80,$00
+                EQUB    $34,$28,$2B,$3A,$38,$3E,$81,$1D
+                EQUB    $14,$37,$3F,$81,$15,$3A,$36,$3E
+                EQUB    $81,$16,$34,$3F,$3E,$80,$1D,$32
+                EQUB    $35,$32,$28,$33,$81,$0B,$29,$32
+                EQUB    $35,$2F,$81,$18,$33,$3A,$35,$3C
+                EQUB    $3E,$81,$0C,$29,$32,$2F,$3E,$81
+                EQUB    $1E,$3F,$32,$2F,$80,$09,$3E,$2B
+                EQUB    $37,$3A,$38,$3E,$81,$17,$34,$3A
+                EQUB    $3F,$80,$00
 
 .LB4E2          EQUB    $43
 
@@ -10223,11 +10252,13 @@ LB863 = LB862+1
 
                 RTI
 
-.LB9B2          ORA     (L0000,X)
-LB9B3 = LB9B2+1
-                BPL     LB9B6
+                EQUB    $01
 
-.LB9B6          RTI
+.LB9B3          BRK
+                EQUB    $10
+
+                BRK
+                EQUB    $40
 
                 BRK
                 EQUB    $01
@@ -10478,10 +10509,26 @@ LB9FF = LB9FE+1
 
                 BRA     LBA95
 
-.LBA94          TSB     L0000
-LBA95 = LBA94+1
+                EQUB    $04
+
+.LBA95          BRK
+                EQUB    $00
+
+                ORA     (L0000,X)
                 BRK
-                EQUB    $01
+                EQUB    $00
+
+                BRK
+                EQUB    $00
+
+                BRK
+                EQUB    $00
+
+                BRK
+                EQUB    $80
+
+                BRK
+                EQUB    $21
 
                 BRK
                 EQUB    $00
@@ -10495,9 +10542,6 @@ LBA95 = LBA94+1
                 BRK
                 EQUB    $00
 
-                BRA     LBAA2
-
-.LBAA2          AND     (L0000,X)
                 BRK
                 EQUB    $00
 
@@ -10513,26 +10557,12 @@ LBA95 = LBA94+1
                 BRK
                 EQUB    $00
 
-                BRK
+                BPL     LBAB7
+
+.LBAB7          BPL     LBAB9
+
+.LBAB9          BRK
                 EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $10
-
-                BRK
-                EQUB    $10
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $02
 
                 TSB     L0000
                 BRK
@@ -10637,1212 +10667,193 @@ LBA95 = LBA94+1
                 BRK
                 EQUB    $01
 
-.LBB0E          JSR     L0002
-
-LBB10 = LBB0E+2
-                BPL     LBB13
-
-.LBB13          BRK
-                EQUB    $00
-
-                BRK
                 EQUB    $20
 
-                BRK
-                EQUB    $00
+                EQUB    $02,$00,$10,$00,$00,$00,$00,$20
+                EQUB    $00,$00,$00,$20,$24,$81,$20,$00
+                EQUB    $10,$08,$00,$02,$48,$10,$00,$00
+                EQUB    $00,$00,$00,$00,$00,$00,$00,$00
+                EQUB    $00,$00,$00,$00,$00,$00,$00,$00
+                EQUB    $00,$00,$00,$00,$00,$00,$00,$00
+                EQUB    $00,$00,$00,$00,$00,$00,$00,$48
+                EQUB    $01,$00,$40,$00,$00,$00,$02,$00
+                EQUB    $00,$00,$02,$00,$00,$00,$00,$01
+                EQUB    $08,$00,$00,$00,$00,$00,$00,$00
+                EQUB    $04,$20,$00,$00,$02,$00,$00,$00
+                EQUB    $10,$00,$00,$00,$00,$00,$00,$00
+                EQUB    $80,$00,$01,$02,$00,$00,$00,$02
+                EQUB    $00,$01,$00,$00,$04,$20,$00,$00
+                EQUB    $00,$00,$00,$40,$08,$00,$00,$00
+                EQUB    $00,$00,$00,$00,$40,$00,$02,$10
+                EQUB    $80,$00,$00,$00,$00,$00,$01,$00
+                EQUB    $00,$80,$00,$48,$08,$00,$40,$00
+                EQUB    $02,$00,$00,$00,$80,$10,$00,$00
+                EQUB    $00,$00,$20,$00,$00,$00,$00,$00
+                EQUB    $00,$01,$00,$00,$00,$00,$80,$10
+                EQUB    $00,$00,$00,$00,$08,$00,$00,$08
+                EQUB    $00,$00,$00,$00,$04,$D1,$03,$00
+                EQUB    $60,$08,$80,$00,$00,$00,$00,$E0
+                EQUB    $08,$10,$00,$90,$E9,$83,$00,$61
+                EQUB    $4C,$00,$01,$80,$03,$00,$04,$89
+                EQUB    $65,$AE,$50,$F1,$A4,$02,$80,$06
+                EQUB    $7B,$47,$20,$14,$BC,$54,$00,$00
+                EQUB    $00,$00,$00,$00,$40,$01,$00,$00
+                EQUB    $00,$0C,$00,$00,$02,$00,$20,$02
+                EQUB    $10,$80,$00,$95,$62,$15,$1A,$30
+                EQUB    $15,$00,$00,$84,$50,$08,$0C,$04
+                EQUB    $10,$51,$C1,$4C,$04,$A1,$00,$31
+                EQUB    $E8,$03,$00,$00,$C0,$10,$00,$00
+                EQUB    $0A,$60,$00,$78,$D4,$11,$10,$63
+                EQUB    $32,$E0,$4E,$80,$9E,$BA,$1A,$36
+                EQUB    $D4,$00,$10,$00,$48,$10,$0C,$01
+                EQUB    $00,$40,$44,$52,$24,$00,$82,$14
+                EQUB    $8A,$29,$00,$21,$A1,$20,$00,$A2
+                EQUB    $24,$0C,$40,$41,$05,$A0,$08,$80
+                EQUB    $08,$06,$08,$82,$04,$41,$40,$10
+                EQUB    $C2,$78,$D5,$FF,$FF,$BB,$FA,$D5
+                EQUB    $06,$00,$00,$14,$48,$00,$48,$00
+                EQUB    $00,$00,$0B,$08,$05,$02,$82,$00
+                EQUB    $50,$82,$24,$04,$00,$00,$A7,$50
+                EQUB    $00,$00,$28,$00,$00,$00,$00,$04
+                EQUB    $00,$20,$08,$09,$00,$82,$48,$52
+                EQUB    $82,$22,$C1,$95,$44,$00,$D6,$09
+                EQUB    $01,$04,$00,$00,$00,$20,$04,$00
+                EQUB    $C2,$00,$00,$00,$00,$40,$C5,$26
+                EQUB    $80,$00,$00,$00,$42,$A0,$94,$44
+                EQUB    $08,$00,$08,$08,$08,$80,$14,$00
+                EQUB    $99,$16,$1F,$00,$10,$00,$60,$00
+                EQUB    $00,$00,$C0,$0D,$8E,$20,$0F,$00
+                EQUB    $0B,$60,$0A,$00,$00,$00,$00,$00
+                EQUB    $00,$00,$00,$00,$00,$00,$00,$00
+                EQUB    $00,$10,$1A,$00,$10,$C0,$00,$04
+                EQUB    $00,$00,$40,$20,$24,$81,$02,$00
+                EQUB    $00,$02,$00,$00,$00,$08,$08,$00
+                EQUB    $00,$80,$00,$00,$20,$08,$00,$98
+                EQUB    $48,$8C,$54,$55,$4A,$7D,$80,$00
+                EQUB    $05,$12,$00,$51,$FA,$83,$20,$00
+                EQUB    $00,$44,$20,$48,$04,$00,$00,$00
+                EQUB    $00,$00,$00,$00,$00,$00,$00,$00
+                EQUB    $00,$00,$40,$00,$00,$00,$00,$00
+                EQUB    $00,$00,$20,$20,$40,$00,$00,$00
+                EQUB    $00,$00,$00,$00,$00,$00,$00,$00
+                EQUB    $00,$00,$00,$00,$E0,$F7,$AF,$AA
+                EQUB    $5E,$7F,$AD,$57,$D5,$F7,$FF,$F5
+                EQUB    $7D,$07,$00,$10,$80,$4B,$12,$81
+                EQUB    $58,$A7,$A6,$22,$82,$91,$E9,$32
+                EQUB    $40,$91,$00,$10,$27,$12,$E0,$00
+                EQUB    $01,$00,$A9,$02,$00,$28,$80,$5C
+                EQUB    $01,$00,$18,$80,$03,$02,$08,$07
+                EQUB    $08,$02,$20,$02,$00,$00,$06,$40
+                EQUB    $C1,$16,$04,$00,$00,$08,$82,$50
+                EQUB    $48,$10,$00,$00,$E8,$05,$21,$FC
+                EQUB    $06,$20,$00,$00,$80,$B8,$01,$C0
+                EQUB    $DE,$0D,$EA,$4C,$67,$8F,$64,$37
+                EQUB    $A9,$06,$85,$38,$A4,$36,$A9,$0D
+                EQUB    $99,$00,$06,$60,$4C,$71,$90,$20
+                EQUB    $0F,$9D,$D0,$F8,$20,$85,$BD,$4C
+                EQUB    $00,$00,$00,$00,$00,$00,$FC,$01
+                EQUB    $02,$00,$82,$E3,$1A,$08,$08,$00
+                EQUB    $0A,$F0,$C1
 
-                BRK
                 EQUB    $20
 
-                BIT     L0081
-                JSR     L1000
+                EQUB    $00,$01,$04,$15,$05
 
-                PHP
-                BRK
-                EQUB    $02
-
-                PHA
-                BPL     LBB26
-
-.LBB26          BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                PHA
-                ORA     (L0000,X)
-                RTI
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $02
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $02
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                ORA     (L0008,X)
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $04
-
-                JSR     L0000
-
-                BRK
-                EQUB    $00
-
-                BRK
                 EQUB    $10
 
-                BRK
-                EQUB    $00
+                EQUB    $18,$00,$00,$00,$00,$00,$00,$00
+                EQUB    $00,$00,$00,$04,$00,$04,$00,$05
+                EQUB    $88,$01,$40,$02,$00,$00,$80,$01
 
-                BRK
-                EQUB    $00
+                EQUB    $01,$40,$30,$04,$0D,$00,$50,$00
 
-                BRK
-                EQUB    $00
+                EQUB    $10,$02,$05,$24,$0D,$80,$82,$A0
+                EQUB    $5B,$17,$16,$B2,$50,$88,$08,$0A
+                EQUB    $C1,$01,$02,$5A,$6D,$A2,$B4,$61
+                EQUB    $17,$50,$21,$E4,$40,$07,$01,$13
+                EQUB    $A8,$86,$06,$01,$A0,$02,$10,$00
+                EQUB    $74,$0A,$40,$04,$E1,$60,$00,$00
+                EQUB    $00,$00,$80,$94,$22,$24,$05,$00
+                EQUB    $08,$90,$80,$66,$46,$D5,$9C,$47
+                EQUB    $00,$08,$80,$80,$63,$00,$13,$30
+                EQUB    $42,$0C,$05,$A8,$84,$48,$00,$00
+                EQUB    $00,$00,$40,$00,$C0,$8E,$8C,$2D
+                EQUB    $10,$28,$A7,$00,$02,$00,$14,$22
+                EQUB    $60,$02,$00,$20,$28,$68,$08,$40
+                EQUB    $00,$80,$00,$AE,$04,$05,$00,$30
+                EQUB    $36,$08,$00,$2C,$00,$00,$00,$80
+                EQUB    $01,$40,$00,$40,$01,$4E,$84,$00
+                EQUB    $08
 
-                BRK
                 EQUB    $80
 
-                BRK
+                EQUB    $60,$0C,$01,$E0,$30,$01
+
+                EQUB    $32
+
+                EQUB    $08,$00,$38,$53,$55,$34,$0B,$30
+                EQUB    $1C,$40,$18,$03,$22,$02,$2C,$04
+                EQUB    $20,$64,$CB,$80,$10,$45,$98,$24
+                EQUB    $F9,$28,$51,$22,$5A,$2C,$25,$E1
+                EQUB    $A6,$BA,$D1,$64,$EB,$36,$33,$50
+                EQUB    $04,$00,$00,$00,$00,$00,$D0,$45
+                EQUB    $23,$00,$05,$00,$00,$00,$4D,$34
+                EQUB    $59,$00,$00,$00,$80,$C5,$60,$8B
+                EQUB    $34,$3C,$08,$00,$00,$80,$04,$00
+                EQUB    $00,$00,$00,$20,$00,$0C,$00,$00
+                EQUB    $00,$00,$02,$00,$00,$A0,$51,$20
+                EQUB    $00,$10,$10,$01
+
+                EQUB    $80
+
+                EQUB    $88,$48,$02,$28,$54,$00,$41,$58
+                EQUB    $80,$04,$0C,$01,$80,$48,$80,$24
+                EQUB    $80,$04,$98,$46,$01
+
+                EQUB    $10
+
+                EQUB    $63,$62,$F2,$30,$00,$60,$02,$82
+                EQUB    $CF,$02,$40,$4A,$E3,$00,$00,$45
+                EQUB    $80,$81,$08,$22,$02,$08,$09,$9D
+                EQUB    $03,$25,$14,$02,$02,$18,$10,$08
+                EQUB    $20,$E0,$BC,$41,$58,$43,$07
+
                 EQUB    $01
 
-                BRK
-                EQUB    $00
+                EQUB    $02,$00,$60,$00,$00,$00,$00,$00
+                EQUB    $08,$41,$62,$04,$10,$3A,$50,$88
+                EQUB    $90,$02,$04,$00,$00,$00,$00,$00
+                EQUB    $2C,$B4,$00,$00,$00,$00,$84,$16
+                EQUB    $B9,$24,$BD,$0A,$00,$00,$34,$B3
+                EQUB    $87,$A6,$00,$0E,$68,$80,$D4,$0C
+                EQUB    $30,$A2,$80,$E9,$14,$08,$18,$00
+                EQUB    $00,$15,$72,$AA,$04,$20,$00,$68
+                EQUB    $03,$00,$E7,$AC,$5D,$30,$04,$11
+                EQUB    $00,$2C,$00,$08,$40,$01,$5C,$80
+                EQUB    $59,$17,$1B,$5A,$C3,$07,$14,$2B
+                EQUB    $18,$00,$54,$15,$55,$11,$44,$20
+                EQUB    $D2,$22,$50,$00,$E0,$82,$00,$00
+                EQUB    $00,$00,$00,$A0,$19,$03,$6D,$23
+                EQUB    $28,$10,$0C,$02,$10,$88,$49,$2E
+                EQUB    $E0,$68,$16,$0B,$D5,$41,$28,$40
+                EQUB    $20,$00,$00,$04,$94,$50,$24,$60
+                EQUB    $AC,$00,$00,$38,$04,$00,$01,$A0
+                EQUB    $A2,$A8,$1B,$E0,$A4,$A4,$24,$61
+                EQUB    $D5,$6A,$82,$18,$28,$40,$04,$A2
+                EQUB    $1A,$54,$55,$25,$D5,$2C,$01,$08
+                EQUB    $00,$00,$08,$58,$80,$6C,$2E,$91
+                EQUB    $24,$22,$05,$05,$AA,$00,$00,$00
+                EQUB    $00,$00,$00,$FC,$DF,$DA,$FE,$FF
+                EQUB    $AF,$F7,$DF,$7F,$DB,$EE,$BF,$BF
+                EQUB    $6E,$BF,$FF,$DF,$01,$00,$00,$00
+                EQUB    $00,$00,$00,$00,$02,$08,$00,$41
+                EQUB    $00,$00,$00,$00,$00,$00,$00,$00
+                EQUB    $00,$00,$09,$00,$00,$00,$10,$00
+                EQUB    $00,$80,$0C,$00,$00,$00,$00,$94
+                EQUB    $2C,$00,$00,$00,$00,$00,$05,$80
+                EQUB    $00,$00,$C8,$08,$41,$11,$D0,$5D
+                EQUB    $02,$C0,$DE
 
-                BRK
-                EQUB    $02
-
-                BRK
-                EQUB    $01
-
-                BRK
-                EQUB    $00
-
-                TSB     L0020
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-.LBB81          BRK
-                EQUB    $40
-
-                PHP
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $40
-
-                BRK
-                EQUB    $02
-
-                BPL     LBB10
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $01
-
-                BRK
-                EQUB    $00
-
-                BRA     LBB9A
-
-.LBB9A          PHA
-                PHP
-                BRK
-                EQUB    $40
-
-                BRK
-                EQUB    $02
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $80
-
-                BPL     LBBA6
-
-.LBBA6          BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $20
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                ORA     (L0000,X)
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $80
-
-                BPL     LBBB8
-
-.LBBB8          BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $08
-
-                BRK
-.LBBBD          EQUB    $00
-
-                PHP
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                TSB     L00D1
-                BRK
-                EQUB    $60
-
-                PHP
-                BRA     LBBCB
-
-.LBBCB          BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $E0
-
-                PHP
-                BPL     LBBD2
-
-.LBBD2          BCC     LBBBD
-
-                BRK
-                EQUB    $61
-
-                JMP     L0100
-
-                BRA     LBBDF
-
-                BRK
-                EQUB    $04
-
-.LBBDE          BIT     #65
-LBBDF = LBBDE+1
-                LDX     LF150
-                LDY     L0002
-                BRA     LBBED
-
-                JSR     LBC14
-
-.LBBED          BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                RTI
-
-                ORA     (L0000,X)
-                BRK
-                EQUB    $00
-
-                TSB     L0000
-                BRK
-                EQUB    $20
-
-                BPL     LBB81
-
-                BRK
-                EQUB    $95
-
-                ORA     L001A,X
-                BMI     LBC1D
-
-                BRK
-                EQUB    $00
-
-                STY     L0050
-                PHP
-                TSB     L1004
-                EOR     (L00C1),Y
-.LBC12          JMP     LA104
-
-LBC14 = LBC12+2
-                BRK
-                EQUB    $31
-
-                INX
-                BRK
-.LBC1A          EQUB    $00
-
-                CPY     #$10
-.LBC1D          BRK
-                EQUB    $00
-
-                ASL     A
-                RTS
-
-                BRK
-                EQUB    $78
-
-                ORA     (L0010),Y
-                AND     (L00E0)
-                LSR     L9E80
-                TSX
-                INC     A
-                ROL     L00D4,X
-                BRK
-                EQUB    $10
-
-                BRK
-                EQUB    $48
-
-                BPL     LBC42
-
-                ORA     (L0000,X)
-                RTI
-
-                EOR     (L0024)
-                BRK
-                EQUB    $82
-
-                TRB     L008A
-                AND     #$00
-.LBC42          AND     (L00A1,X)
-                JSR     LA200
-
-                BIT     L000C
-                RTI
-
-                EOR     (L0005,X)
-                LDY     #$08
-                BRA     LBC58
-
-                ASL     L0008
-                TSB     L0041
-                RTI
-
-                BPL     LBC1A
-
-.LBC58          SEI
-                CMP     L00FF,X
-                PLX
-                CMP     L0006,X
-                BRK
-                EQUB    $00
-
-                TRB     L0048
-                BRK
-                EQUB    $48
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $0B
-
-                PHP
-                ORA     L0002
-                BRK
-                EQUB    $50
-
-                BIT     L0004
-                BRK
-                EQUB    $00
-
-                BVC     LBC78
-
-.LBC78          BRK
-                EQUB    $28
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                TSB     L0000
-                JSR     L0908
-
-                BRK
-                EQUB    $82
-
-                PHA
-                EOR     (L0082)
-                CMP     (L0095,X)
-                BRK
-                EQUB    $D6
-
-                ORA     #$01
-                TSB     L0000
-                BRK
-                EQUB    $00
-
-                JSR     L0004
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                RTI
-
-                CMP     L0026
-                BRA     LBCA1
-
-.LBCA1          BRK
-                EQUB    $00
-
-                LDY     #$94
-                PHP
-                BRK
-                EQUB    $08
-
-                PHP
-                PHP
-                BRA     LBCC2
-
-                BRK
-                EQUB    $99
-
-                ASL     L001F,X
-                BRK
-                EQUB    $10
-
-                BRK
-                EQUB    $60
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $C0
-
-                ORA     L208E
-                BRK
-                EQUB    $0B
-
-                RTS
-
-                ASL     A
-.LBCC2          BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BPL     LBCEC
-
-                BRK
-                EQUB    $10
-
-                CPY     #$00
-                TSB     L0000
-                BRK
-                EQUB    $40
-
-                JSR     L8124
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $08
-
-                PHP
-                BRK
-                EQUB    $00
-
-                BRA     LBCEA
-
-.LBCEA          BRK
-                EQUB    $20
-
-.LBCEC          PHP
-                BRK
-                EQUB    $98
-
-                PHA
-                STY     L5554
-                LSR     A
-                ADC     L0080,X
-                ORA     L0012
-                BRK
-                EQUB    $51
-
-                PLX
-                JSR     L0000
-
-                JSR     L0448
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $40
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $20
-
-                JSR     L0040
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                CPX     #$F7
-                TAX
-                LSR     LAD7F,X
-                CMP     L00F7,X
-                SBC     L007D,X
-                BRK
-                EQUB    $10
-
-                BRA     LBD88
-
-                ORA     (L0081)
-                CLI
-                LDX     L0022
-                STA     (L00E9),Y
-                AND     (L0040)
-                STA     (L0000),Y
-                BPL     LBD73
-
-                ORA     (L00E0)
-                BRK
-                EQUB    $01
-
-                BRK
-                EQUB    $A9
-
-                BRK
-                EQUB    $28
-
-                BRA     LBDB3
-
-                ORA     (L0000,X)
-                CLC
-                BRA     LBD5F
-
-                PHP
-.LBD5F          PHP
-                JSR     L0002
-
-                BRK
-                EQUB    $06
-
-                RTI
-
-                CMP     (L0016,X)
-                TSB     L0000
-                BRK
-                EQUB    $08
-
-.LBD6E          BVC     LBDB8
-
-LBD6F = LBD6E+1
-                BPL     LBD72
-
-.LBD72          BRK
-.LBD73          EQUB    $E8
-
-                ORA     L0021
-                ASL     L0020
-                BRK
-                EQUB    $00
-
-                BRA     LBD35
-
-                ORA     (L00C0,X)
-                DEC     LEA0D,X
-                JMP     L8F67
-
-.LBD85          STZ     L0037
-.LBD87          LDA     #$06
-LBD88 = LBD87+1
-                STA     L0038
-                LDY     L0036
-                LDA     #$0D
-                STA     L0600,Y
-                RTS
-
-.LBD93          JMP     L9071
-
-LBD94 = LBD93+1
-                JSR     L9D0F
-
-                BNE     LBD93
-
-.LBD9B          JSR     LBD85
-
-LBD9D = LBD9B+2
-                JMP     L0000
-
-.LBDA1          BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                ORA     (L0002,X)
-                BRK
-                EQUB    $82
-
-                INC     A
-                PHP
-                PHP
-                BRK
-                EQUB    $0A
-
-                BEQ     LBD73
-
-.LBDB2          JSR     L0100
-
-LBDB3 = LBDB2+1
-                TSB     L0015
-.LBDB7          ORA     L0010
-LBDB8 = LBDB7+1
-                CLC
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                TSB     L0000
-                TSB     L0000
-                ORA     L0088
-                ORA     (L0040,X)
-                BRK
-                EQUB    $00
-
-                BRA     LBDD2
-
-.LBDD1          ORA     (L0040,X)
-LBDD2 = LBDD1+1
-                BMI     LBDD9
-
-                ORA     L5000
-                BRK
-.LBDD9          EQUB    $10
-
-                ORA     L0024
-                ORA     L8280
-                LDY     #$5B
-                ASL     L00B2,X
-                BVC     LBD6F
-
-                PHP
-                ASL     A
-                CMP     (L0001,X)
-                PHY
-                ADC     LB4A2
-                ADC     (L0017,X)
-                BVC     LBE15
-
-                CPX     L0040
-                ORA     (L0013,X)
-                TAY
-                STX     L0006
-                ORA     (L00A0,X)
-                BPL     LBE01
-
-.LBE01          STZ     L000A,X
-                RTI
-
-                TSB     L00E1
-                RTS
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRA     LBDA1
-
-                BIT     L0005
-                BRK
-                EQUB    $08
-
-                BCC     LBD94
-
-.LBE14          ROR     L0046
-LBE15 = LBE14+1
-                CMP     L009C,X
-                BRK
-                EQUB    $08
-
-                BRA     LBD9D
-
-                BRK
-                EQUB    $13
-
-                BMI     LBE64
-
-                TSB     LA805
-                STY     L0048
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                RTI
-
-                BRK
-                EQUB    $C0
-
-                STX     L2D8C
-                BPL     LBE5B
-
-                BRK
-                EQUB    $02
-
-                BRK
-                EQUB    $14
-
-                RTS
-
-                BRK
-                EQUB    $20
-
-                PLP
-                PLA
-                PHP
-                RTI
-
-                BRK
-                EQUB    $80
-
-                BRK
-                EQUB    $AE
-
-                TSB     L0005
-                BRK
-.LBE48          EQUB    $30
-
-                ROL     L0008,X
-                BRK
-                EQUB    $2C
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $80
-
-                ORA     (L0040,X)
-                BRK
-                EQUB    $40
-
-                ORA     (L004E,X)
-                STY     L0000
-                PHP
-.LBE5A          BRA     LBEBC
-
-LBE5B = LBE5A+1
-                TSB     LE001
-                BMI     LBE62
-
-.LBE61          AND     (L0008)
-LBE62 = LBE61+1
-                BRK
-.LBE64          EQUB    $38
-
-                EOR     L0034,X
-                BMI     LBE87
-
-                RTI
-
-                CLC
-                BIT     L2004
-                STZ     L00CB
-                BRA     LBE87
-
-                EOR     L0098
-                BIT     L00F9
-                PLP
-                EOR     (L0022),Y
-                PHY
-                BIT     LE125
-                LDX     L00BA
-                CMP     (L0064),Y
-.LBE87          ROL     L0033,X
-                BVC     LBE8F
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-.LBE8F          BRK
-                EQUB    $D0
-
-                EOR     L0023
-                BRK
-                EQUB    $05
-
-.LBE95          BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $4D
-
-                BIT     L0059,X
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $80
-
-                CMP     L0060
-                BIT     L003C,X
-                PHP
-                BRK
-                EQUB    $00
-
-                BRA     LBEAD
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-.LBEAD          JSR     L0C00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                LDY     #$51
-                JSR     L1000
-
-.LBEBC          BPL     LBEBF
-
-.LBEBE          BRA     LBE48
-
-LBEBF = LBEBE+1
-                PHA
-                PLP
-                BRK
-                EQUB    $41
-
-                CLI
-                BRA     LBECD
-
-                TSB     L8001
-                PHA
-.LBECD          BRA     LBEF3
-
-                BRA     LBED5
-
-                TYA
-                LSR     L0001
-.LBED4          BPL     LBF39
-
-LBED5 = LBED4+1
-                SBC     (L0030)
-                BRK
-                EQUB    $60
-
-                RTI
-
-                LSR     A
-                BRK
-                EQUB    $00
-
-                EOR     L0080
-                STA     (L0008,X)
-                PHP
-                ORA     #$9D
-                AND     L0014
-                CLC
-.LBEF3          BPL     LBEFD
-
-                JSR     LBCE0
-
-                EOR     (L0058,X)
-.LBEFC          ORA     (L0002,X)
-LBEFD = LBEFC+1
-                BRK
-                EQUB    $60
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $08
-
-                EOR     (L0062,X)
-                TSB     L0010
-                DEC     A
-                BVC     LBE95
-
-                BCC     LBF11
-
-                TSB     L0000
-.LBF11          BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BIT     L00B4
-                BRK
-                EQUB    $00
-
-.LBF1A          BRK
-                EQUB    $84
-
-                ASL     L00B9,X
-                BIT     L00BD
-                ASL     A
-                BRK
-                EQUB    $00
-
-                BIT     L00B3,X
-                LDX     L0000
-                ASL     L8068
-                TSB     LA230
-                BRA     LBF1A
-
-                TRB     L0008
-                CLC
-                BRK
-                EQUB    $00
-
-                ORA     L0072,X
-                TAX
-.LBF39          TSB     L0020
-                BRK
-                EQUB    $68
-
-                BRK
-                EQUB    $E7
-
-                LDY     L305D
-                TSB     L0011
-                BRK
-                EQUB    $2C
-
-                BRK
-                EQUB    $08
-
-                RTI
-
-                ORA     (L005C,X)
-                BRA     LBFA7
-
-                PHY
-                TRB     L002B
-                CLC
-                BRK
-                EQUB    $54
-
-                ORA     L0055,X
-                ORA     (L0044),Y
-                JSR     L22D2
-
-                BVC     LBF61
-
-.LBF61          CPX     #$82
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $A0
-
-                ORA     L6D03,Y
-                PLP
-                BPL     LBF7C
-
-                BPL     LBEFB
-
-                EOR     #$2E
-                CPX     #$68
-                ASL     L000B,X
-                CMP     L0041,X
-                PLP
-.LBF7C          RTI
-
-                JSR     L0000
-
-                TSB     L0094
-                BVC     LBFA8
-
-                RTS
-
-                LDY     L0000
-                SEC
-                TSB     L0000
-                ORA     (L00A0,X)
-                LDX     #$A8
-                CPX     #$A4
-                LDY     L0024
-                ADC     (L00D5,X)
-                ROR     A
-                CLC
-                PLP
-                RTI
-
-                TSB     L00A2
-                INC     A
-                EOR     L0025,X
-                CMP     L002C,X
-                ORA     (L0008,X)
-                BRK
-                EQUB    $00
-
-.LBFA7          PHP
-.LBFA8          CLI
-                BRA     LC017
-
-                ROL     L2491
-                ORA     L0005
-                TAX
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                PHX
-                INC     LAFFF,X
-                INC     LBFBF
-                ROR     OSEVEN
-                ORA     (L0000,X)
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                PHP
-                BRK
-                EQUB    $41
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                ORA     #$00
-                BRK
-                EQUB    $00
-
-                BPL     LBFE5
-
-.LBFE5          BRK
-                EQUB    $80
-
-                TSB     L0000
-                BRK
-                EQUB    $00
-
-                STY     L002C,X
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $00
-
-                BRK
-                EQUB    $05
-
-                BRA     LBFF6
-
-.LBFF6          BRK
-                EQUB    $C8
-
-                PHP
-                EOR     (L0011,X)
-                BNE     LC05A
-
-                CPY     #$DE
 .BeebDisEndAddr
 SAVE "view-b3.3.bin",BeebDisStartAddr,BeebDisEndAddr
 

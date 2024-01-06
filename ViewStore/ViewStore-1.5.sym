@@ -1,1 +1,4 @@
-
+lang_serv = $8188
+lang_exit = $8187
+instll_brkv = $A930
+screen_mode = $0020

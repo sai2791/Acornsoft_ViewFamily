@@ -25,7 +25,7 @@ L001C           = $001C
 L001D           = $001D
 L001E           = $001E
 L001F           = $001F
-L0020           = $0020
+screen_mode     = $0020
 L0021           = $0021
 L0022           = $0022
 L0023           = $0023
@@ -233,9 +233,9 @@ OSBYTE          = $FFF4
 OSCLI           = $FFF7
 
                 org     $8000
-.langent        JMP     L8188
+.langent        JMP     lang_serv
 
-                JMP     L80D5
+.servent        JMP     L80D5
 
                 ASL     L0001,X
 .L8009          EQUS    "ViewStore"
@@ -248,28 +248,121 @@ OSCLI           = $FFF7
 
                 EQUS    "(C) 1985 Acornsoft"
 
-                EQUB    $00,$4C,$2B,$AC,$4C,$D3,$AC,$4C
-                EQUB    $E9,$AB,$4C,$DD,$AB,$4C,$FA,$B9
-                EQUB    $4C,$90,$B7,$4C,$6C,$B5,$4C,$FD
-                EQUB    $B4,$4C,$96,$B6,$4C,$8B,$B4,$4C
-                EQUB    $17,$A0,$4C,$F2,$A6,$4C,$13,$92
-                EQUB    $4C,$CD,$AD,$4C,$98,$B3,$4C,$75
-                EQUB    $B3,$4C,$5B,$B8,$4C,$0D,$B6,$4C
-                EQUB    $90,$B6,$4C,$9B,$B7,$4C,$F0,$B5
-                EQUB    $4C,$0A,$89,$4C,$68,$9B,$4C,$37
-                EQUB    $A0,$4C,$6C,$AD,$4C,$A8,$A6,$4C
-                EQUB    $76,$A1,$4C,$54,$A1,$4C,$2C,$A1
-                EQUB    $4C,$2E,$AE,$4C,$4C,$AC,$4C,$18
-                EQUB    $AD,$4C,$F6,$93,$4C,$56,$85,$4C
-                EQUB    $20,$AB,$4C,$FA,$A7,$4C,$79,$81
-                EQUB    $4C,$75,$81,$4C,$80,$A7,$4C,$CA
-                EQUB    $A7,$4C,$04,$AA,$4C,$6E,$B8,$4C
-                EQUB    $97,$99,$4C,$F1,$B8,$4C,$38,$B9
-                EQUB    $4C,$91,$9F,$4C,$99,$91,$4C,$E1
-                EQUB    $9F,$4C,$39,$A0,$4C,$78,$A1,$4C
-                EQUB    $3F,$A7,$4C,$A5,$AB,$4C,$0B,$A2
-                EQUB    $4C,$69,$A5,$4C,$9C,$A3,$4C,$6A
-                EQUB    $A2,$4C,$89,$A2
+                EQUB    $00
+
+.L802A          JMP     LAC2B
+
+                JMP     LACD3
+
+                JMP     LABE9
+
+                JMP     LABDD
+
+                JMP     LB9FA
+
+                JMP     LB790
+
+                JMP     LB56C
+
+                JMP     LB4FD
+
+                JMP     LB696
+
+                JMP     LB48B
+
+                JMP     LA017
+
+                JMP     LA6F2
+
+                JMP     L9213
+
+                JMP     LADCD
+
+                JMP     LB398
+
+                JMP     LB375
+
+                JMP     LB85B
+
+                JMP     LB60D
+
+                JMP     LB690
+
+                JMP     LB79B
+
+                JMP     LB5F0
+
+                JMP     L890A
+
+                JMP     L9B68
+
+                JMP     LA037
+
+                JMP     LAD6C
+
+                JMP     LA6A8
+
+                JMP     LA176
+
+                JMP     LA154
+
+                JMP     LA12C
+
+                JMP     LAE2E
+
+                JMP     LAC4C
+
+                JMP     LAD18
+
+                JMP     L93F6
+
+                JMP     L8556
+
+                JMP     LAB20
+
+                JMP     LA7FA
+
+                JMP     L8179
+
+                JMP     L8175
+
+                JMP     LA780
+
+                JMP     LA7CA
+
+                JMP     LAA04
+
+                JMP     LB86E
+
+                JMP     L9997
+
+                JMP     LB8F1
+
+                JMP     LB938
+
+                JMP     L9F91
+
+                JMP     L9199
+
+                JMP     L9FE1
+
+                JMP     LA039
+
+                JMP     LA178
+
+                JMP     LA73F
+
+                JMP     LABA5
+
+                JMP     LA20B
+
+                JMP     LA569
+
+                JMP     LA39C
+
+                JMP     LA26A
+
+                JMP     LA289
 
 .L80D5          PHA
                 TXA
@@ -387,13 +480,13 @@ OSCLI           = $FFF7
                 CMP     #$0D
                 BNE     L817B
 
-.L8187          RTS
+.lang_exit      RTS
 
-.L8188          CMP     #$01
-                BNE     L8187
+.lang_serv      CMP     #$01
+                BNE     lang_exit
 
                 CLI
-                JSR     LA930
+                JSR     instll_brkv
 
                 LDX     #$FF
                 TXS
@@ -585,7 +678,7 @@ OSCLI           = $FFF7
 
                 JSR     LA997
 
-                JSR     LA930
+                JSR     instll_brkv
 
                 JSR     L82C1
 
@@ -861,7 +954,7 @@ OSCLI           = $FFF7
                 RTS
 
                 LSR     L0049
-                EOR     L0020,X
+                EOR     screen_mode,X
                 CPY     L008E
 .L8453          LDA     L051D,X
                 BEQ     L845E
@@ -1356,7 +1449,7 @@ OSCLI           = $FFF7
                 LDY     #$AF
 .L879E          JSR     L9A49
 
-                LDA     L0020
+                LDA     screen_mode
                 LDX     L0023
                 CPX     #$28
                 BCS     L87AB
@@ -2414,7 +2507,7 @@ L8807 = L8805+2
 .L8E4F          JSR     L8E6A
 
                 LDA     #$72
-                LDX     L0020
+                LDX     screen_mode
                 CPX     #$07
                 BEQ     L8E5C
 
@@ -4479,11 +4572,11 @@ L8807 = L8805+2
 
                 BCC     L99C7
 
-                LDA     L0020
+                LDA     screen_mode
 .L99C7          RTS
 
 .L99C8          STA     L0073
-                CMP     L0020
+                CMP     screen_mode
                 BEQ     L99E6
 
                 TAX
@@ -4508,7 +4601,7 @@ L8807 = L8805+2
                 CLC
                 RTS
 
-.L99EB          LDA     L0020
+.L99EB          LDA     screen_mode
                 STA     L0073
                 SEC
                 RTS
@@ -4519,7 +4612,7 @@ L8807 = L8805+2
 
                 LDA     L001F
                 STA     L05D1
-                LDA     L0020
+                LDA     screen_mode
                 STA     L05D0
 .L9A00          LDA     L001B,X
                 STA     L05C4,Y
@@ -5743,7 +5836,7 @@ L8807 = L8805+2
                 PLP
                 RTS
 
-                LDA     #$01
+.LA176          LDA     #$01
 .LA178          TAX
                 PHA
 .LA17A          PHA
@@ -5929,7 +6022,7 @@ L8807 = L8805+2
 .LA283          LDY     L004B
 .LA285          LDA     #$01
 .LA287          LDX     #$4C
-                JSR     LA292
+.LA289          JSR     LA292
 
                 JSR     OSARGS
 
@@ -6676,7 +6769,7 @@ L8807 = L8805+2
 .LA6A4          LDA     #$04
                 BNE     LA6E6
 
-                STA     L0061
+.LA6A8          STA     L0061
                 STY     L0062
                 LDY     L004A
                 BEQ     LA6D2
@@ -6731,7 +6824,7 @@ L8807 = L8805+2
                 LDA     #$1D
                 BNE     LA6E6
 
-                ROR     L0053
+.LA6F2          ROR     L0053
                 JSR     L82C1
 
                 JSR     L8396
@@ -6759,7 +6852,7 @@ L8807 = L8805+2
 .LA73B          TAY
                 JMP     LA285
 
-                JSR     LAE2E
+.LA73F          JSR     LAE2E
 
                 EQUS    "Screen or Printer (S,P)? "
 
@@ -7080,7 +7173,7 @@ L8807 = L8805+2
                 STX     L0039
                 RTS
 
-.LA930          LDA     #$8C
+.instll_brkv    LDA     #$8C
                 STA     BRKV
                 LDA     #$AB
                 STA     BRKV+1
@@ -7395,14 +7488,14 @@ L8807 = L8805+2
 .LAB2C          RTS
 
 .LAB2D          LDA     L0073
-                CMP     L0020
+                CMP     screen_mode
                 BEQ     LAB65
 
-                STA     L0020
+                STA     screen_mode
                 LDA     #$16
                 JSR     OSWRCH
 
-                LDA     L0020
+                LDA     screen_mode
                 JSR     OSWRCH
 
                 JSR     LAB4D
@@ -7417,7 +7510,7 @@ L8807 = L8805+2
 .LAB4D          LDA     #$87
                 JSR     OSBYTE
 
-                STY     L0020
+                STY     screen_mode
                 LDA     #$A3
                 LDX     #$FF
                 STX     L0025
@@ -7503,7 +7596,7 @@ LABC9 = LABC8+1
                 LDA     #$06
                 BNE     LABF8
 
-                LDA     #$00
+.LABE9          LDA     #$00
                 STA     L003E
                 LDA     L0047
                 ROL     A
@@ -7546,7 +7639,7 @@ LABC9 = LABC8+1
 
 .LAC2A          RTS
 
-                CMP     #$20
+.LAC2B          CMP     #$20
                 BEQ     LAC49
 
                 PHA
@@ -7767,7 +7860,7 @@ LABC9 = LABC8+1
                 INC     L0058
                 JMP     LACEB
 
-                STY     L0062
+.LAD6C          STY     L0062
                 LDA     #$EE
                 LDY     #$FF
                 BNE     LAD88
@@ -8354,9 +8447,9 @@ LABC9 = LABC8+1
 
                 EQUB    $F8
 
-                EQUS    "erro"
+                EQUS    "error"
 
-                EQUB    $F2,$6E,$6F,$A0
+                EQUB    $6E,$6F,$A0
 
                 EQUS    "too many"
 
@@ -8366,21 +8459,17 @@ LABC9 = LABC8+1
 
                 EQUB    $A0
 
-                EQUS    "Memory ful"
+                EQUS    "Memory full"
 
-                EQUB    $EC
+                EQUS    "Mistake"
 
-                EQUS    "Mistak"
+                EQUB    $07,$09
 
-                EQUB    $E5,$07,$09
+                EQUS    "marker"
 
-                EQUS    "marke"
+                EQUB    $01,$03,$80,$09,$80,$04
 
-                EQUB    $F2,$01,$03,$80,$09,$80,$04
-
-                EQUS    "Numeri"
-
-                EQUB    $E3
+                EQUS    "Numeric"
 
                 EQUS    "Limit "
 
@@ -8390,81 +8479,67 @@ LABC9 = LABC8+1
 
                 EQUB    $04
 
-                EQUS    "in lis"
+                EQUS    "in list"
 
-                EQUB    $F4
-
-                EQUS    "Overflo"
-
-                EQUB    $F7
+                EQUS    "Overflow"
 
                 EQUS    "Read "
 
                 EQUB    $86
 
-                EQUS    "Record too bi"
+                EQUS    "Record too big"
 
-                EQUB    $E7,$01
+                EQUB    $01
 
-                EQUS    "director"
+                EQUS    "directory"
 
-                EQUB    $F9,$01
+                EQUB    $01
 
-                EQUS    "nam"
+                EQUS    "name"
 
-                EQUB    $E5,$02,$20,$04
+                EQUB    $02,$20,$04
 
-                EQUS    "foun"
+                EQUS    "found"
 
-                EQUB    $E4,$03,$20,$04
+                EQUB    $03,$20,$04
 
-                EQUS    "ope"
+                EQUS    "open"
 
-                EQUB    $EE,$08,$03,$F3
+                EQUB    $08,$03,$F3
 
-                EQUS    "Stack overflo"
+                EQUS    "Stack overflow"
 
-                EQUB    $F7,$07,$05,$20,$02,$80,$01
+                EQUB    $07,$05,$20,$02,$80,$01
 
-                EQUS    "dat"
+                EQUS    "date"
 
-                EQUB    $E5,$07,$02,$F3,$01
+                EQUB    $07,$02,$F3,$01
 
-                EQUS    "mod"
+                EQUS    "mode"
 
-                EQUB    $E5
+                EQUS    "Escape"
 
-                EQUS    "Escap"
+                EQUS    "Sheet display"
 
-                EQUB    $E5
+                EQUS    "Fixed format"
 
-                EQUS    "Sheet displa"
+                EQUS    "Data screen only"
 
-                EQUB    $F9
+                EQUB    $01
 
-                EQUS    "Fixed forma"
+                EQUS    "prefix"
 
-                EQUB    $F4
+                EQUB    $08
 
-                EQUS    "Data screen onl"
-
-                EQUB    $F9,$01
-
-                EQUS    "prefi"
-
-                EQUB    $F8,$08
-
-                EQUS    "place"
-
-                EQUB    $F3
+                EQUS    "places"
 
                 EQUS    "No "
 
                 EQUB    $05,$80,$01
 
-                EQUS    "pointe"
+                EQUS    "pointer"
 
-                EQUB    $F2,$01,$46,$D3
+                EQUB    $01,$46,$D3
 
 .LB35D          LDY     #$07
 .LB35F          LDA     L006B,Y
@@ -8505,7 +8580,7 @@ LABC9 = LABC8+1
                 TSX
                 STX     L0049
                 LDX     L0062
-                STA     L0061
+.LB398          STA     L0061
                 STX     L0062
                 LDA     #$00
                 STA     L0057
@@ -8894,9 +8969,9 @@ LABC9 = LABC8+1
                 STA     L0071
                 BNE     LB603
 
-                JSR     LB627
+.LB5F0          JSR     LB627
 
-                JSR     LB59D
+.LB5F3          JSR     LB59D
 
 .LB5F6          LDA     L0072
                 CMP     #$80
@@ -8914,7 +8989,7 @@ LABC9 = LABC8+1
 
                 BPL     LB620
 
-                LDA     #$00
+.LB60D          LDA     #$00
                 STA     L006B
                 STA     L006C
                 STA     L006D
@@ -8943,68 +9018,307 @@ LABC9 = LABC8+1
                 EQUB    $78,$66,$79,$66,$7A,$0E,$10,$05
                 EQUB    $2E,$0F,$05,$2E,$0E,$05,$2E,$0D
                 EQUB    $05,$90,$04,$18,$20,$6C,$B4,$88
-                EQUB    $D0,$E1,$60,$A5,$73,$85,$6B,$A5
-                EQUB    $74,$85,$6C,$A5,$75,$85,$6D,$A5
-                EQUB    $76,$85,$6E,$A5,$77,$85,$6F,$A5
-                EQUB    $78,$85,$70,$A5,$79,$85,$71,$A5
-                EQUB    $7A,$85,$72,$60,$20,$96,$B6,$4C
-                EQUB    $F6,$B5,$20,$75,$B3,$F0,$D4,$A0
-                EQUB    $00,$38,$A5,$6D,$E5,$75,$F0,$77
-                EQUB    $90,$37,$C9,$25,$B0,$E5,$48,$29
-                EQUB    $38,$F0,$19,$4A,$4A,$4A,$AA,$A5
-                EQUB    $79,$85,$7A,$A5,$78,$85,$79,$A5
-                EQUB    $77,$85,$78,$A5,$76,$85,$77,$84
-                EQUB    $76,$CA,$D0,$EB,$68,$29,$07,$F0
-                EQUB    $4E,$AA,$46,$76,$66,$77,$66,$78
-                EQUB    $66,$79,$66,$7A,$CA,$D0,$F3,$F0
-                EQUB    $3E,$38,$A5,$75,$E5,$6D,$C9,$25
-                EQUB    $B0,$89,$48,$29,$38,$F0,$19,$4A
-                EQUB    $4A,$4A,$AA,$A5,$71,$85,$72,$A5
-                EQUB    $70,$85,$71,$A5,$6F,$85,$70,$A5
-                EQUB    $6E,$85,$6F,$84,$6E,$CA,$D0,$EB
-                EQUB    $68,$29,$07,$F0,$0E,$AA,$46,$6E
-                EQUB    $66,$6F,$66,$70,$66,$71,$66,$72
-                EQUB    $CA,$D0,$F3,$A5,$75,$85,$6D,$A5
-                EQUB    $6B,$45,$73,$10,$49,$A5,$6E,$C5
-                EQUB    $76,$D0,$1B,$A5,$6F,$C5,$77,$D0
-                EQUB    $15,$A5,$70,$C5,$78,$D0,$0F,$A5
-                EQUB    $71,$C5,$79,$D0,$09,$A5,$72,$C5
-                EQUB    $7A,$D0,$03,$4C,$0D,$B6,$B0,$2A
-                EQUB    $38,$A5,$7A,$E5,$72,$85,$72,$A5
-                EQUB    $79,$E5,$71,$85,$71,$A5,$78,$E5
-                EQUB    $70,$85,$70,$A5,$77,$E5,$6F,$85
-                EQUB    $6F,$A5,$76,$E5,$6E,$85,$6E,$A5
-                EQUB    $73,$85,$6B,$4C,$9D,$B5,$18,$4C
-                EQUB    $80,$B5,$38,$A5,$72,$E5,$7A,$85
-                EQUB    $72,$A5,$71,$E5,$79,$85,$71,$A5
-                EQUB    $70,$E5,$78,$85,$70,$A5,$6F,$E5
-                EQUB    $77,$85,$6F,$A5,$6E,$E5,$76,$85
-                EQUB    $6E,$4C,$9D,$B5,$20,$0D,$B6,$A0
-                EQUB    $80,$84,$6E,$C8,$84,$6D,$60,$A5
-                EQUB    $6B,$45,$73,$85,$6B,$38,$A5,$6D
-                EQUB    $E5,$75,$B0,$03,$C6,$6C,$38,$69
-                EQUB    $80,$85,$6D,$90,$03,$E6,$6C,$18
-                EQUB    $A2,$20,$B0,$18,$A5,$6E,$C5,$76
-                EQUB    $D0,$10,$A5,$6F,$C5,$77,$D0,$0A
-                EQUB    $A5,$70,$C5,$78,$D0,$04,$A5,$71
-                EQUB    $C5,$79,$90,$19,$A5,$71,$E5,$79
-                EQUB    $85,$71,$A5,$70,$E5,$78,$85,$70
-                EQUB    $A5,$6F,$E5,$77,$85,$6F,$A5,$6E
-                EQUB    $E5,$76,$85,$6E,$38,$2E,$10,$05
-                EQUB    $2E,$0F,$05,$2E,$0E,$05,$2E,$0D
-                EQUB    $05,$06,$71,$26,$70,$26,$6F,$26
-                EQUB    $6E,$CA,$D0,$B6,$A2,$07,$B0,$18
-                EQUB    $A5,$6E,$C5,$76,$D0,$10,$A5,$6F
-                EQUB    $C5,$77,$D0,$0A,$A5,$70,$C5,$78
-                EQUB    $D0,$04,$A5,$71,$C5,$79,$90,$19
-                EQUB    $A5,$71,$E5,$79,$85,$71,$A5,$70
-                EQUB    $E5,$78,$85,$70,$A5,$6F,$E5,$77
-                EQUB    $85,$6F,$A5,$6E,$E5,$76,$85,$6E
-                EQUB    $38,$26,$72,$06,$71,$26,$70,$26
-                EQUB    $6F,$26,$6E,$CA,$D0,$C0,$06,$72
-                EQUB    $AD,$10,$05,$85,$71,$AD,$0F,$05
-                EQUB    $85,$70,$AD,$0E,$05,$85,$6F,$AD
-                EQUB    $0D,$05,$85,$6E,$4C,$F3,$B5
+                EQUB    $D0,$E1,$60
+
+.LB66F          LDA     L0073
+                STA     L006B
+                LDA     L0074
+                STA     L006C
+                LDA     L0075
+                STA     L006D
+                LDA     L0076
+                STA     L006E
+                LDA     L0077
+                STA     L006F
+                LDA     L0078
+                STA     L0070
+                LDA     L0079
+                STA     L0071
+                LDA     L007A
+                STA     L0072
+.LB68F          RTS
+
+.LB690          JSR     LB696
+
+                JMP     LB5F6
+
+.LB696          JSR     LB375
+
+                BEQ     LB66F
+
+                LDY     #$00
+                SEC
+                LDA     L006D
+                SBC     L0075
+                BEQ     LB71B
+
+                BCC     LB6DD
+
+                CMP     #$25
+                BCS     LB68F
+
+                PHA
+                AND     #$38
+                BEQ     LB6C8
+
+                LSR     A
+                LSR     A
+                LSR     A
+                TAX
+.LB6B3          LDA     L0079
+                STA     L007A
+                LDA     L0078
+                STA     L0079
+                LDA     L0077
+                STA     L0078
+                LDA     L0076
+                STA     L0077
+                STY     L0076
+                DEX
+                BNE     LB6B3
+
+.LB6C8          PLA
+                AND     #$07
+                BEQ     LB71B
+
+                TAX
+.LB6CE          LSR     L0076
+                ROR     L0077
+                ROR     L0078
+                ROR     L0079
+                ROR     L007A
+                DEX
+                BNE     LB6CE
+
+                BEQ     LB71B
+
+.LB6DD          SEC
+                LDA     L0075
+                SBC     L006D
+                CMP     #$25
+                BCS     LB66F
+
+                PHA
+                AND     #$38
+                BEQ     LB704
+
+                LSR     A
+                LSR     A
+                LSR     A
+                TAX
+.LB6EF          LDA     L0071
+                STA     L0072
+                LDA     L0070
+                STA     L0071
+                LDA     L006F
+                STA     L0070
+                LDA     L006E
+                STA     L006F
+                STY     L006E
+                DEX
+                BNE     LB6EF
+
+.LB704          PLA
+                AND     #$07
+                BEQ     LB717
+
+                TAX
+.LB70A          LSR     L006E
+                ROR     L006F
+                ROR     L0070
+                ROR     L0071
+                ROR     L0072
+                DEX
+                BNE     LB70A
+
+.LB717          LDA     L0075
+                STA     L006D
+.LB71B          LDA     L006B
+                EOR     L0073
+                BPL     LB76A
+
+                LDA     L006E
+                CMP     L0076
+                BNE     LB742
+
+                LDA     L006F
+                CMP     L0077
+                BNE     LB742
+
+                LDA     L0070
+                CMP     L0078
+                BNE     LB742
+
+                LDA     L0071
+                CMP     L0079
+                BNE     LB742
+
+                LDA     L0072
+                CMP     L007A
+                BNE     LB742
+
+                JMP     LB60D
+
+.LB742          BCS     LB76E
+
+                SEC
+                LDA     L007A
+                SBC     L0072
+                STA     L0072
+                LDA     L0079
+                SBC     L0071
+                STA     L0071
+                LDA     L0078
+                SBC     L0070
+                STA     L0070
+                LDA     L0077
+                SBC     L006F
+                STA     L006F
+                LDA     L0076
+                SBC     L006E
+                STA     L006E
+                LDA     L0073
+                STA     L006B
+                JMP     LB59D
+
+.LB76A          CLC
+                JMP     LB580
+
+.LB76E          SEC
+                LDA     L0072
+                SBC     L007A
+                STA     L0072
+                LDA     L0071
+                SBC     L0079
+                STA     L0071
+                LDA     L0070
+                SBC     L0078
+                STA     L0070
+                LDA     L006F
+                SBC     L0077
+                STA     L006F
+                LDA     L006E
+                SBC     L0076
+                STA     L006E
+                JMP     LB59D
+
+.LB790          JSR     LB60D
+
+                LDY     #$80
+                STY     L006E
+                INY
+                STY     L006D
+                RTS
+
+.LB79B          LDA     L006B
+                EOR     L0073
+                STA     L006B
+                SEC
+                LDA     L006D
+                SBC     L0075
+                BCS     LB7AB
+
+                DEC     L006C
+                SEC
+.LB7AB          ADC     #$80
+                STA     L006D
+                BCC     LB7B4
+
+                INC     L006C
+                CLC
+.LB7B4          LDX     #$20
+.LB7B6          BCS     LB7D0
+
+                LDA     L006E
+                CMP     L0076
+                BNE     LB7CE
+
+                LDA     L006F
+                CMP     L0077
+                BNE     LB7CE
+
+                LDA     L0070
+                CMP     L0078
+                BNE     LB7CE
+
+                LDA     L0071
+                CMP     L0079
+.LB7CE          BCC     LB7E9
+
+.LB7D0          LDA     L0071
+                SBC     L0079
+                STA     L0071
+                LDA     L0070
+                SBC     L0078
+                STA     L0070
+                LDA     L006F
+                SBC     L0077
+                STA     L006F
+                LDA     L006E
+                SBC     L0076
+                STA     L006E
+                SEC
+.LB7E9          ROL     L0510
+                ROL     L050F
+                ROL     L050E
+                ROL     L050D
+                ASL     L0071
+                ROL     L0070
+                ROL     L006F
+                ROL     L006E
+                DEX
+                BNE     LB7B6
+
+                LDX     #$07
+.LB802          BCS     LB81C
+
+                LDA     L006E
+                CMP     L0076
+                BNE     LB81A
+
+                LDA     L006F
+                CMP     L0077
+                BNE     LB81A
+
+                LDA     L0070
+                CMP     L0078
+                BNE     LB81A
+
+                LDA     L0071
+                CMP     L0079
+.LB81A          BCC     LB835
+
+.LB81C          LDA     L0071
+                SBC     L0079
+                STA     L0071
+                LDA     L0070
+                SBC     L0078
+                STA     L0070
+                LDA     L006F
+                SBC     L0077
+                STA     L006F
+                LDA     L006E
+                SBC     L0076
+                STA     L006E
+                SEC
+.LB835          ROL     L0072
+                ASL     L0071
+                ROL     L0070
+                ROL     L006F
+                ROL     L006E
+                DEX
+                BNE     LB802
+
+                ASL     L0072
+                LDA     L0510
+                STA     L0071
+                LDA     L050F
+                STA     L0070
+                LDA     L050E
+                STA     L006F
+                LDA     L050D
+                STA     L006E
+                JMP     LB5F3
 
 .LB85B          JSR     LB375
 
@@ -9019,7 +9333,7 @@ LABC9 = LABC8+1
 
                 LDX     #$00
                 LDY     #$28
-                PHA
+.LB86E          PHA
                 LDA     L0000
                 STA     L050A
                 LDA     L0001

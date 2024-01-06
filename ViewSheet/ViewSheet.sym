@@ -1,1 +1,9 @@
+langent = $8000
+servent = $8003
+help_cmd = $806B
+exit = $AD90
+prt_help_msg = $AD0A
+rom_title = $8009
+screen_mode = $06C0
 
+rom_serv = $80C6

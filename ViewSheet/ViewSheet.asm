@@ -121,6 +121,7 @@ L0082           = $0082
 L0084           = $0084
 L0085           = $0085
 L0086           = $0086
+L00B7           = $00B7
 L00C9           = $00C9
 L00EF           = $00EF
 L00F0           = $00F0
@@ -176,8 +177,9 @@ L069A           = $069A
 L069C           = $069C
 L069D           = $069D
 L06A5           = $06A5
+L06B2           = $06B2
 L06BF           = $06BF
-L06C0           = $06C0
+screen_mode     = $06C0
 L06C1           = $06C1
 L06C2           = $06C2
 L06C3           = $06C3
@@ -203,6 +205,7 @@ L0889           = $0889
 L0A81           = $0A81
 L0C8D           = $0C8D
 L0DF0           = $0DF0
+L20B8           = $20B8
 L2BBB           = $2BBB
 L30E6           = $30E6
 L35FA           = $35FA
@@ -211,7 +214,6 @@ L54F8           = $54F8
 L6284           = $6284
 L67E8           = $67E8
 L7942           = $7942
-L7F52           = $7F52
 LC083           = $C083
 LCABB           = $CABB
 LD85B           = $D85B
@@ -240,9 +242,9 @@ OSBYTE          = $FFF4
 OSCLI           = $FFF7
 
                 org     $8000
-.langent        JMP     L80C6
+.langent        JMP     rom_serv
 
-                JMP     L802A
+.servent        JMP     L802A
 
                 CLC
 .L8009          EQUS    "ViewSheet"
@@ -265,7 +267,7 @@ OSCLI           = $FFF7
                 TSX
                 LDA     L0103,X
                 CMP     #$09
-                BEQ     L806B
+                BEQ     help_cmd
 
                 CMP     #$07
                 BEQ     L808B
@@ -304,18 +306,18 @@ OSCLI           = $FFF7
 
                 BCS     L807C
 
-.L806B          LDA     (L00F2),Y
+.help_cmd       LDA     (L00F2),Y
                 CMP     #$0D
                 BNE     L807C
 
                 JSR     OSNEWL
 
                 LDX     #$01
-                JSR     LAD0A
+                JSR     prt_help_msg
 
                 JSR     OSNEWL
 
-.L807C          JMP     LAD90
+.L807C          JMP     exit
 
 .L807F          TSX
                 LDA     L0102,X
@@ -356,13 +358,13 @@ OSCLI           = $FFF7
                 CMP     #$20
                 BEQ     L80AF
 
-.L80BF          EQUS    "`"
+.L80BF          RTS
 
 .L80C0          EQUS    "SHEET"
 
                 EQUB    $FF
 
-.L80C6          CMP     #$01
+.rom_serv       CMP     #$01
                 BNE     L80BF
 
                 CLI
@@ -426,7 +428,7 @@ OSCLI           = $FFF7
                 JSR     L9721
 
                 LDX     #$00
-                JSR     LAD0A
+                JSR     prt_help_msg
 
                 JSR     OSNEWL
 
@@ -439,8 +441,13 @@ OSCLI           = $FFF7
                 ORA     L7942
                 EQUS    "Bytes free "
 
-                EQUB    $00,$20,$BA,$A2,$20,$C1,$AE,$20
-                EQUB    $E7,$FF
+                EQUB    $00
+
+.L8149          JSR     LA2BA
+
+                JSR     LAEC1
+
+                JSR     OSNEWL
 
 .L8152          JSR     LADEC
 
@@ -448,9 +455,18 @@ OSCLI           = $FFF7
 
                 EQUS    "Screen mode "
 
-                EQUB    $00,$AD,$C0,$06,$09,$30,$20,$EE
-                EQUB    $FF,$20,$E7,$FF,$AD,$A5,$06,$F0
-                EQUB    $1B,$20,$3D,$AD
+                EQUB    $00
+
+.L8165          LDA     screen_mode
+                ORA     #$30
+                JSR     OSWRCH
+
+                JSR     OSNEWL
+
+                LDA     L06A5
+                BEQ     L8190
+
+                JSR     LAD3D
 
                 EQUS    "Printer "
 
@@ -2446,7 +2462,7 @@ L93DF = L93DE+1
                 BNE     L973C
 
                 LDA     #$72
-                LDX     L06C0
+                LDX     screen_mode
                 CPX     #$07
                 BEQ     L973C
 
@@ -2477,7 +2493,7 @@ L93DF = L93DE+1
                 BNE     L977C
 
 .L9758          LDA     #$3E
-                LDX     L06C0
+                LDX     screen_mode
                 CPX     #$07
                 BEQ     L977C
 
@@ -2486,7 +2502,7 @@ L93DF = L93DE+1
                 LDA     #$3E
                 BNE     L977C
 
-.L9768          LDA     L06C0
+.L9768          LDA     screen_mode
                 CMP     #$07
                 BEQ     L97BD
 
@@ -2506,7 +2522,7 @@ L93DF = L93DE+1
 .L9783          LDA     #$0C
                 BNE     L977C
 
-.L9787          LDA     L06C0
+.L9787          LDA     screen_mode
                 CMP     #$07
                 BEQ     L97BD
 
@@ -6218,7 +6234,7 @@ L9E9D = L9E9C+1
                 CLC
                 RTS
 
-.LAD0A          LDY     #$00
+.prt_help_msg   LDY     #$00
                 BEQ     LAD12
 
 .LAD0E          JSR     OSWRCH
@@ -6319,7 +6335,7 @@ L9E9D = L9E9C+1
                 LDA     #$7E
                 JSR     OSBYTE
 
-.LAD90          PLY
+.exit           PLY
 .LAD91          PLX
 .LAD92          PLA
                 RTS
@@ -6387,25 +6403,40 @@ L9E9D = L9E9C+1
 
                 EQUS    "Editing "
 
-                EQUB    $00,$A5,$51,$F0,$0E,$A0,$FF,$C8
-                EQUB    $B9,$B2,$06,$20,$E3,$FF,$C9,$0D
-                EQUB    $D0,$F5,$60,$20,$3D,$AD
+                EQUB    $00
+
+.LADF8          LDA     L0051
+                BEQ     LAE0A
+
+                LDY     #$FF
+.LADFE          INY
+                LDA     L06B2,Y
+                JSR     OSASCI
+
+                CMP     #$0D
+                BNE     LADFE
+
+                RTS
+
+.LAE0A          JSR     LAD3D
 
                 EQUS    "No File"
 
-                EQUB    $0D,$00,$60
+                EQUB    $0D,$00
 
-.LAE17          STA     L06C0
+.LAE16          RTS
+
+.LAE17          STA     screen_mode
                 LDA     #$16
                 JSR     OSWRCH
 
-                LDA     L06C0
+                LDA     screen_mode
                 JSR     OSWRCH
 
 .LAE25          LDA     #$87
                 JSR     OSBYTE
 
-                STY     L06C0
+                STY     screen_mode
                 LDA     #$84
                 JSR     OSBYTE
 
@@ -6464,17 +6495,14 @@ L9E9D = L9E9C+1
                 STA     L06C4,X
                 STA     L06C5,X
                 LDA     #$07
-                STA     L06C8,X
-                STA     L06C9,X
-                RTS
+                EQUB    $9D
 
-                ROL     L06CA,X
-                CLC
-                BCC     LAE9A
+                EQUB    $C8,$06,$9D,$C9,$06,$60,$3E,$CA
+                EQUB    $06,$18,$90,$04
 
 .LAE96          ROL     L06CA,X
                 SEC
-.LAE9A          ROR     L06CA,X
+                ROR     L06CA,X
                 RTS
 
 .LAE9E          STA     L006E
@@ -6498,7 +6526,7 @@ L9E9D = L9E9C+1
                 INC     L0064
                 JMP     LAD91
 
-                STX     L006E
+.LAEC1          STX     L006E
                 STY     L006F
                 LDA     #$EE
                 LDY     #$FF
@@ -8690,9 +8718,10 @@ LAF8A = LAF89+1
                 ROR     L9581
                 STX     L0006,Y
                 DEC     L0A81,X
-.LBD89          JMP     (L7F52)
+                EQUB    $6C
 
-LBD8B = LBD89+2
+                EQUB    $52
+
                 ADC     L90AD,X
                 LDA     (L0082,X)
                 BRA     LBE04
@@ -8729,11 +8758,10 @@ LBD8B = LBD89+2
 
                 JMP     LBBF1
 
-.LBDCA          JSR     LB85E
+.LBDCA          EQUB    $20
 
-LBDCB = LBDCA+1
-                JSR     LB792
-
+.LBDCB          LSR     L20B8,X
+                STA     (L00B7)
                 LDA     #$A4
                 LDY     #$BE
                 JSR     LBCB0
@@ -8961,9 +8989,10 @@ LBDCB = LBDCA+1
                 LDA     #$BE
 .LBF1E          STY     L0006
                 STA     L0007
-.LBF22          JMP     LB792
+                EQUB    $4C
 
-LBF24 = LBF22+2
+                EQUB    $92
+
                 LDY     #$9F
                 LDA     #$BE
                 BNE     LBF1E

@@ -6,12 +6,16 @@ save ViewSheet.asm
 hexdump ViewSheet.hex
 
 
+entry $8000
+entry $8003
 string $8009 9 ; "ViewSheet"
 string $8013 5 ; "B1.01"
 string $8019 16 ; "(C)1984Acornsoft"
-string $80BF 6 ; "`SHEET"
+string $80C0 5 ; "SHEET"
 string $813D 11 ; "Bytes free "
+entry $8149
 string $8158 12 ; "Screen mode "
+entry $8165
 string $8178 8 ; "Printer "
 string $81E3 8 ; "Command?"
 string $823E 17 ; "Not enough memory"
@@ -41,7 +45,10 @@ string $98A4 6 ; "?Error"
 string $9BD0 9 ; "G`*Blank*"
 string $ADB4 8 ; "No sheet"
 string $ADEF 8 ; "Editing "
+entry $ADF8
 string $AE0D 7 ; "No File"
+entry $AE16
+byte $AE89
 string $AFA8 3 ; "ABS"
 string $AFAE 3 ; "ACS"
 string $AFB4 3 ; "ASN"
@@ -79,7 +86,12 @@ string $B122 12 ; "Out of range"
 string $B12F 8 ; "Bad file"
 string $B138 14 ; "Too many files"
 string $B147 7 ; "No file"
+
 string $B14F 10 ; "Propagated"
 string $B15A 6 ; "Lookup"
 string $B161 8 ; "FS error"
 string $B16A 17 ; "Too few arguments"
+
+byte $BF22
+byte $BD89
+byte $BDCA

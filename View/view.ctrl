@@ -70,4 +70,22 @@ string $AA55 4 ; "VIEW"
 string $AA5A 4 ; "B3.3"
 string $ABAC 26 ; "Memory full - Press ESCAPE"
 string $B43B 11 ; "Mark Colton"
+entry $896C
+entry $8AE9
+entry $8B22
 
+byte $BE5A
+byte $BE61
+byte $BEBE
+byte $BED4
+
+byte $BEFC
+byte $BDD1 8
+byte $BDB2
+
+byte $BDB8
+byte $B9B2
+byte $89FE
+
+byte $BA94
+byte $BB0E
