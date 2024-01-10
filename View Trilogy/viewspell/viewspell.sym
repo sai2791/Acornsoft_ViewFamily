@@ -1,0 +1,4 @@
+servent = $8003
+language = $809C
+language_exit = $809B
+service = $BFDF
