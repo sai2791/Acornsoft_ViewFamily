@@ -1,0 +1,9 @@
+cpu 65c02
+load $8000 view-part.rom
+symbols bbc.sym
+symbols view.sym
+save view.asm
+stringscan
+hexdump view.hex
+
+

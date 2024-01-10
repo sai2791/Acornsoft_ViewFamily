@@ -1,0 +1,31 @@
+language = $812A
+service  = $BFDF
+
+langexit = $8129
+brk_vect = $A8EF
+
+
+scr_mode = $0020
+readsystem = $AB25
+himemlsb = $000B
+himemmsb  = $000C
+
+textwiny = $0023
+textwinx = $0024
+
+modencall = $AB0C
+getpage   = $A971
+getpageexit = $A97A
+callgetpage = $A901
+
+serviceext = $ACA9
+isstorecmd = $80E5
+isstoreext = $8108
+
+cmd_line = $00F2
+enterlang = $80F9
+cmd_1 = $810B
+needpage = $8181
+
+x_cur_pos = $0058
+write_char = $8E53

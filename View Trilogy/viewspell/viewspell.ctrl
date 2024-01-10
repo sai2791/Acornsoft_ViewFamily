@@ -1,0 +1,9 @@
+cpu 65c02
+load $8000 viewspell-part.rom
+symbols bbc.sym
+symbols viewspell.sym
+save viewspell.asm
+stringscan
+hexdump viewspell.hex
+
+

@@ -1,0 +1,9 @@
+cpu 65c02
+load $8000 viewsheet-part.rom
+symbols bbc.sym
+symbols viewsheet.sym
+save viewsheet.asm
+stringscan
+hexdump viewsheet.hex
+
+

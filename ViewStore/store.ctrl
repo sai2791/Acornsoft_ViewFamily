@@ -101,3 +101,4 @@ stringhi $B347 5 ; "place"
 string $B34D 3 ; "No "
 stringhi $B353 ; "pointe"
 string $B629 3 ; "meu"
+

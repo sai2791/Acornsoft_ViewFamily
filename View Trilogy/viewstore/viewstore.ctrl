@@ -1,0 +1,128 @@
+cpu 65c02
+load $8000 viewstore-part.rom
+symbols bbc.sym
+symbols viewstore.sym
+save viewstore.asm
+hexdump viewstore.hex
+
+
+entry $8000
+entry $8003
+byte $8007
+byte $8008
+string $8009 9 ; "ViewStore"
+string $8013 3 ; "1.1"
+string $8017 18 ; "(C) 1985 Acornsoft"
+entry $802A
+string $810B 5 ; "STORE"
+string $83A2 5 ; "D)ata"
+entry $83A8
+string $83B0 7 ; "F)ormat"
+entry $83B8
+string $83C0 6 ; "I)ndex"
+entry $83C7
+string $83CF 5 ; "S)ort"
+entry $83D5
+string $83DD 8 ; "U)tility"
+;entry $83E6
+string $84E7 11 ; "Mark Colton"
+string $8521 14 ; "Insert utility"
+entry $8530
+string $8577 11 ; "Insert data"
+entry $8583
+string $85CB 11 ; "Bytes free "
+entry $85D7
+string $85EE 7 ; "Format "
+entry $85F6
+string $8602 12 ; "Screen mode "
+entry $860F
+string $8624 8 ; "Printer "
+entry $862D
+string $87A3 5 ; "entry"
+string $88A6 5 ; "Index"
+string $88E2 10 ; " not found"
+entry $88ED
+string $8A66 7 ; "Fields:"
+entry $8A6E
+string $8B4D 7 ; "Reading"
+entry $8B55
+string $8BF0 6 ; "Value?"
+entry $8BF7
+string $9094 5 ; "Low: "
+string $90A5 7 ; " High: "
+string $9AF4 7 ; "  Space"
+string $9B0E 10 ; "Indexed by"
+string $9C07 11 ; "Card layout"
+string $A6CC 23 ; "Use select file (N,Y)? "
+string $A701 25 ; "Screen or Printer (S,P)? "
+string $A845 3 ; "def"
+string $A990 7 ; "No data"
+string $AAB1 8 ; "Editing "
+string $AAC5 7 ; "No File"
+string $AC80 17 ; " disc & hit a key"
+string $AF78 15 ; "Database header"
+string $AF90 5 ; "Title"
+string $AF9F 7 ; "Display"
+string $AFB7 12 ; "Display: S,C"
+string $AFC4 11 ; "Record size"
+string $AFDA 8 ; "Capacity"
+string $AFF2 11 ; "Index field"
+string $B009 11 ; "Screen mode"
+string $B023 13 ; "Record format"
+string $B034 10 ; "Field name"
+string $B048 5 ; "Width"
+string $B06C 15 ; "Type: A/T,N,D/M"
+string $B07C 9 ; "A,T,N,D,M"
+string $B090 6 ; "Scroll"
+string $B0A6 3 ; "Y,N"
+string $B0AA 14 ; "Decimal places"
+string $B0BD 9 ; "Low limit"
+string $B0CC 10 ; "High limit"
+string $B0EC 12 ; "Index: N,Y,R"
+string $B0F9 5 ; "N,Y,R"
+string $B0FF 9 ; "Key width"
+string $B117 10 ; "Index name"
+string $B12B 6 ; "Prompt"
+string $B13B 10 ; "Value list"
+stringhi $B20F 3 ; "bad"
+stringhi $B213 4 ; "fiel"
+stringhi $B218 3 ; "fil"
+stringhi $B21C 3 ; "not"
+stringhi $B220 4 ; "inde"
+stringhi $B225 4 ; "erro"
+string $B22D 8 ; "too many"
+string $B236 3 ; "end"
+stringhi $B23A 10 ; "Memory ful"
+stringhi $B245 6 ; "Mistak"
+stringhi $B24E 5 ; "marke"
+stringhi $B25A 6 ; "Numeri"
+string $B261 6 ; "Limit "
+string $B268 6 ; "Value "
+stringhi $B26F 6 ; "in lis"
+stringhi $B276 7 ; "Overflo"
+stringhi $B27E 5 ; "Read "
+stringhi $B284 13 ; "Record too bi"
+stringhi $B293 8 ; "director"
+stringhi $B29D 3 ; "nam"
+stringhi $B2A4 4 ; "foun"
+stringhi $B2AC 3 ; "ope"
+stringhi $B2B3 13 ; "Stack overflo"
+stringhi $B2C7 3 ; "dat"
+stringhi $B2CF 3 ; "mod"
+stringhi $B2D3 5 ; "Escap"
+stringhi $B2D9 12 ; "Sheet displa"
+stringhi $B2E6 11 ; "Fixed forma"
+stringhi $B2F2 15 ; "Data screen onl"
+stringhi $B303 5 ; "prefi"
+string $B30A 5 ; "place"
+string $B310 3 ; "No "
+stringhi $B316 6 ; "pointe"
+word $BFF7
+word $BFF9
+byte $BFFB
+byte $BFFC
+word $BFFD
+
+string $81AB 2 ; "=>"
+entry $81AE
+

@@ -5878,11 +5878,13 @@ L8807 = L8805+2
                 BCC     LA1AE
 
                 CMP     L0056
-                BCC     LA1B1
+                EQUS    "V",$10
+
+                EQUB    $03
 
 .LA1AE          LDA     #$0E
                 SEC
-.LA1B1          RTS
+                RTS
 
 .LA1B2          PLA
                 RTS
