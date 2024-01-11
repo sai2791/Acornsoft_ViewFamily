@@ -1,0 +1,8 @@
+language = $807A
+service  = $BFDF
+
+langexit = $8073
+lang_serv_no = $0056
+handle_brk = $8618
+
+rom_slot = $00F4
