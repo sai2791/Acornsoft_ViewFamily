@@ -3,7 +3,68 @@ load $8000 view-part.rom
 symbols bbc.sym
 symbols view.sym
 save view.asm
-stringscan
 hexdump view.hex
 
+byte $8006
+byte $8007
+byte $8008
+
+byte $8094
+
+string $8009 4 ; "VIEW"
+string $800E 18 ; "(C) 1982 Acornsoft"
+string $805A 4 ; "WORD"
+string $80C6 11 ; "Bytes free "
+string $80EA 14 ; "Input file is "
+string $8100 4 ; "not "
+string $8108 5 ; "empty"
+string $8112 12 ; "Screen mode "
+string $8131 8 ; "Printer "
+entry $8139
+string $8150 4 ; " (m)"
+string $8168 14 ; "Marker(s) set "
+entry $8177
+string $8208 7 ; "Mistake"
+string $8288 18 ; " string(s) changed"
+string $829E 15 ; "No target given"
+string $82B1 15 ; "No string found"
+string $84F9 17 ; "Not enough memory"
+string $853B 15 ; "Not all read in"
+string $85A3 8 ; "Bad mode"
+entry $85AC
+string $85CE 36 ; "Driver does not support microspacing"
+entry $85F3
+string $8614 8 ; "Bad flag"
+string $8631 3 ; "FJI"
+entry $8638
+string $8646 6 ; "Frump!"
+string $86E9 17 ; " word(s) counted."
+#entry $86FB
+entry $86FC
+tring $876B 8 ; "Folding "
+string $877B 3 ; "off"
+entry $877F
+string $8788 8 ; "Bad file"
+entry $8791
+string $881C 14 ; "File not found"
+entry $882B
+string $896A 10 ; "Bad marker"
+string $8978 14 ; "Marker not set"
+string $899F 8 ; "Editing "
+entry $89A8
+string $89C2 4 ; " to "
+string $89D8 7 ; "No File"
+entry $89E1
+string $8DC6 12 ; "Bad filename"
+string $8E1F 17 ; "Not with cassette"
+string $8E68 7 ; "No text"
+string $8FCB 17 ; "Nested macro call"
+string $925C 5 ; "Page "
+entry $9262
+string $9764 2 ; "ON"
+string $9767 3 ; "OFF"
+string $A7F5 4 ; "`VIEW"
+string $A7FA 4 ; "M3.0"
+string $A94D 26 ; "s`Memory full - Press ESCAPE"
+; string $B263 46 ; "CERJDFDHDMEMSRPETMBMPLTSFOHEHTHMFMLMLSOPEPLJPB"
 

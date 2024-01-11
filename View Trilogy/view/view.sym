@@ -1,0 +1,7 @@
+language = $805F
+service  = $BFDF
+
+langexit = $8059
+nextrom  = $8054
+cmd_line = $00F2
+romslot  = $00F4
