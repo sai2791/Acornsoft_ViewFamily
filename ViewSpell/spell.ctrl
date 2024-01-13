@@ -19,6 +19,7 @@ entry $80D3
 entry $9D65
 entry $9F8D
 
+byte $830D
 
 
 string $8009 9 ; "ViewSpell"
@@ -36,11 +37,18 @@ string $82A5 8 ; " unique`"
 string $8302 11 ; "Memory full"
 strin $833C 4 ; "mode"
 string $837B 9 ; "ViewSpell"
-string $8390 10 ; "Bytes free"
-string $83CF 6 ; "Source"
-string $83EA 11 ; "Screen mode"
+entry $8385
+byte $8386
+byte $8387
+stringhi $8390 10 ; "Bytes free"
+entry $839B
+stringhi $83CF 6 ; "Source"
+entry $83D6
+stringhi $83EA 11 ; "Screen mode"
+entry $83F6
 stringhi $8859  ; "Nick Dea"
 stringhi $88E3  ; "Savin"
+entry $88E9
 stringhi $899B  ; "Markin"
 string $8E0C 8 ; "Checking"
 stringhi $90FE ; "Loading"
@@ -85,7 +93,9 @@ stringhi $9F87  ; "strin"
 string $A55E 20 ; "Cache checksum error"
 entry $A578
 string $A582 26 ; "Channel on buffered handle"
+entry $A5A0 ; seems to be missing code (TODO)
 string $A5AA 27 ; "End of file on fast channel"
+; entry $A5C7
 string $A798 11 ; "Interrupted"
 string $A7AE 26 ; "Stopped at break point at "
 string $A7DC 6 ; "Escape"

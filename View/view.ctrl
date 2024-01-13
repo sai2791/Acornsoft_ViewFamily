@@ -6,7 +6,22 @@ save view-b3.3.asm
 hexdump view-b3.3.hex
 
 entry $8000 
+
+byte $8007
+byte $8008
+
 entry $8447
+
+word $8021  ; relocation address LSB/MSB
+byte $8023  ; pointer to bit-map descriptor table LSB/MSB
+byte $8024
+word $8025  ; pointer to byte after bit-map  LSB/MSB
+byte $8027  ; relative/absolute ROM number bit-map is held in
+entry $8028
+
+byte $8C00
+byte $BBC5
+
 string $8009 4 ; "VIEW"
 string $800E 18 ; "(C) 1982 Acornsoft"
 entry $8021

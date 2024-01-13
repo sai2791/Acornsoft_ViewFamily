@@ -1,5 +1,6 @@
 lang_start = $8180
 serv_start = $807B
+relocate_stuff = $8024
 comm_line = $00F2
 ukn_status = $80BA
 ukn_config = $8033
@@ -15,3 +16,5 @@ ret_carry_clr = $8D6C
 char_type = $8D5E
 prt_view = $AA42
 
+bitmap1 = $BC00
+bitmap2 = $BBC4

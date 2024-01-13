@@ -1,9 +1,3 @@
-entry $8136
-entry $88E8
-entry $8862
-entry $80D3
-
-byte $830D
 
 notme = $8084
 curr_scr_mode = $808A
@@ -11,7 +5,7 @@ command = $80C0
 comm_line = $00F2
 rom_name = $8009
 
-prt_rom_nme = $8072
+prt_rom_name = $8072
 brch_osbyte = $805F
 
 txt_cur_pos = $8090
@@ -25,4 +19,15 @@ ukn_osbyte = $80A0
 clm_prv_ram = $8094
 ukn_osbyte = $80A0
 clm_prv_ram = $8094
+
+langexit = $80BF
+cur_pos_x = $0004
+pageLSB = $0018
+pageMSB = $0019
+get_page = $84CB
+; byte $830D
+get_himem = $84ED
+himemMSB = &0026
+himemLSB = $0025
+
 

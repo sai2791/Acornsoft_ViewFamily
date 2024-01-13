@@ -2,7 +2,7 @@ L0000           = $0000
 L0001           = $0001
 L0002           = $0002
 L0003           = $0003
-L0004           = $0004
+cur_pos_x       = $0004
 L0005           = $0005
 L0006           = $0006
 L0007           = $0007
@@ -22,8 +22,8 @@ L0014           = $0014
 L0015           = $0015
 L0016           = $0016
 L0017           = $0017
-L0018           = $0018
-L0019           = $0019
+pageLSB         = $0018
+pageMSB         = $0019
 L001A           = $001A
 L001B           = $001B
 L001C           = $001C
@@ -35,8 +35,8 @@ L0021           = $0021
 L0022           = $0022
 L0023           = $0023
 L0024           = $0024
-L0025           = $0025
-L0026           = $0026
+himemLSB        = $0025
+himemMSB        = $0026
 L0027           = $0027
 L0028           = $0028
 L0029           = $0029
@@ -127,6 +127,7 @@ L0081           = $0081
 L0082           = $0082
 L0083           = $0083
 L0084           = $0084
+L0085           = $0085
 L0087           = $0087
 L0088           = $0088
 L0089           = $0089
@@ -274,6 +275,7 @@ L0547           = $0547
 L0549           = $0549
 L0588           = $0588
 L05C9           = $05C9
+L07B0           = $07B0
 L07E4           = $07E4
 L08E5           = $08E5
 L08E9           = $08E9
@@ -297,6 +299,7 @@ L1203           = $1203
 L12E9           = $12E9
 L16E9           = $16E9
 L1808           = $1808
+L190D           = $190D
 L1BE9           = $1BE9
 L1D5E           = $1D5E
 L1D63           = $1D63
@@ -329,6 +332,7 @@ L4AA0           = $4AA0
 L4C95           = $4C95
 L5050           = $5050
 L5100           = $5100
+L530D           = $530D
 L53E9           = $53E9
 L5400           = $5400
 L5500           = $5500
@@ -496,7 +500,7 @@ LFFFF           = $FFFF
                 BNE     notme
 
                 LDX     #$FF
-.prt_rom_nme    INX
+.prt_rom_name   INX
                 JSR     OSASCI
 
                 LDA     L8009,X
@@ -504,7 +508,7 @@ LFFFF           = $FFFF
 
                 LDA     #$20
 .L807D          CMP     #$28
-                BNE     prt_rom_nme
+                BNE     prt_rom_name
 
                 JSR     OSNEWL
 
@@ -550,7 +554,7 @@ LFFFF           = $FFFF
                 LDA     rom_wkspace,Y
                 TAY
                 LDA     #$00
-.L80BF          RTS
+.langexit       RTS
 
 .L80C0          EQUS    "SPELL"
 
@@ -567,7 +571,7 @@ LFFFF           = $FFFF
                 JMP     L8368
 
 .langent        CMP     #$01
-                BNE     L80BF
+                BNE     langexit
 
                 CLI
                 LDA     #$0C
@@ -790,7 +794,7 @@ L8213 = L8212+1
 
                 JSR     L84D5
 
-                LDA     L0019
+                LDA     pageMSB
                 PHA
                 JSR     L93F2
 
@@ -923,18 +927,20 @@ L8213 = L8212+1
 
                 EQUS    "Memory full"
 
-                EQUB    $8D,$60,$F0,$28,$A9,$00,$AA,$85
-                EQUB    $08,$BD,$84,$04,$C9,$21,$90,$25
-                EQUB    $C9,$3A,$B0,$18,$E9,$2F,$90,$14
-                EQUB    $85,$16,$A5,$08,$06,$08,$0A,$0A
-                EQUB    $0A,$18,$65,$08,$18,$65,$16,$85
-                EQUB    $08,$E8,$D0,$DD,$20,$21,$9C,$6D
-                EQUB    $6F,$64,$65,$8D,$60,$A5,$8F,$D0
-                EQUB    $18,$A5,$4B,$F0,$14,$A9,$85,$A6
-                EQUB    $08,$20,$F4,$FF,$8A,$38,$E5,$4A
-                EQUB    $98,$E5,$4B,$90,$A4,$C9,$07,$90
-                EQUB    $A0,$A9,$16,$20,$EE,$FF,$A5,$08
-                EQUB    $20,$EE,$FF
+                EQUB    $8D
+
+                EQUB    $60,$F0,$28,$A9,$00,$AA,$85,$08
+                EQUB    $BD,$84,$04,$C9,$21,$90,$25,$C9
+                EQUB    $3A,$B0,$18,$E9,$2F,$90,$14,$85
+                EQUB    $16,$A5,$08,$06,$08,$0A,$0A,$0A
+                EQUB    $18,$65,$08,$18,$65,$16,$85,$08
+                EQUB    $E8,$D0,$DD,$20,$21,$9C,$6D,$6F
+                EQUB    $64,$65,$8D,$60,$A5,$8F,$D0,$18
+                EQUB    $A5,$4B,$F0,$14,$A9,$85,$A6,$08
+                EQUB    $20,$F4,$FF,$8A,$38,$E5,$4A,$98
+                EQUB    $E5,$4B,$90,$A4,$C9,$07,$90,$A0
+                EQUB    $A9,$16,$20,$EE,$FF,$A5,$08,$20
+                EQUB    $EE,$FF
 
 .L8368          JSR     L8489
 
@@ -950,33 +956,93 @@ L8213 = L8212+1
                 ASL     L6956,X
                 EQUS    "ViewSpell"
 
-                EQUB    $19,$0D,$19,$8D,$20,$88,$88,$B0
-                EQUB    $2A,$20,$2C,$9C
+                EQUB    $19
 
-                EQUS    "Bytes free"
+.L8385          ORA     L8D19
+                EQUB    $19
 
-                EQUB    $A0,$A6,$4A,$A4,$4B,$D0,$04,$A6
-                EQUB    $1F,$A4,$20,$A5,$27,$18,$86,$08
-                EQUB    $E5,$08,$AA,$A5,$28,$84,$08,$E5
-                EQUB    $08,$A8,$20,$E1,$85,$20,$04,$9C
-                EQUB    $F0,$0A,$20,$2C,$9C,$19,$DF,$A9
-                EQUB    $55,$20,$C4,$85,$A5,$4B,$F0,$1B
-                EQUB    $20,$2C,$9C,$19,$0D
+                EQUB    $8D
 
-                EQUS    "Source"
+                JSR     L8888
 
-                EQUB    $A0,$20,$B4,$8F,$20,$A9,$85,$20
-                EQUB    $A1,$84,$20,$DA,$85,$20,$72,$9C
-                EQUB    $20,$2C,$9C,$19,$0D
+                BCS     L83B7
 
-                EQUS    "Screen mode"
+                JSR     L9C2C
 
-                EQUB    $A0,$20,$8A,$80,$8A,$09,$30,$20
-                EQUB    $29,$9C,$19,$0D,$19,$8D,$20,$90
-                EQUB    $80,$C4,$5D,$B0,$07,$A6,$5C,$A4
-                EQUB    $5D,$20,$B9,$84,$20,$8A,$80,$A9
-                EQUB    $67,$E0,$07,$D0,$02,$A9,$72
+                EQUS    "Bytes free "
 
+.L839B          LDX     L004A
+                LDY     L004B
+                BNE     L83A5
+
+                LDX     L001F
+                LDY     L0020
+.L83A5          LDA     L0027
+                CLC
+                STX     L0008
+                SBC     L0008
+                TAX
+                LDA     L0028
+                STY     L0008
+                SBC     L0008
+                TAY
+                JSR     L85E1
+
+.L83B7          JSR     L9C04
+
+                BEQ     L83C6
+
+                JSR     L9C2C
+
+                ORA     LA9DF,Y
+                EOR     L0020,X
+                CPY     L0085
+.L83C6          LDA     L004B
+                BEQ     L83E5
+
+.L83CA          JSR     L9C2C
+
+L83CB = L83CA+1
+                ORA     L530D,Y
+                EQUS    "Source "
+
+.L83D6          JSR     L8FB4
+
+                JSR     L85A9
+
+                JSR     L84A1
+
+                JSR     L85DA
+
+                JSR     L9C72
+
+.L83E5          JSR     L9C2C
+
+                ORA     L530D,Y
+                EQUS    "Screen mode "
+
+.L83F6          JSR     curr_scr_mode
+
+                TXA
+                ORA     #$30
+                JSR     L9C29
+
+                ORA     L190D,Y
+                STA     L9020
+                BRA     L83CB
+
+                EOR     L07B0,X
+                LDX     L005C
+                LDY     L005D
+                JSR     L84B9
+
+                JSR     curr_scr_mode
+
+                LDA     #$67
+                CPX     #$07
+                BNE     L841C
+
+                LDA     #$72
 .L841C          PHA
                 JSR     L9C2C
 
@@ -1010,7 +1076,7 @@ L8213 = L8212+1
 
                 STY     L000A
                 DEC     L0031
-                JSR     L84CB
+                JSR     get_page
 
                 INX
                 BNE     L8449
@@ -1020,7 +1086,7 @@ L8213 = L8212+1
 
                 JSR     L889F
 
-                STA     (L0018,X)
+                STA     (pageLSB,X)
                 STA     L000A
                 STA     L0400
                 TYA
@@ -1058,10 +1124,10 @@ L8213 = L8212+1
                 JSR     OSBYTE
 
                 INX
-                STX     L0004
+                STX     cur_pos_x
                 JSR     OSNEWL
 
-.L849E          JMP     L84ED
+.L849E          JMP     get_himem
 
 L84A0 = L849E+2
 .L84A1          JSR     L84D0
@@ -1070,7 +1136,7 @@ L84A0 = L849E+2
 
                 TXA
                 PHA
-                LDA     L0004
+                LDA     cur_pos_x
                 SEC
                 SBC     L005C
                 BMI     L84B7
@@ -1083,7 +1149,7 @@ L84A0 = L849E+2
 
 .L84B7          PLA
                 TAX
-                LDA     #$1F
+.L84B9          LDA     #$1F
                 JSR     OSWRCH
 
                 TXA
@@ -1092,18 +1158,18 @@ L84A0 = L849E+2
                 TYA
                 JSR     OSWRCH
 
-                LDX     L0018
-                LDY     L0019
+                LDX     pageLSB
+                LDY     pageMSB
                 RTS
 
-.L84CB          LDA     #$83
+.get_page       LDA     #$83
                 JSR     OSBYTE
 
-.L84D0          STX     L0018
-                STY     L0019
+.L84D0          STX     pageLSB
+                STY     pageMSB
                 RTS
 
-.L84D5          JSR     L84CB
+.L84D5          JSR     get_page
 
                 INX
                 BNE     L84DC
@@ -1120,7 +1186,7 @@ L84A0 = L849E+2
                 STX     L001F
                 STY     L003B
                 STY     L0020
-.L84ED          LDA     #$84
+.get_himem      LDA     #$84
                 JSR     OSBYTE
 
                 LDX     #$00
@@ -1128,8 +1194,8 @@ L84A0 = L849E+2
                 DEY
                 DEY
                 DEY
-                STY     L0026
-                STX     L0025
+                STY     himemMSB
+                STX     himemLSB
                 DEY
                 DEY
                 DEY
@@ -1138,7 +1204,7 @@ L84A0 = L849E+2
                 RTS
 
 .L8504          LDA     #$00
-                STA     L0019
+                STA     pageMSB
                 CPX     L0023
                 BNE     L8515
 
@@ -1239,7 +1305,7 @@ L84A0 = L849E+2
 
 .L85A6          JSR     L9C61
 
-                LDY     #$00
+.L85A9          LDY     #$00
                 TYA
 .L85AC          JSR     OSWRCH
 
@@ -1359,13 +1425,13 @@ L84A0 = L849E+2
 .L8651          STY     L004D
                 TYA
                 SEC
-.L8655          ADC     L0025
+.L8655          ADC     himemLSB
                 STA     L0070
-                LDA     L0026
+                LDA     himemMSB
                 ADC     #$00
                 STA     L0071
                 LDA     L005B
-                STA     (L0025),Y
+                STA     (himemLSB),Y
                 LDA     #$03
                 STA     L0075
                 LDA     #$FF
@@ -1456,7 +1522,7 @@ L84A0 = L849E+2
 
 .L86E7          JSR     L9C2C
 
-                EOR     L0025,X
+                EOR     himemLSB,X
                 LDY     #$20
                 EOR     LF081,X
 .L86F3          ORA     (L0020)
@@ -1487,7 +1553,7 @@ L86F4 = L86F3+1
 
                 BEQ     L86D5
 
-                STY     L0004
+                STY     cur_pos_x
                 PLX
                 JSR     L08FF
 
@@ -1670,10 +1736,8 @@ L8728 = L8727+1
 .L882A          JSR     L8844
 
 L882B = L882A+1
-                DEY
 .L882D          JSR     L8786
 
-ukn_entry = L882D+1
                 JMP     L9786
 
                 JSR     L8876
@@ -1746,7 +1810,7 @@ ukn_entry = L882D+1
 
                 RTS
 
-.L889C          JSR     L84CB
+.L889C          JSR     get_page
 
 .L889F          LDA     #$77
                 CMP     L000A
@@ -1756,7 +1820,7 @@ ukn_entry = L882D+1
                 BNE     L88AE
 
                 LDY     #$00
-                CMP     (L0018),Y
+                CMP     (pageLSB),Y
 .L88AE          RTS
 
 .L88AF          LDA     L0060
@@ -1797,8 +1861,13 @@ ukn_entry = L882D+1
 
 .L88E8          EQUS    "g"
 
-                EQUB    $A5,$4A,$85,$3E,$A5,$4B,$85,$3F
-                EQUB    $F0,$8A,$20,$F7,$8B
+.L88E9          LDA     L004A
+                STA     L003E
+                LDA     L004B
+                STA     L003F
+                BEQ     L887D
+
+                JSR     L8BF7
 
 .L88F6          LDA     L004C
                 BEQ     L893D
@@ -2295,7 +2364,7 @@ L8A21 = L8A20+1
                 LDX     #$00
                 BEQ     L8BFA
 
-                JSR     L8C07
+.L8BF7          JSR     L8C07
 
 .L8BFA          JSR     L8C30
 
@@ -2496,6 +2565,7 @@ L8CE0 = L8CDE+2
                 BEQ     L8D1F
 
 .L8D18          STA     L0000
+L8D19 = L8D18+1
                 STY     L0001
                 JSR     L85BA
 
@@ -2745,9 +2815,9 @@ L8CE0 = L8CDE+2
                 SBC     (L0021),Y
                 BCS     L8EC5
 
-                LDA     L0025
+                LDA     himemLSB
                 STA     L0008
-                LDA     L0026
+                LDA     himemMSB
                 ADC     #$03
                 STA     L0009
                 LDY     #$FF
@@ -2767,15 +2837,15 @@ L8CE0 = L8CDE+2
                 LDA     L0009
                 ADC     #$00
                 STA     L000D
-                LDX     L0026
+                LDX     himemMSB
                 LDA     #$FF
                 BNE     L8EDA
 
-.L8EC5          LDA     L0025
+.L8EC5          LDA     himemLSB
                 SEC
                 SBC     L000C
                 STA     L000C
-                LDA     L0026
+                LDA     himemMSB
                 TAX
                 SBC     L000D
                 CLC
@@ -2799,9 +2869,9 @@ L8CE0 = L8CDE+2
                 BCS     L8EE0
 
 .L8EF0          LDY     #$00
-                LDA     L0025
+                LDA     himemLSB
                 STA     L003E
-                LDA     L0026
+                LDA     himemMSB
                 STA     L003F
                 RTS
 
@@ -2967,7 +3037,7 @@ L8CE0 = L8CDE+2
                 PHA
                 LDA     L008F
                 PHP
-                LDA     L0026
+                LDA     himemMSB
                 STA     L0009
                 CLC
                 ADC     #$04
@@ -3007,7 +3077,7 @@ L8CE0 = L8CDE+2
                 PHA
                 LDA     L008F
                 ASL     A
-                LDY     L0026
+                LDY     himemMSB
                 LDX     #$03
                 AND     L004C
                 BCS     L9021
@@ -3191,7 +3261,7 @@ L9020 = L901F+1
 
                 LDA     #$FF
                 STA     L0008
-                LDA     L0026
+                LDA     himemMSB
                 ADC     #$03
                 STA     L0009
                 LDY     #$00
@@ -3208,7 +3278,7 @@ L9020 = L901F+1
                 SEC
                 SBC     L0074
                 STA     L0074
-                LDA     L0026
+                LDA     himemMSB
                 SBC     L0075
                 CLC
                 ADC     #$04
@@ -3217,7 +3287,7 @@ L9020 = L901F+1
                 STA     (L0074),Y
 .L917A          LDA     #$04
                 STA     L0075
-                LDA     L0026
+                LDA     himemMSB
                 STA     L0036
                 STA     L0071
                 LDA     #$00
@@ -3230,10 +3300,10 @@ L9020 = L901F+1
 
 .L9191          LDA     #$00
                 LDY     L004D
-                STA     (L0025),Y
+                STA     (himemLSB),Y
                 INY
                 LDA     #$FD
-                STA     (L0025),Y
+                STA     (himemLSB),Y
                 BNE     L917A
 
 .L919E          LDX     #$00
@@ -3524,7 +3594,7 @@ L9020 = L901F+1
                 LDY     #$01
                 JSR     L9502
 
-                STX     L0018
+                STX     pageLSB
                 PLA
                 AND     #$DF
                 CMP     #$55
@@ -3553,7 +3623,7 @@ L9020 = L901F+1
 .L935C          LDA     #$33
                 LDY     #$41
 .L9360          PHA
-                LDX     L0018
+                LDX     pageLSB
                 BEQ     L9373
 
                 CPX     #$0E
@@ -3733,9 +3803,9 @@ L9020 = L901F+1
 
                 STA     L0062
                 LDY     #$00
-                LDA     L0025
+                LDA     himemLSB
                 STA     L005C
-                LDA     L0026
+                LDA     himemMSB
                 STA     L005D
 .L94B4          LDA     L948E,Y
                 STA     (L005C),Y
@@ -3759,12 +3829,12 @@ L9020 = L901F+1
 .L94D1          TYA
                 CLC
                 ADC     L005C
-                CMP     L0025
+                CMP     himemLSB
                 BNE     L94C0
 
                 LDA     #$04
                 CLC
-                ADC     L0026
+                ADC     himemMSB
                 CMP     L005D
                 BNE     L94C0
 
@@ -3776,7 +3846,7 @@ L9020 = L901F+1
 
                 LDY     #$00
 .L94EE          LDA     L9496,Y
-                STA     (L0025),Y
+                STA     (himemLSB),Y
                 INY
                 CPY     #$07
                 BNE     L94EE
@@ -3933,13 +4003,13 @@ L9020 = L901F+1
 .L964C          LDY     #$00
                 LDA     L004D
                 CLC
-                ADC     (L0025),Y
+                ADC     (himemLSB),Y
                 TAX
                 INY
-                LDA     (L0025),Y
+                LDA     (himemLSB),Y
                 SBC     #$02
                 TAY
-                CPY     L0026
+                CPY     himemMSB
                 PHP
                 BCC     L9668
 
@@ -3957,10 +4027,10 @@ L9020 = L901F+1
                 STA     L002E
                 LDY     #$00
                 LDA     L003C
-                STA     (L0025),Y
+                STA     (himemLSB),Y
                 LDA     L003D
                 INY
-                STA     (L0025),Y
+                STA     (himemLSB),Y
                 PLP
                 BCS     L96A1
 
@@ -4018,11 +4088,11 @@ L9691 = L9690+1
 
                 LDX     #$07
                 STX     L004D
-                LDA     L0026
+                LDA     himemMSB
                 CLC
                 ADC     #$02
                 STA     L003F
-                LDA     L0025
+                LDA     himemLSB
                 STA     L003E
                 LDY     #$DF
                 JSR     L9A3C
@@ -4031,10 +4101,10 @@ L9691 = L9690+1
 
                 LDY     #$00
                 LDA     L003E
-                STA     (L0025),Y
+                STA     (himemLSB),Y
                 LDA     L003F
 .L96F0          INY
-                STA     (L0025),Y
+                STA     (himemLSB),Y
                 LDA     #$02
                 JSR     L9A5F
 
@@ -4105,7 +4175,7 @@ L9691 = L9690+1
                 LDY     L0014
                 LDA     #$00
                 STA     L0014
-                LDX     L0026
+                LDX     himemMSB
                 INX
                 INX
                 INX
@@ -4141,17 +4211,17 @@ L9691 = L9690+1
 .L9794          JSR     L9BB4
 
                 LDY     #$01
-                LDA     (L0025),Y
+                LDA     (himemLSB),Y
                 STA     L000E
                 SEC
-                SBC     L0026
-                STA     (L0025),Y
+                SBC     himemMSB
+                STA     (himemLSB),Y
                 LDA     #$02
                 JSR     L9CC3
 
                 LDY     #$01
                 LDA     L000E
-                STA     (L0025),Y
+                STA     (himemLSB),Y
                 LDA     L002F
                 BEQ     L97CA
 
@@ -4237,11 +4307,11 @@ L9691 = L9690+1
                 LDA     L003C
                 SEC
                 SBC     L0044
-                STA     (L0025),Y
+                STA     (himemLSB),Y
                 INY
-                LDA     (L0025),Y
+                LDA     (himemLSB),Y
                 SBC     #$00
-                STA     (L0025),Y
+                STA     (himemLSB),Y
                 LDA     #$01
                 STA     L002E
                 JSR     L9C2C
@@ -4558,16 +4628,16 @@ L9996 = L9995+1
                 RTS
 
 .L9A23          LDY     #$00
-                LDA     (L0025),Y
+                LDA     (himemLSB),Y
                 STA     L003C
                 INY
-                LDA     (L0025),Y
+                LDA     (himemLSB),Y
                 STA     L003D
-                LDA     L0025
+                LDA     himemLSB
                 CLC
                 ADC     #$02
                 STA     L003E
-                LDA     L0026
+                LDA     himemMSB
                 ADC     #$00
                 STA     L003F
                 RTS
@@ -4647,19 +4717,19 @@ L9996 = L9995+1
                 JMP     L9B6E
 
 .L9AA1          STA     L0068
-                LDA     L0025
+                LDA     himemLSB
                 STA     L0063
-                LDA     L0026
+                LDA     himemMSB
                 CLC
                 ADC     #$03
                 STA     L0064
                 BNE     L9ACD
 
-.L9AB0          LDA     L0025
+.L9AB0          LDA     himemLSB
 .L9AB1          AND     L0038
                 SBC     L0063
                 STA     L0067
-                LDX     L0026
+                LDX     himemMSB
                 INX
                 INX
                 INX
@@ -4671,7 +4741,7 @@ L9996 = L9995+1
                 SEC
                 STA     L0010
                 LDA     L0064
-                SBC     L0026
+                SBC     himemMSB
                 STA     L0011
 .L9ACD          LDA     #$02
                 JMP     L9CC3
@@ -4725,7 +4795,7 @@ L9996 = L9995+1
 
                 LDX     L003D
                 INX
-                CPX     L0026
+                CPX     himemMSB
                 BCC     L9B22
 
                 LDA     L003C
@@ -4808,13 +4878,13 @@ L9996 = L9995+1
 
                 CLC
                 LDY     #$00
-                LDA     (L0025),Y
-                ADC     L0025
-                STA     (L0025),Y
+                LDA     (himemLSB),Y
+                ADC     himemLSB
+                STA     (himemLSB),Y
                 INY
-                LDA     (L0025),Y
-                ADC     L0026
-                STA     (L0025),Y
+                LDA     (himemLSB),Y
+                ADC     himemMSB
+                STA     (himemLSB),Y
 .L9BA1          RTS
 
 .L9BA2          LDX     #$04
@@ -4837,9 +4907,9 @@ L9996 = L9995+1
 
                 JSR     L9BAB
 
-.L9BC3          LDA     L0025
+.L9BC3          LDA     himemLSB
                 STA     L0063
-                LDA     L0026
+                LDA     himemMSB
                 STA     L0064
                 LDA     #$04
                 STA     L0068
@@ -4914,10 +4984,10 @@ L9C21 = L9C20+1
 
                 INC     L0104,X
 .L9C3B          LDA     L0103,X
-                STA     L0018
+                STA     pageLSB
                 LDA     L0104,X
-                STA     L0019
-                LDA     (L0018),Y
+                STA     pageMSB
+                LDA     (pageLSB),Y
                 PHA
                 AND     #$7F
                 JSR     L9C56
@@ -5033,7 +5103,7 @@ L9C21 = L9C20+1
                 LDA     #$FF
 .L9CF7          LDY     #$01
                 LDX     #$00
-                STA     L0018
+                STA     pageLSB
                 LDA     L0484
                 JSR     L92C6
 
@@ -5056,7 +5126,7 @@ L9C21 = L9C20+1
 
                 BCS     L9D08
 
-.L9D20          BIT     L0018
+.L9D20          BIT     pageLSB
                 BMI     L9D46
 
                 CMP     #$3F
@@ -5359,11 +5429,11 @@ L9C21 = L9C20+1
 
 .L9EE6          JSR     L9B7D
 
-                LDA     L0025
+                LDA     himemLSB
                 CLC
                 ADC     #$05
                 STA     L003E
-                LDA     L0026
+                LDA     himemMSB
                 ADC     #$00
                 STA     L003F
                 LDY     #$00
@@ -5450,7 +5520,7 @@ L9F51 = L9F50+1
                 SBC     #$01
                 BNE     L9F84
 
-.L9F65          STX     L0019
+.L9F65          STX     pageMSB
                 STA     L001E
                 LDY     #$01
 .L9F6B          LDA     L0484,Y
@@ -5487,7 +5557,7 @@ L9F8F = L9F8E+1
                 SBC     #$0C
                 BNE     L9F6B
 
-                LDY     L0019
+                LDY     pageMSB
                 BNE     L9FA8
 
                 STX     L0546
@@ -5679,7 +5749,7 @@ LA0A0 = LA09F+1
                 CPX     L000A
                 BCS     LA069
 
-                SBC     (L0004,X)
+                SBC     (cur_pos_x,X)
                 BRK
                 EQUB    $00
 
@@ -5832,7 +5902,7 @@ LA0E3 = LA0E2+1
                 BRK
                 EQUB    $A0
 
-                SBC     (L0018,X)
+                SBC     (pageLSB,X)
                 LDA     (L009A),Y
                 SBC     L0000
                 BRK
@@ -5948,7 +6018,7 @@ LA221 = LA220+1
 
                 LDY     #$E3
                 AND     LCCC1,X
-                ADC     L0004
+                ADC     cur_pos_x
                 BRK
                 EQUB    $00
 
@@ -6028,7 +6098,7 @@ LA221 = LA220+1
                 LDY     #$E3
                 PHA
                 CMP     (L009C,X)
-                SBC     L0004
+                SBC     cur_pos_x
                 CPX     #$4E
                 BIT     L8CE0,X
                 SBC     L0003
@@ -6324,7 +6394,7 @@ LA429 = LA428+1
                 BRK
                 EQUB    $9A
 
-                SBC     L0004
+                SBC     cur_pos_x
                 BRK
                 EQUB    $10
 
@@ -6366,7 +6436,7 @@ LA4E3 = LA4E2+1
                 LDY     #$E3
                 TSB     L0000
                 TSB     L9A00
-                SBC     L0004
+                SBC     cur_pos_x
                 BRK
                 EQUB    $C0
 
@@ -6415,7 +6485,7 @@ LA502 = LA501+1
 
                 TSB     L0000
                 TSB     L9A00
-                SBC     L0004
+                SBC     cur_pos_x
                 BRK
                 EQUB    $80
 
@@ -6448,9 +6518,15 @@ LA54E = LA54D+1
                 BRK
                 EQUS    "Channel on buffered handle"
 
-                EQUB    $00,$00,$00,$00,$8F,$E2,$2B,$00
-                EQUB    $00,$EF,$DF,$00,$00,$00
+                EQUB    $00,$00,$00,$00
 
+                BRK
+                EQUB    $00
+
+                BRK
+                EQUB    $00
+
+                BRK
                 EQUS    "End of file on fast channel"
 
                 EQUB    $00,$00,$40,$2D,$E9,$06,$10,$A0
@@ -6614,7 +6690,7 @@ LA54E = LA54D+1
 
                 EQUS    "Abort on prefetch at "
 
-                EQUB    $00,$00,$00,$9A,$FF,$FF,$EA,$39
+.LA9DF          EQUB    $00,$00,$00,$9A,$FF,$FF,$EA,$39
                 EQUB    $DD,$A0,$E3,$3C,$E0,$8D,$E5,$03
                 EQUB    $00,$1E,$E3,$01,$00,$00,$1A,$FF
                 EQUB    $7F,$CD,$E8,$0A,$00,$00,$EA,$01
@@ -7078,7 +7154,7 @@ LB088 = LB087+1
                 ASL     A
                 PHP
 .LB17B          LDY     #$0C
-                SBC     L0004
+                SBC     cur_pos_x
                 CPY     #$8A
                 ORA     LA0DC
                 BPL     LB113
@@ -7259,7 +7335,7 @@ LB213 = LB212+1
 
                 BEQ     LB207
 
-                ORA     (L0004)
+                ORA     (cur_pos_x)
                 JSR     LE590
 
                 BRK
@@ -7366,7 +7442,7 @@ LB2B7 = LB2B6+1
                 LDY     #$E3
 .LB312          TSB     L0000
                 TXA
-                SBC     L0004
+                SBC     cur_pos_x
                 CPY     #$8A
                 TSB     L9A50
 .LB31D          SBC     L0000
@@ -7392,7 +7468,7 @@ LB2B7 = LB2B6+1
                 BRK
                 EQUB    $8A
 
-                SBC     L0018
+                SBC     pageLSB
                 LDY     #$8C
 .LB33D          SBC     L003F
                 BRA     LB2FE
@@ -7490,7 +7566,7 @@ LB2B7 = LB2B6+1
                 CPX     #$E3
                 BEQ     LB3F3
 
-                SBC     (L0004,X)
+                SBC     (cur_pos_x,X)
                 BRA     LB3A2
 
                 INX
@@ -7727,7 +7803,7 @@ LB521 = LB520+1
                 SBC     (L000C,X)
                 BPL     LB4BB
 
-                SBC     L0004
+                SBC     cur_pos_x
                 CPY     #$82
                 BRK
                 EQUB    $00
@@ -7779,7 +7855,7 @@ LB521 = LB520+1
                 BRK
                 EQUB    $81
 
-.LB579          CPX     L0004
+.LB579          CPX     cur_pos_x
 .LB57B          JSR     LE281
 
 LB57C = LB57B+1
@@ -8037,12 +8113,12 @@ LB65A = LB659+1
                 AND     (L00E5),Y
                 TSB     L0000
                 ROL     A
-                SBC     L0004
+                SBC     cur_pos_x
                 BCS     LB710
 
                 DEX
                 TSB     L9300
-                SBC     L0004
+                SBC     cur_pos_x
                 LDY     #$8A
                 BRK
                 EQUB    $A0
@@ -8075,7 +8151,7 @@ LB65A = LB659+1
                 SBC     (L000C,X)
                 BPL     LB67D
 
-                SBC     L0004
+                SBC     cur_pos_x
                 CPY     #$80
                 BRK
                 EQUB    $00
@@ -8110,7 +8186,7 @@ LB710 = LB70E+2
                 NOP
                 BCS     LB6C1
 
-                SBC     (L0004,X)
+                SBC     (cur_pos_x,X)
                 BRK
                 EQUB    $40
 
@@ -8359,7 +8435,7 @@ LB710 = LB70E+2
                 ORA     (L00A0,X)
                 RTI
 
-                SBC     L0004
+                SBC     cur_pos_x
                 BRK
                 EQUB    $80
 
@@ -8580,7 +8656,7 @@ LBB7A = LBB78+2
                 INC     A
                 BPL     LBBC1
 
-                SBC     (L0004,X)
+                SBC     (cur_pos_x,X)
                 BNE     LBBB2
 
                 TSB     L0040
@@ -8680,7 +8756,7 @@ LBCA1 = LBC9F+2
                 LDY     #$E1
                 BPL     LBC59
 
-                SBC     (L0018,X)
+                SBC     (pageLSB,X)
                 TSB     L00BD
                 INX
                 TSB     L00D0
@@ -8870,7 +8946,7 @@ LBDE6 = LBDE4+2
                 EQUB    $C0
 
                 CPX     #$A0
-                SBC     (L0004,X)
+                SBC     (cur_pos_x,X)
                 BEQ     LBD8D
 
                 BPL     LBDB1
@@ -9007,7 +9083,7 @@ LBEE8 = LBEE7+1
                 BCS     LBEB8
 
                 CPX     #$A0
-                SBC     (L0004,X)
+                SBC     (cur_pos_x,X)
                 BEQ     LBE80
 
                 BRK

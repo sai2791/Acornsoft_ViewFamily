@@ -1,0 +1,7 @@
+## View B3.3 notes
+Found two instances of 0xC0DE which is the relocation bit-map identifier, so
+it appears that there are two relocatable roms in the view image.
+
+0xBD7E - 
+0xBFEF - this bitmap is stored backwards so the min value here is 
+         probably 0xBD80
