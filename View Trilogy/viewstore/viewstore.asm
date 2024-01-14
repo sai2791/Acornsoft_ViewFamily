@@ -133,7 +133,7 @@ L009C           = $009C
 L00BA           = $00BA
 L00BB           = $00BB
 cmd_line        = $00F2
-L00F4           = $00F4
+rom_slot        = $00F4
 L00FD           = $00FD
 L0101           = $0101
 L0102           = $0102
@@ -10795,7 +10795,7 @@ LBF90 = LBF8F+1
                 LDA     #$04
                 PHA
                 TXA
-.LBFE4          LDX     L00F4
+.LBFE4          LDX     rom_slot
                 JSR     L80D5
 
                 BIT     LBFFF
@@ -10805,7 +10805,7 @@ LBF90 = LBF8F+1
 
                 INX
                 TXS
-                LDX     L00F4
+                LDX     rom_slot
                 RTS
 
 .LBFF7          EQUW    $4D80

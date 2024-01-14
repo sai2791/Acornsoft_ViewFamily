@@ -29,3 +29,6 @@ needpage = $8181
 
 x_cur_pos = $0058
 write_char = $8E53
+
+rom_slot = $00F4
+

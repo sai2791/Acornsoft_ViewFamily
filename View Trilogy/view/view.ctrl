@@ -5,6 +5,9 @@ symbols view.sym
 save view.asm
 hexdump view.hex
 
+entry $8000
+entry $8003 
+
 byte $8006
 byte $8007
 byte $8008
@@ -65,6 +68,6 @@ string $9764 2 ; "ON"
 string $9767 3 ; "OFF"
 string $A7F5 4 ; "`VIEW"
 string $A7FA 4 ; "M3.0"
-string $A94D 26 ; "s`Memory full - Press ESCAPE"
+string $A94F 26 ; "Memory full - Press ESCAPE"
 ; string $B263 46 ; "CERJDFDHDMEMSRPETMBMPLTSFOHEHTHMFMLMLSOPEPLJPB"
 

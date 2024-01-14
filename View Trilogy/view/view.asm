@@ -235,7 +235,6 @@ L0914           = $0914
 L097F           = $097F
 L0C81           = $0C81
 L0F12           = $0F12
-L0FD0           = $0FD0
 L139D           = $139D
 L1781           = $1781
 L1D80           = $1D80
@@ -265,6 +264,7 @@ L4D46           = $4D46
 L5A0B           = $5A0B
 L6150           = $6150
 L6964           = $6964
+L6D65           = $6D65
 LD184           = $D184
 LD795           = $D795
 defvec          = $D940
@@ -290,9 +290,9 @@ OSBYTE          = $FFF4
 OSCLI           = $FFF7
 
                 org     $8000
-                EQUB    $4C,$5F,$80
+.langent        JMP     language
 
-                EQUB    $4C,$DF,$BF
+.servent        JMP     service
 
                 EQUB    $C2
 
@@ -300,9 +300,7 @@ OSCLI           = $FFF7
 
 .L8008          EQUB    $03
 
-                EQUS    "VI"
-
-.L800B          EQUS    "E"
+                EQUS    "VIE"
 
 .L800C          EQUS    "W"
 
@@ -332,11 +330,12 @@ OSCLI           = $FFF7
                 LDA     (cmd_line),Y
                 AND     #$DF
                 CMP     L805A,X
-                BEQ     L8031
+.L803F          BEQ     L8031
 
-.L8040          BEQ     L800B
+L8040 = L803F+1
+                CMP     #$0E
+                BNE     nextrom
 
-                ASL     L0FD0
 .L8045          PLA
                 PLA
                 TAX
@@ -353,23 +352,47 @@ OSCLI           = $FFF7
                 PLA
                 TAX
                 PLA
-                RTS
+.langexit       RTS
 
 .L805A          EQUS    "WORD"
 
                 EQUB    $FF
 
-                EQUB    $C9,$01,$D0,$F6,$58,$20,$EB,$B2
-                EQUB    $AD,$93,$80,$8D,$02,$02,$AD,$94
-                EQUB    $80,$8D,$03,$02,$A2,$FF,$9A,$86
-                EQUB    $4E,$20,$31,$AF,$A9,$83,$20,$F4
-                EQUB    $FF,$E4,$1F,$D0,$11,$C4,$20,$D0
-                EQUB    $0D,$20,$3A,$8E,$D0,$08,$20,$F4
-                EQUB    $A8,$4C,$98,$80,$E2
+.language       CMP     #$01
+                BNE     langexit
 
-                EQUB    $89
+                CLI
+                JSR     LB2EB
 
-                EQUB    $20,$88,$AF
+                LDA     L8093
+                STA     BRKV
+                LDA     L8094
+                STA     BRKV+1
+                LDX     #$FF
+                TXS
+                STX     L004E
+                JSR     LAF31
+
+                LDA     #$83
+                JSR     OSBYTE
+
+                CPX     L001F
+                BNE     L8095
+
+                CPY     L0020
+                BNE     L8095
+
+                JSR     L8E3A
+
+                BNE     L8095
+
+                JSR     LA8F4
+
+                JMP     L8098
+
+.L8094          EQUB    $89
+
+.L8095          JSR     LAF88
 
 .L8098          JSR     LA73A
 
@@ -7213,76 +7236,24 @@ LA85D = LA85C+1
                 STA     L0073
                 RTS
 
-.LA94D          EQUS    "Memory full - Press ESCAPE"
+.LA94D          EOR     L6D65
+                EQUS    "mory full - Press ESCAPE",$00
 
-                EQUB    $00
+.LA968          EQUS    "%"
 
-.LA968          LDA     L0089
-                STA     L0087
-                CLC
-                ADC     L008B
-                STA     L008D
-                LDA     L008A
-                STA     L0088
-                ADC     L008C
-                STA     L008E
-                LDX     #$53
-.LA97B          LDY     L0001,X
-                LDA     L0000,X
-                CPY     L008A
-                BCC     LA9A9
-
-                BNE     LA989
-
-                CMP     L0089
-                BCC     LA9A9
-
-.LA989          CPY     L008E
-                BCC     LA993
-
-                BNE     LA99F
-
-                CMP     L008D
-                BCS     LA99F
-
-.LA993          CPX     #$5F
-                BCS     LA99F
-
-                LDA     #$00
-                STA     L0000,X
-                STA     L0001,X
-                BEQ     LA9A9
-
-.LA99F          SBC     L008B
-                STA     L0000,X
-                LDA     L0001,X
-                SBC     L008C
-                STA     L0001,X
-.LA9A9          INX
-                INX
-                CPX     #$69
-                BNE     LA97B
-
-.LA9AF          LDY     #$00
-.LA9B1          LDA     (L008D),Y
-                STA     (L0087),Y
-                BEQ     LA9C0
-
-                INY
-                BNE     LA9B1
-
-                INC     L0088
-                INC     L008E
-                BNE     LA9AF
-
-.LA9C0          TYA
-                CLC
-                ADC     L0087
-                STA     L000D
-                LDA     L0088
-                ADC     #$00
-                STA     L000E
-                RTS
+                EQUB    $89,$85,$87,$18,$65,$8B,$85,$8D
+                EQUB    $A5,$8A,$85,$88,$65,$8C,$85,$8E
+                EQUB    $A2,$53,$B4,$01,$B5,$00,$C4,$8A
+                EQUB    $90,$26,$D0,$04,$C5,$89,$90,$20
+                EQUB    $C4,$8E,$90,$06,$D0,$10,$C5,$8D
+                EQUB    $B0,$0C,$E0,$5F,$B0,$08,$A9,$00
+                EQUB    $95,$00,$95,$01,$F0,$0A,$E5,$8B
+                EQUB    $95,$00,$B5,$01,$E5,$8C,$95,$01
+                EQUB    $E8,$E8,$E0,$69,$D0,$CC,$A0,$00
+                EQUB    $B1,$8D,$91,$87,$F0,$09,$C8,$D0
+                EQUB    $F7,$E6,$88,$E6,$8E,$D0,$EF,$98
+                EQUB    $18,$65,$87,$85,$0D,$A5,$88,$69
+                EQUB    $00,$85,$0E,$60
 
 .LA9CD          LDA     L000D
                 STA     L0087
@@ -8777,7 +8748,7 @@ LB2DA = LB2D8+2
                 INX
                 RTS
 
-                JSR     LAF69
+.LB2EB          JSR     LAF69
 
                 BCC     LB2D2
 
@@ -10837,7 +10808,7 @@ LB75D = LB75C+1
                 BIT     LBFFC
                 JMP     LBF90
 
-                TAX
+.service        TAX
                 LDA     #$04
                 PHA
                 TXA
@@ -10862,4 +10833,5 @@ LBFFC = LBFFB+1
 .LBFFF          LDA     L0000,X
 .BeebDisEndAddr
 SAVE "view.bin",BeebDisStartAddr,BeebDisEndAddr
+
 

@@ -181,7 +181,7 @@ L00F0           = $00F0
 L00F1           = $00F1
 L00F2           = $00F2
 L00F3           = $00F3
-L00F4           = $00F4
+rom_slot        = $00F4
 L00F6           = $00F6
 L00F7           = $00F7
 L00FD           = $00FD
@@ -6490,7 +6490,7 @@ LA30D = LA30C+1
                 TAX
                 JSR     LA321
 
-.LA31B          LDX     L00F4
+.LA31B          LDX     rom_slot
                 PLA
                 JMP     L802A
 
@@ -6499,7 +6499,7 @@ LA30D = LA30C+1
 .LA325          LDA     LA32D,X
 LA327 = LA325+2
                 PHA
-                LDA     L00F4
+                LDA     rom_slot
                 TSX
                 RTS
 
@@ -6836,7 +6836,7 @@ LA424 = LA423+1
                 LDA     LA57F,X
                 STA     (L00AA),Y
                 INY
-                LDA     L00F4
+                LDA     rom_slot
                 STA     (L00AA),Y
                 LDA     LA582,X
                 PHA
@@ -7010,7 +7010,7 @@ LA424 = LA423+1
                 LDA     LA686,X
                 STA     L00A9
                 LDY     #$05
-                LDA     L00F4
+                LDA     rom_slot
                 STA     (L00A8),Y
                 LDY     #$13
                 LDA     LA691,X
@@ -7163,7 +7163,7 @@ LA69D = LA69C+1
 .LA76C          LDA     L0104,X
                 BNE     LA786
 
-                LDA     L00F4
+                LDA     rom_slot
                 EOR     #$FF
                 PHA
                 LDA     #$FC
@@ -7518,7 +7518,7 @@ LA69D = LA69C+1
                 CPX     #$02
                 BCC     LA9C5
 
-.LA993          LDX     L00F4
+.LA993          LDX     rom_slot
                 EOR     L0DF0,X
                 AND     #$02
                 EOR     L0DF0,X
@@ -7622,7 +7622,7 @@ LA69D = LA69C+1
 
                 TSX
                 LDA     L0104,X
-                CMP     L00F4
+                CMP     rom_slot
                 BEQ     LAABE
 
                 JMP     LAB6D
@@ -7764,7 +7764,7 @@ LAB84 = LAB83+1
                 BMI     LAB98
 
                 TSX
-                LDA     L00F4
+                LDA     rom_slot
                 CMP     L0105,X
                 BEQ     LAB9B
 
@@ -7774,7 +7774,7 @@ LAB84 = LAB83+1
                 BNE     LABB1
 
                 LDA     L0109,X
-                LDX     L00F4
+                LDX     rom_slot
                 EOR     L0DF0,X
                 AND     #$C0
                 BNE     LABB1
@@ -7842,7 +7842,7 @@ LAB84 = LAB83+1
                 LDA     #$F8
 .LAC0B          LDY     #$B1
                 STA     (L00A8),Y
-                LDX     L00F4
+                LDX     rom_slot
                 LDA     L0DF0,X
                 ASL     A
                 ROL     A
@@ -8079,7 +8079,7 @@ LAB84 = LAB83+1
 .LAD5B          RTS
 
 .LAD5C          PHP
-                LDX     L00F4
+                LDX     rom_slot
                 CMP     #$04
                 BCC     LAD69
 
@@ -8095,7 +8095,7 @@ LAB84 = LAB83+1
                 PLP
                 RTS
 
-.LAD78          LDX     L00F4
+.LAD78          LDX     rom_slot
                 LDA     L0DF0,X
                 AND     #$3F
                 CMP     #$04
@@ -8997,10 +8997,10 @@ LAB84 = LAB83+1
                 RTS
 
 .LB323          PHA
-                LDA     L00F4
+                LDA     rom_slot
                 PHA
                 LDA     #$00
-                STA     L00F4
+                STA     rom_slot
                 STA     LFE30
                 LDA     L8008
                 PHA
@@ -9023,7 +9023,7 @@ LAB84 = LAB83+1
                 PLA
                 PLA
                 PLA
-                STA     L00F4
+                STA     rom_slot
                 STA     LFE30
                 PLA
                 RTS
@@ -9077,7 +9077,7 @@ LAB84 = LAB83+1
 .LB396          LDA     #$FC
                 JSR     LAD96
 
-                CPX     L00F4
+                CPX     rom_slot
                 BEQ     LB3A0
 
 .LB39F          RTS
@@ -9921,7 +9921,7 @@ LAB84 = LAB83+1
                 STA     L0235
                 STX     L0DE7
                 STY     L0DE8
-                LDA     L00F4
+                LDA     rom_slot
                 STA     L0DE9
                 LDA     #$48
                 STA     L035D
@@ -10093,7 +10093,7 @@ LAB84 = LAB83+1
 .LBA9D          PHA
                 TXA
                 PHA
-                LDX     L00F4
+                LDX     rom_slot
                 LDA     L0DF0,X
                 AND     #$3F
                 CMP     #$24
@@ -10767,7 +10767,7 @@ LBEBD = LBEBC+1
 
                 LDA     #$00
                 STA     L0105,X
-                LDX     L00F4
+                LDX     rom_slot
                 LDA     L0DF0,X
                 AND     #$3F
                 ORA     LBF28,Y
@@ -10792,10 +10792,10 @@ LBEBD = LBEBC+1
                 INX
                 INX
                 TXS
-                LDX     L00F4
+                LDX     rom_slot
                 RTS
 
-.LBF6A          LDX     L00F4
+.LBF6A          LDX     rom_slot
                 LDA     L0DF0,X
 .LBF6F          ASL     A
                 ROL     A
@@ -10876,7 +10876,7 @@ LBEBD = LBEBC+1
                 LDA     #$04
                 PHA
                 TXA
-.LBFE4          LDX     L00F4
+.LBFE4          LDX     rom_slot
                 JSR     LA300
 
                 BIT     LBFFD
@@ -10886,7 +10886,7 @@ LBEBD = LBEBC+1
 
                 INX
                 TXS
-                LDX     L00F4
+                LDX     rom_slot
                 RTS
 
 .LBFF7          BRK
