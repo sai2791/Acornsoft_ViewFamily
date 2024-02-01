@@ -24,21 +24,34 @@ entry $80F5
 string $8183 7 ; "Mistake"
 stringhi $81AD 3 ; "nam"
 string $8253 7 ; " unique"
+entry $825A
 string $82B0 11 ; "Memory full"
+entry $82BC
 string $82EA 4 ; "mode"
+entry $82EF
 string $8329 9 ; "ViewSpell"
+entry $8336
 string $833E 10 ; "Bytes free"
+entry $8349
 string $837D 6 ; "Source"
+entry $8384
 string $8398 11 ; "Screen mode"
+entry $83A4
 stringhi $8808 8 ; "Nick Dea"
+entry $8811
 stringhi $8892 5 ; "Savin"
+entry $8898
 stringhi $894D 6 ; "Markin"
 string $8DBE 8 ; "Checking"
 stringhi $90AE 6 ; "Loadin"
 string $9304 6 ; "letter"
+entry $930B
 string $932C 7 ; "M)aster"
+entry $9334
 string $933F 5 ; "U)ser"
+entry $9345
 string $9350 5 ; "T)ext"
+entry $9356
 string $9375 8 ; "Too long"
 string $9406 9 ; "directory"
 string $950A 3 ; "not"
@@ -70,17 +83,26 @@ string $9C7C 4 ; "file"
 string $9CF8 4 ; "word"
 stringhi $9F32 5 ; "strin"
 string $A6D2 4 ; "Keep"
+entry $A6D7
 string $A6F6 4 ; " ON "
+entry $A6FB
 string $A701 5 ; " RAM "
+entry $A707
 string $A73A 10 ; "Bad syntax"
 string $A838 14 ; "File not found"
 string $A8D9 7 ; "No page"
 string $A969 5 ; "Claim"
+entry $A96F
 string $A9C5 24 ; "`Press BREAK to continue"
+entry $A9DE
 string $A9E6 6 ; "Buffer"
+entry $A9ED
 string $AA41 4 ; "Wide"
+entry $AA46
 string $AA8D 4 ; " OFF"
+entry $AA93
 string $AA97 3 ; " ON"
+entry $AA9E
 string $ADC1 5 ; "Spell"
 string $ADC7 5 ; "Sheet"
 string $ADCD 5 ; "Store"
@@ -100,9 +122,14 @@ string $B18A 14 ; "File read only"
 string $B47E 7 ; "Syntax?"
 string $B4CF 9 ; "Not found"
 string $B4FF 4 ; "Edge"
+entry $B505
 string $B514 13 ; "Recalculating"
+entry $B522
 string $B56E 8 ; "Bad file"
+entry $B578
 string $B5E2 8 ; "Too long"
 string $B5EF 9 ; "Protected"
+entry $B5FA
 string $B6BD 6 ; "Memory"
 string $B79A 8 ; "No sheet"
+entry $B7A3
