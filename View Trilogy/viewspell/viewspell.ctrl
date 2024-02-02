@@ -16,6 +16,7 @@ string $8013 3 ; "0.9"
 string $8017 18 ; "(C) 1985 Acornsoft"
 string $806D 5 ; "SPELL"
 string $8077 9 ; "W.MASTER1"
+entry $8081
 string $8094 6 ; "Escape"
 stringhi $80D6 6 ; "Insert"
 entry $80DE
@@ -23,6 +24,7 @@ string $80E4 16 ; "disc & hit a key"
 entry $80F5
 string $8183 7 ; "Mistake"
 stringhi $81AD 3 ; "nam"
+entry $81b1
 string $8253 7 ; " unique"
 entry $825A
 string $82B0 11 ; "Memory full"
@@ -44,6 +46,7 @@ entry $8898
 stringhi $894D 6 ; "Markin"
 string $8DBE 8 ; "Checking"
 stringhi $90AE 6 ; "Loadin"
+entry $90B5
 string $9304 6 ; "letter"
 entry $930B
 string $932C 7 ; "M)aster"
@@ -54,9 +57,12 @@ string $9350 5 ; "T)ext"
 entry $9356
 string $9375 8 ; "Too long"
 string $9406 9 ; "directory"
+entry $9410
 string $950A 3 ; "not"
 string $9511 5 ; "found"
+entry $9517
 string $952C 5 ; "Word?"
+entry $9532
 string $95A5 2 ; "In"
 string $95AB 6 ; "master"
 stringhi $95B5 9 ; "dictionar"
@@ -79,12 +85,17 @@ stringhi $99BD 5 ; "MARKE"
 stringhi $99C3 3 ; "USe"
 stringhi $99C7 3 ; "MAR"
 string $9C24 6 ; " words"
+entry $9C2B
 string $9C7C 4 ; "file"
+entry $9C81
 string $9CF8 4 ; "word"
+entry $9CFD
 stringhi $9F32 5 ; "strin"
+entry $9F38
 string $A6D2 4 ; "Keep"
 entry $A6D7
 string $A6F6 4 ; " ON "
+entry $AA9C
 entry $A6FB
 string $A701 5 ; " RAM "
 entry $A707
