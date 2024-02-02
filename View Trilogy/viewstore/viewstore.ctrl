@@ -24,7 +24,7 @@ entry $83C7
 string $83CF 5 ; "S)ort"
 entry $83D5
 string $83DD 8 ; "U)tility"
-;entry $83E6
+entry $83E7
 string $84E7 11 ; "Mark Colton"
 string $8521 14 ; "Insert utility"
 entry $8530
@@ -49,15 +49,24 @@ entry $8B55
 string $8BF0 6 ; "Value?"
 entry $8BF7
 string $9094 5 ; "Low: "
+entry $9099
 string $90A5 7 ; " High: "
+entry $90AD
 string $9AF4 7 ; "  Space"
+entry $9AFC
 string $9B0E 10 ; "Indexed by"
 string $9C07 11 ; "Card layout"
+entry $9C12
 string $A6CC 23 ; "Use select file (N,Y)? "
+entry $A6E4
 string $A701 25 ; "Screen or Printer (S,P)? "
+entry $A71B
 string $A845 3 ; "def"
+entry $A848
 string $A990 7 ; "No data"
+entry $A998
 string $AAB1 8 ; "Editing "
+entry $AABA
 string $AAC5 7 ; "No File"
 string $AC80 17 ; " disc & hit a key"
 string $AF78 15 ; "Database header"
