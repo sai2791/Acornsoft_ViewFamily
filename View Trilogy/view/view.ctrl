@@ -18,10 +18,13 @@ string $8009 4 ; "VIEW"
 string $800E 18 ; "(C) 1982 Acornsoft"
 string $805A 4 ; "WORD"
 string $80C6 11 ; "Bytes free "
+entry $80D2
 string $80EA 14 ; "Input file is "
+entry $80F9
 string $8100 4 ; "not "
 string $8108 5 ; "empty"
 string $8112 12 ; "Screen mode "
+entry $811F
 string $8131 8 ; "Printer "
 entry $8139
 string $8150 4 ; " (m)"
@@ -61,7 +64,9 @@ entry $89E1
 string $8DC6 12 ; "Bad filename"
 string $8E1F 17 ; "Not with cassette"
 string $8E68 7 ; "No text"
+entry $8E71
 string $8FCB 17 ; "Nested macro call"
+entry $8FDD
 string $925C 5 ; "Page "
 entry $9262
 string $9764 2 ; "ON"
@@ -70,4 +75,5 @@ string $A7F5 4 ; "`VIEW"
 string $A7FA 4 ; "M3.0"
 string $A94F 26 ; "Memory full - Press ESCAPE"
 ; string $B263 46 ; "CERJDFDHDMEMSRPETMBMPLTSFOHEHTHMFMLMLSOPEPLJPB"
+entry $a96B
 

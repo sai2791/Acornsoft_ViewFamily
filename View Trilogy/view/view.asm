@@ -235,6 +235,7 @@ L0914           = $0914
 L097F           = $097F
 L0C81           = $0C81
 L0F12           = $0F12
+L0FD0           = $0FD0
 L139D           = $139D
 L1781           = $1781
 L1D80           = $1D80
@@ -300,7 +301,9 @@ OSCLI           = $FFF7
 
 .L8008          EQUB    $03
 
-                EQUS    "VIE"
+                EQUS    "VI"
+
+.L800B          EQUS    "E"
 
 .L800C          EQUS    "W"
 
@@ -330,12 +333,11 @@ OSCLI           = $FFF7
                 LDA     (cmd_line),Y
                 AND     #$DF
                 CMP     L805A,X
-.L803F          BEQ     L8031
+                BEQ     L8031
 
-L8040 = L803F+1
-                CMP     #$0E
-                BNE     nextrom
+.L8040          BEQ     L800B
 
+                ASL     L0FD0
 .L8045          PLA
                 PLA
                 TAX
@@ -425,8 +427,13 @@ L8040 = L803F+1
                 ORA     L420D
                 EQUS    "Bytes free "
 
-                EQUB    $00,$20,$77,$AF,$20,$6A,$A6,$20
-                EQUB    $E7,$FF
+                EQUB    $00
+
+.L80D2          JSR     LAF77
+
+                JSR     LA66A
+
+                JSR     OSNEWL
 
 .L80DB          JSR     L8999
 
@@ -441,11 +448,18 @@ L8040 = L803F+1
 
                 EQUS    "Input file is "
 
-                EQUB    $00,$A5,$41,$D0,$08,$20,$B2,$A7
+                EQUB    $00
+
+.L80F9          LDA     L0041
+                BNE     L8105
+
+                JSR     LA7B2
 
                 EQUS    "not "
 
-                EQUB    $00,$20,$B2,$A7
+                EQUB    $00
+
+.L8105          JSR     LA7B2
 
                 EQUS    "empty"
 
@@ -455,10 +469,18 @@ L8040 = L803F+1
 
                 EQUS    "Screen mode "
 
-                EQUB    $00,$A5,$37,$09,$30,$20,$EE,$FF
-                EQUB    $20,$E7,$FF
+                EQUB    $00
 
-.L8129          EQUB    $AD,$84,$07,$F0,$2A,$20,$B2,$A7
+.L811F          LDA     L0037
+                ORA     #$30
+                JSR     OSWRCH
+
+                JSR     OSNEWL
+
+.L8129          LDA     L0784
+                BEQ     L8158
+
+                JSR     LA7B2
 
                 EQUS    "Prin"
 
@@ -491,7 +513,7 @@ L813E = L813D+1
 
 .L8155          JSR     OSNEWL
 
-                LDX     #$00
+.L8158          LDX     #$00
                 LDY     #$00
 .L815C          LDA     L0054,X
                 BEQ     L8189
@@ -2591,7 +2613,9 @@ L8785 = L8783+2
 
                 EQUS    "No text"
 
-                EQUB    $0D,$00,$60
+                EQUB    $0D,$00
+
+.L8E71          RTS
 
 .L8E72          JSR     L8DFD
 
@@ -2819,7 +2843,9 @@ L8785 = L8783+2
 
                 EQUS    "Nested macro call"
 
-                EQUB    $00,$4C,$CE,$8E
+                EQUB    $00
+
+.L8FDD          JMP     L8ECE
 
 .L8FE0          LDA     L0032
                 BNE     L8FE7
@@ -7241,19 +7267,72 @@ LA85D = LA85C+1
 
 .LA968          EQUS    "%"
 
-                EQUB    $89,$85,$87,$18,$65,$8B,$85,$8D
-                EQUB    $A5,$8A,$85,$88,$65,$8C,$85,$8E
-                EQUB    $A2,$53,$B4,$01,$B5,$00,$C4,$8A
-                EQUB    $90,$26,$D0,$04,$C5,$89,$90,$20
-                EQUB    $C4,$8E,$90,$06,$D0,$10,$C5,$8D
-                EQUB    $B0,$0C,$E0,$5F,$B0,$08,$A9,$00
-                EQUB    $95,$00,$95,$01,$F0,$0A,$E5,$8B
-                EQUB    $95,$00,$B5,$01,$E5,$8C,$95,$01
-                EQUB    $E8,$E8,$E0,$69,$D0,$CC,$A0,$00
-                EQUB    $B1,$8D,$91,$87,$F0,$09,$C8,$D0
-                EQUB    $F7,$E6,$88,$E6,$8E,$D0,$EF,$98
-                EQUB    $18,$65,$87,$85,$0D,$A5,$88,$69
-                EQUB    $00,$85,$0E,$60
+                EQUB    $89,$85
+
+                CLC
+                ADC     L008B
+                STA     L008D
+                LDA     L008A
+                STA     L0088
+                ADC     L008C
+                STA     L008E
+                LDX     #$53
+.LA97B          LDY     L0001,X
+                LDA     L0000,X
+                CPY     L008A
+                BCC     LA9A9
+
+                BNE     LA989
+
+                CMP     L0089
+                BCC     LA9A9
+
+.LA989          CPY     L008E
+                BCC     LA993
+
+                BNE     LA99F
+
+                CMP     L008D
+                BCS     LA99F
+
+.LA993          CPX     #$5F
+                BCS     LA99F
+
+                LDA     #$00
+                STA     L0000,X
+                STA     L0001,X
+                BEQ     LA9A9
+
+.LA99F          SBC     L008B
+                STA     L0000,X
+                LDA     L0001,X
+                SBC     L008C
+                STA     L0001,X
+.LA9A9          INX
+                INX
+                CPX     #$69
+                BNE     LA97B
+
+.LA9AF          LDY     #$00
+.LA9B1          LDA     (L008D),Y
+                STA     (L0087),Y
+                BEQ     LA9C0
+
+                INY
+                BNE     LA9B1
+
+                INC     L0088
+                INC     L008E
+                BNE     LA9AF
+
+.LA9C0          TYA
+                CLC
+                ADC     L0087
+                STA     L000D
+                LDA     L0088
+                ADC     #$00
+                STA     L000E
+                RTS
 
 .LA9CD          LDA     L000D
                 STA     L0087
@@ -10833,5 +10912,4 @@ LBFFC = LBFFB+1
 .LBFFF          LDA     L0000,X
 .BeebDisEndAddr
 SAVE "view.bin",BeebDisStartAddr,BeebDisEndAddr
-
 
