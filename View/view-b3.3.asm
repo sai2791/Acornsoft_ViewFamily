@@ -199,6 +199,7 @@ IND1V           = $0230
 IND2V           = $0232
 IND3V           = $0234
 L0253           = $0253
+L0370           = $0370
 L03A9           = $03A9
 L0400           = $0400
 L040D           = $040D
@@ -228,6 +229,10 @@ L050A           = $050A
 L050B           = $050B
 L050C           = $050C
 L050D           = $050D
+L050E           = $050E
+L050F           = $050F
+L0510           = $0510
+L0511           = $0511
 L0545           = $0545
 L05CE           = $05CE
 L05CF           = $05CF
@@ -629,8 +634,13 @@ LFFFF           = $FFFF
                 ORA     L420D
                 EQUS    "Bytes free "
 
-                EQUB    $00,$20,$E2,$B1,$20,$C1,$A8,$20
-                EQUB    $E7,$FF
+                EQUB    $00
+
+.L81F3          JSR     LB1E2
+
+                JSR     LA8C1
+
+                JSR     OSNEWL
 
 .L81FC          JSR     L8ADA
 
@@ -645,11 +655,18 @@ LFFFF           = $FFFF
 
                 EQUS    "Input file is "
 
-                EQUB    $00,$A5,$41,$D0,$08,$20,$12,$AA
+                EQUB    $00
+
+.L821A          LDA     L0041
+                BNE     L8226
+
+                JSR     LAA12
 
                 EQUS    "not "
 
-                EQUB    $00,$20,$12,$AA
+                EQUB    $00
+
+.L8226          JSR     LAA12
 
                 EQUS    "empty"
 
@@ -1880,15 +1897,36 @@ L8899 = L8897+2
 
                 EQUB    $D0
 
-                EQUB    $14,$24,$3C,$70,$03,$4C,$00,$8F
-                EQUB    $A2,$00,$BD,$EC,$07,$9D,$5C,$07
-                EQUB    $E8,$C9,$0D,$D0,$F5,$A5,$0B,$8D
-                EQUB    $0A,$05,$A5,$0C,$8D,$0B,$05,$A5
-                EQUB    $0D,$8D,$0E,$05,$A5,$0E,$8D,$0F
-                EQUB    $05,$A9,$82,$20,$F4,$FF,$8E,$0C
-                EQUB    $05,$8C,$0D,$05,$8E,$10,$05,$8C
-                EQUB    $11,$05,$A9,$00,$20,$41,$8A,$4C
-                EQUB    $B9,$82
+.L89FF          TRB     L0024
+                BIT     L0370,X
+                JMP     L8F00
+
+                LDX     #$00
+.L8A09          LDA     L07EC,X
+                STA     L075C,X
+                INX
+                CMP     #$0D
+                BNE     L8A09
+
+                LDA     L000B
+                STA     L050A
+                LDA     L000C
+                STA     L050B
+                LDA     L000D
+                STA     L050E
+                LDA     L000E
+                STA     L050F
+                LDA     #$82
+                JSR     OSBYTE
+
+                STX     L050C
+                STY     L050D
+                STX     L0510
+                STY     L0511
+                LDA     #$00
+                JSR     L8A41
+
+                JMP     L82B9
 
 .L8A41          LDX     #$5C
                 STX     L0500

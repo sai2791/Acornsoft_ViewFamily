@@ -31,7 +31,9 @@ string $8168 10 ; "VIEW SETUP"
 string $8173 11 ; "[F],[J],[I]"
 entry $8180
 string $81E7 11 ; "Bytes free "
+entry $81F3
 string $820B 14 ; "Input file is "
+entry $821A
 string $8221 4 ; "not "
 string $8229 5 ; "empty"
 string $8233 12 ; "Screen mode "
@@ -104,3 +106,5 @@ byte $89FE
 
 byte $BA94
 byte $BB0E
+
+entry $89FF
