@@ -1,4 +1,10 @@
-lang_serv = $8188
+lang_entry = $8188
 lang_exit = $8187
 instll_brkv = $A930
 screen_mode = $0020
+serv_entry = $80D5
+help_entry = $8116
+ukn_osbyte = $8136
+clm_priv_ram = $812A
+ukn_comm = $8127
+rom_table = $0DF0

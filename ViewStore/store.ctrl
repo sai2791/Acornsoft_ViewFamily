@@ -14,36 +14,61 @@ string $8017 18 ; "(C) 1985 Acornsoft"
 entry $802A
 string $8169 5 ; "STORE"
 string $8400 5 ; "D)ata"
+entry $8406
 string $840E 7 ; "F)ormat"
+entry $8416
 string $841E 6 ; "I)ndex"
+entry $8425
 string $842D 5 ; "S)ort"
+entry $8433
 string $843B 8 ; "U)tility"
+entry $8444
+;; 844C - bad decompilation? after the RTS LSR doesn't look right
 string $8545 11 ; "Mark Colton"
 string $857F 14 ; "Insert utility"
+entry $858E
 string $85D5 11 ; "Insert data"
+entry $85E1
 string $8629 11 ; "Bytes free "
+entry $8635
 string $864C 7 ; "Format "
+entry $8654
 string $8660 12 ; "Screen mode "
+entry $866D
 string $8682 8 ; "Printer "
+entry $868B
 tring $8801 5 ; "entry"
 string $8904 5 ; "Index"
 string $8940 10 ; " not found"
+entry $894B
 string $8AC6 7 ; "Fields:"
+entry $8ACE
 string $8BA7 7 ; "Reading"
+entry $8BAF
 string $8C4A 6 ; "Value?"
+entry $8C51
 string $90EE 5 ; "Low: "
+entry $90F4
 string $90FF 7 ; " High: "
+entry $9107
 string $9B3E 7 ; "  Space"
+entry $9B46
 string $9B58 10 ; "Indexed by"
+entry $9B63
 string $9C51 11 ; "Card layout"
+entry $9C5D
 string $A70D 23 ; "Use select file (N,Y)? "
+entry $A725
 string $A742 25 ; "Screen or Printer (S,P)? "
+entry $A75C
 string $A9D1 7 ; "No data"
+entry $A9D9
 string $AAF2 8 ; "Editing "
+entry $AAFB
 string $AB06 7 ; "No File"
-string $AB89 6 ; "&%`$!P"
+;string $AB89 6 ; "&%`$!P"
 string $ACC0 17 ; " disc & hit a key"
-string $AFB6 17 ; "O`Database header"
+string $AFB8 15 ; "Database header"
 string $AFD0 5 ; "Title"
 string $AFDF 7 ; "Display"
 string $AFF7 12 ; "Display: S,C"
@@ -67,14 +92,14 @@ string $B13C 9 ; "Key width"
 string $B154 10 ; "Index name"
 string $B168 6 ; "Prompt"
 string $B178 10 ; "Value list"
-string $B24C 3 ; "bad"
-string $B250 4 ; "fiel"
-string $B255 3 ; "fil"
-string $B259 3 ; "not"
-string $B25D 4 ; "inde"
+stringhi $B24C 3 ; "bad"
+stringhi $B250 4 ; "fiel"
+stringhi $B255 3 ; "fil"
+stringhi $B259 3 ; "not"
+stringhi $B25D 4 ; "inde"
 stringhi $B262 ; "erro"
-string $B26A 8 ; "too many"
-string $B273 3 ; "end"
+stringhi $B26A 8 ; "too many"
+stringhi $B273 3 ; "end"
 stringhi $B277  ; "Memory ful"
 stringhi $B282 ; "Mistak"
 stringhi $B28B  ; "marke"
@@ -101,4 +126,5 @@ stringhi $B347 5 ; "place"
 string $B34D 3 ; "No "
 stringhi $B353 ; "pointe"
 string $B629 3 ; "meu"
+entry $B62C
 
