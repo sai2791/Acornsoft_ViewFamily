@@ -343,6 +343,7 @@ L5EC9           = $5EC9
 L66E9           = $66E9
 L6956           = $6956
 L6D61           = $6D61
+L6D9C           = $6D9C
 L6E23           = $6E23
 L7695           = $7695
 L78E9           = $78E9
@@ -403,6 +404,7 @@ LFA03           = $FA03
 LFF2F           = $FF2F
 LFF37           = $FF37
 LFF60           = $FF60
+LFF6B           = $FF6B
 LFF6F           = $FF6F
 LFF8B           = $FF8B
 OSRDRM          = $FFB9
@@ -923,24 +925,76 @@ L8213 = L8212+1
                 CPX     L0028
                 BCC     L8281
 
-                JSR     L9C2C
+.L82FE          JSR     L9C2C
 
                 EQUS    "Memory full"
 
                 EQUB    $8D
 
-                EQUB    $60,$F0,$28,$A9,$00,$AA,$85,$08
-                EQUB    $BD,$84,$04,$C9,$21,$90,$25,$C9
-                EQUB    $3A,$B0,$18,$E9,$2F,$90,$14,$85
-                EQUB    $16,$A5,$08,$06,$08,$0A,$0A,$0A
-                EQUB    $18,$65,$08,$18,$65,$16,$85,$08
-                EQUB    $E8,$D0,$DD,$20,$21,$9C,$6D,$6F
-                EQUB    $64,$65,$8D,$60,$A5,$8F,$D0,$18
-                EQUB    $A5,$4B,$F0,$14,$A9,$85,$A6,$08
-                EQUB    $20,$F4,$FF,$8A,$38,$E5,$4A,$98
-                EQUB    $E5,$4B,$90,$A4,$C9,$07,$90,$A0
-                EQUB    $A9,$16,$20,$EE,$FF,$A5,$08,$20
-                EQUB    $EE,$FF
+.L830E          RTS
+
+                BEQ     L8339
+
+                LDA     #$00
+                TAX
+                STA     L0008
+.L8316          LDA     L0484,X
+                CMP     #$21
+                BCC     L8342
+
+                CMP     #$3A
+                BCS     L8339
+
+                SBC     #$2F
+                BCC     L8339
+
+                STA     L0016
+                LDA     L0008
+                ASL     L0008
+                ASL     A
+                ASL     A
+                ASL     A
+                CLC
+                ADC     L0008
+                CLC
+                ADC     L0016
+                STA     L0008
+                INX
+                BNE     L8316
+
+.L8339          JSR     L9C21
+
+                EQUS    "mode"
+
+                EQUB    $8D
+
+.L8341          RTS
+
+.L8342          LDA     L008F
+                BNE     L835E
+
+                LDA     L004B
+                BEQ     L835E
+
+                LDA     #$85
+                LDX     L0008
+                JSR     OSBYTE
+
+                TXA
+                SEC
+                SBC     L004A
+                TYA
+                SBC     L004B
+                BCC     L82FE
+
+                CMP     #$07
+                BCC     L82FE
+
+.L835E          LDA     #$16
+                JSR     OSWRCH
+
+                LDA     L0008
+                JSR     OSWRCH
 
 .L8368          JSR     L8489
 
@@ -3243,14 +3297,43 @@ L9020 = L901F+1
 
                 EQUS    "Loading"
 
-                EQUB    $A5,$89,$05,$8A,$D0,$2F,$A5,$26
-                EQUB    $38,$E5,$3D,$69,$02,$C5,$88,$90
-                EQUB    $24,$F0,$22,$A5,$3C,$85,$7F,$85
-                EQUB    $35,$A4,$3D,$C8,$84,$36,$84,$80
-                EQUB    $20,$EC,$9C,$A5,$87,$18,$A5,$88
-                EQUB    $65,$36,$85,$88,$A4,$35,$A9,$FE
-                EQUB    $91,$87,$E6,$4F,$60,$20,$4C,$9D
-                EQUB    $85,$6F,$20,$7A,$91
+.L9105          LDA     L0089
+                ORA     L008A
+                BNE     L913A
+
+                LDA     himemMSB
+                SEC
+                SBC     L003D
+                ADC     #$02
+                CMP     L0088
+                BCC     L913A
+
+                BEQ     L913A
+
+                LDA     L003C
+                STA     L007F
+                STA     L0035
+                LDY     L003D
+                INY
+                STY     L0036
+                STY     L0080
+                JSR     L9CEC
+
+                LDA     L0087
+                CLC
+                LDA     L0088
+                ADC     L0036
+                STA     L0088
+                LDY     L0035
+                LDA     #$FE
+                STA     (L0087),Y
+                INC     L004F
+                RTS
+
+.L913A          JSR     L9D4C
+
+                STA     L006F
+                JSR     L917A
 
 .L9142          LDA     L004F
                 BNE     L9191
@@ -3643,20 +3726,44 @@ L9020 = L901F+1
 
                 EQUS    "M)aster"
 
-                EQUB    $A0,$AC,$29,$04,$A2,$29,$20,$B1
-                EQUB    $93,$20,$2C,$9C
+.L9383          LDY     #$AC
+                AND     #$04
+                LDX     #$29
+                JSR     L93B1
+
+                JSR     L9C2C
 
                 EQUS    "U)ser"
 
-                EQUB    $A0,$AC,$0E,$04,$A2,$0E,$20,$B1
-                EQUB    $93,$20,$2C,$9C
+                EQUB    $A0
+
+.L9395          LDY     L040E
+                LDX     #$0E
+                JSR     L93B1
+
+                JSR     L9C2C
 
                 EQUS    "T)ext"
 
-                EQUB    $A0,$AC,$41,$04,$A2,$41,$20,$B1
-                EQUB    $93,$4C,$6B,$83,$86,$18,$D0,$07
-                EQUB    $B9,$0E,$04,$20,$59,$8F,$C8,$C4
-                EQUB    $18,$D0,$F5,$4C,$57,$8F
+                EQUB    $A0
+
+.L93A6          LDY     L0441
+                LDX     #$41
+                JSR     L93B1
+
+                JMP     L836B
+
+.L93B1          STX     pageLSB
+                BNE     L93BC
+
+.L93B5          LDA     L040E,Y
+                JSR     L8F59
+
+                INY
+.L93BC          CPY     pageLSB
+                BNE     L93B5
+
+                JMP     L8F57
 
 .L93C3          BRK
                 EQUB    $00
@@ -3752,8 +3859,15 @@ L9020 = L901F+1
 
                 EQUS    "directory"
 
-                EQUB    $8D,$60,$20,$76,$88,$20,$F6,$93
-                EQUB    $4C,$6B,$83
+                EQUB    $8D
+
+.L9460          RTS
+
+                JSR     L8876
+
+                JSR     L93F6
+
+                JMP     L836B
 
 .L946A          INX
 .L946B          LDA     L0484,X
@@ -3876,7 +3990,7 @@ L9020 = L901F+1
                 CMP     #$20
                 BEQ     L9518
 
-                INX
+.L9520          INX
                 LDA     #$0D
                 STA     L0484,X
                 LDA     L0484
@@ -3928,32 +4042,100 @@ L9020 = L901F+1
 
                 EQUS    "found"
 
-                EQUB    $8D,$60,$A9,$06,$D0,$02,$A9,$74
-                EQUB    $85,$05,$20,$D8,$9B,$20,$D3,$9C
-                EQUB    $B0,$EF,$20,$2C,$9C
+                EQUB    $8D
+
+.L9567          RTS
+
+                LDA     #$06
+                BNE     L956E
+
+                LDA     #$74
+.L956E          STA     L0005
+                JSR     L9BD8
+
+                JSR     L9CD3
+
+                BCS     L9567
+
+.L9578          JSR     L9C2C
 
                 EQUS    "_Word?"
 
-                EQUB    $A0,$20,$5D,$81,$F0,$F1,$20,$10
-                EQUB    $96,$4C,$78,$95,$A0,$FC,$B9,$6B
-                EQUB    $FF,$48,$C8,$D0,$F9,$A5,$2E,$48
-                EQUB    $A5,$06,$48,$A5,$07,$48,$A5,$62
-                EQUB    $48,$20,$65,$98,$A9,$FF,$99,$C4
-                EQUB    $04,$B9,$83,$04,$88,$D0,$F7,$8D
-                EQUB    $C4,$04,$A2,$C1,$A0,$04,$86,$3A
-                EQUB    $84,$3B,$A5,$26,$48,$38,$E9,$07
-                EQUB    $85,$26,$20,$C7,$8C,$68,$85,$26
-                EQUB    $68,$85,$62,$68,$85,$07,$68,$85
-                EQUB    $06,$68,$85,$2E,$A2,$04,$68,$95
-                EQUB    $66,$CA,$D0,$FA,$A4,$4D,$B9,$C3
-                EQUB    $04,$48
+.L9581          LDY     #$20
+                EOR     LF081,X
+                SBC     (L0020),Y
+                BPL     L9520
 
-.L95E3          EQUB    $B9,$82,$04,$99,$83,$04,$88,$D0
-                EQUB    $F7,$68,$C9,$02,$D0,$2E,$20,$2C
-                EQUB    $9C,$5F,$49,$6E,$A0
+                JMP     L9578
 
-.L95F8          JSR     L9C2C
+.L958D          LDY     #$FC
+.L958F          LDA     LFF6B,Y
+                PHA
+                INY
+                BNE     L958F
 
+                LDA     L002E
+                PHA
+                LDA     L0006
+                PHA
+                LDA     L0007
+                PHA
+                LDA     L0062
+                PHA
+                JSR     L9865
+
+                LDA     #$FF
+.L95A7          STA     L04C4,Y
+                LDA     L0483,Y
+                DEY
+                BNE     L95A7
+
+                STA     L04C4
+                LDX     #$C1
+                LDY     #$04
+                STX     L003A
+                STY     L003B
+                LDA     himemMSB
+                PHA
+                SEC
+                SBC     #$07
+                STA     himemMSB
+                JSR     L8CC7
+
+                PLA
+                STA     himemMSB
+                PLA
+                STA     L0062
+                PLA
+                STA     L0007
+                PLA
+                STA     L0006
+                PLA
+                STA     L002E
+                LDX     #$04
+.L95D7          PLA
+                STA     L0066,X
+                DEX
+                BNE     L95D7
+
+                LDY     L004D
+                LDA     L04C3,Y
+                PHA
+.L95E3          LDA     L0482,Y
+                STA     L0483,Y
+                DEY
+                BNE     L95E3
+
+                PLA
+                CMP     #$02
+                BNE     L961F
+
+                JSR     L9C2C
+
+                EOR     #$6E
+.L95F7          LDY     #$20
+L95F8 = L95F7+1
+                BIT     L6D9C
                 EQUS    "master"
 
                 EQUB    $A0
@@ -3962,9 +4144,19 @@ L9020 = L901F+1
 
                 EQUS    "dictionar"
 
-                EQUB    $F9,$60,$20,$F5,$9C,$86,$4D,$24
-                EQUB    $05,$50,$03,$4C,$8D,$95,$20,$65
-                EQUB    $98
+                EQUB    $F9
+
+.L960F          RTS
+
+                JSR     L9CF5
+
+                STX     L004D
+                BIT     L0005
+                BVC     L961C
+
+                JMP     L958D
+
+.L961C          JSR     L9865
 
 .L961F          JSR     L984A
 
@@ -4318,7 +4510,9 @@ L9691 = L9690+1
 
                 EQUS    "Deleted"
 
-                EQUB    $8D,$60
+                EQUB    $8D
+
+.L9849          RTS
 
 .L984A          JSR     L9B51
 
@@ -5026,7 +5220,9 @@ L9C21 = L9C20+1
 
                 EQUS    " words"
 
-                EQUB    $A0,$60
+                EQUB    $A0
+
+.L9C7C          RTS
 
 .L9C7D          JSR     L9BE7
 
@@ -5075,7 +5271,9 @@ L9C21 = L9C20+1
 
                 EQUS    "file"
 
-                EQUB    $8D,$60
+                EQUB    $8D
+
+.L9CD2          RTS
 
 .L9CD3          JSR     L9C7D
 
@@ -5100,7 +5298,7 @@ L9C21 = L9C20+1
                 LDY     #$00
                 JMP     OSFILE
 
-                LDA     #$FF
+.L9CF5          LDA     #$FF
 .L9CF7          LDY     #$01
                 LDX     #$00
                 STA     pageLSB

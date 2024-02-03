@@ -35,7 +35,9 @@ string $81D5 7 ; "Mistake"
 strinhi $81FF  ; "name"
 string $82A5 8 ; " unique`"
 string $8302 11 ; "Memory full"
-strin $833C 4 ; "mode"
+entry $830E
+string $833C 4 ; "mode"
+entry $8341
 string $837B 9 ; "ViewSpell"
 entry $8385
 byte $8386
@@ -52,19 +54,28 @@ entry $88E9
 stringhi $899B  ; "Markin"
 string $8E0C 8 ; "Checking"
 stringhi $90FE ; "Loading"
+entry $9105
 string $9354 6 ; "letter"
 string $937C 7 ; "M)aster"
+entry $9383
 string $938F 5 ; "U)ser"
+entry $9395
 string $93A0 5 ; "T)ext"
+entry $93A6
 string $93C5 8 ; "Too long"
 string $9456 9 ; "directory"
+entry $9460
 string $955A 3 ; "not"
 string $9561 5 ; "found"
+entry $9567
 string $957B 6 ; "_Word?"
+entry $9581
 string $95FB 6 ; "master"
 string $9605 9 ; "dictionar"
+entry $960F
 string $9720 4 ; "Full"
 string $9841 7 ; "Deleted"
+entry $9849
 stringhi $99BF  ; "CMAR"
 stringhi $99C4  ; "CReat"
 stringhi $99CA  ; "MAR"
@@ -87,7 +98,9 @@ stringhi $9A0E  ; "MARKE"
 stringhi $9A14  ; "USe"
 stringhi $9A18  ; "MAR"
 string $9C75 6 ; " words"
+entry $9C7C
 string $9CCD 4 ; "file"
+entry $9CD2
 string $9D61 4 ; "word"
 stringhi $9F87  ; "strin"
 string $A55E 20 ; "Cache checksum error"
