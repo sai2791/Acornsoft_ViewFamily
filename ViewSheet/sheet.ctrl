@@ -17,32 +17,51 @@ entry $8149
 string $8158 12 ; "Screen mode "
 entry $8165
 string $8178 8 ; "Printer "
+entry $8181
 string $81E3 8 ; "Command?"
 string $823E 17 ; "Not enough memory"
+entry $8250
 string $8258 7 ; "Syntax?"
 string $82AE 9 ; "Headings "
+entry $82B8
 string $82BE 11 ; "Protection "
+entry $82CA
 string $82D3 3 ; "off"
 string $8351 8 ; "Bad file"
 string $837A 14 ; "File not found"
+entry $8389
 string $86EF 5 ; "SLOT="
 string $86F5 9 ; "CONTENTS="
+entry $86FF
 string $87B9 9 ; "Protected"
+entry $87C3
 string $87DB 8 ; "Too long"
+entry $87E4
 string $87EC 6 ; "Memory"
 string $88E3 12 ; "Row heading?"
+entry $88f0
 string $88F9 15 ; "Column heading?"
+entry $8909
 string $8994 11 ; "Bad Heading"
+entry $89A0
 string $89E3 7 ; "Window?"
+entry $89EB
 string $8A0B 34 ; "Wi TopL  BotR  Pos Cw  Bw Fmt  Opt"
+entry $8A2E
 string $8AC6 7 ; "Format?"
+entry $8ACE
 string $8D34 5 ; "Slot?"
+entry $8D3A
 string $8DA4 10 ; "From - To?"
+entry $8DAF
 string $8E29 5 ; "Range"
+entry $8E2F
 string $8E37 4 ; "Edge"
+entry $8E3C
 string $8F47 22 ; "R)elative, N)o change?"
+entry $8F5E
 string $98A4 6 ; "?Error"
-string $9BD0 9 ; "G`*Blank*"
+string $9BD2 7 ; "*Blank*"
 string $ADB4 8 ; "No sheet"
 string $ADEF 8 ; "Editing "
 entry $ADF8
@@ -94,4 +113,6 @@ string $B16A 17 ; "Too few arguments"
 
 byte $BF22
 byte $BD89
-byte $BDCA
+;byte $BDCA
+
+entry $BDCA
