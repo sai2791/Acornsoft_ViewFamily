@@ -2,8 +2,8 @@ cpu 65c02
 load $8000 view-B3.3.rom
 symbols bbc.sym
 symbols view-b3.3.sym
-save view-b3.3.asm
-hexdump view-b3.3.hex
+save n-view-b3.3.asm
+hexdump n-view-b3.3.hex
 
 entry $8000 
 

@@ -256,7 +256,7 @@ L0945           = $0945
 L097F           = $097F
 L0A26           = $0A26
 L0C89           = $0C89
-L0DF0           = $0DF0
+rom_tble        = $0DF0
 L1000           = $1000
 L1017           = $1017
 L10A8           = $10A8
@@ -327,9 +327,7 @@ LFFFF           = $FFFF
 
                 EQUB    $00
 
-.L8021          EQUW    $4A46
-
-                EQUB    $49
+.fmt_flag       EQUS    "FJI"
 
 .L8024          EQUB    $7A
 
@@ -339,7 +337,9 @@ LFFFF           = $FFFF
 
 .L8028          JSR     L815A
 
-                LDA     #$A2
+                LDA     #$A2                                ; Read/Write Configuration RAM/EEPROM
+                                                            ; X = index of byte to write
+                                                            ; Y = value to write
                 JSR     OSBYTE
 
                 JMP     L8110
@@ -348,10 +348,10 @@ LFFFF           = $FFFF
                 CMP     #$0D
                 BNE     L8049
 
-                JSR     L8141
+                JSR     prt_status
 
                 LDX     #$00
-.L803E          LDA     L8173,X
+.L803E          LDA     L8173,X                             ; Print flags (F,J,I)
                 BEQ     ukn_command
 
                 JSR     OSASCI
@@ -380,7 +380,7 @@ LFFFF           = $FFFF
                 STX     L0084
                 LDX     #$FF
 .L8067          INX
-                CMP     L8021,X
+                CMP     fmt_flag,X
                 BEQ     L8075
 
                 ASL     L0084
@@ -423,7 +423,8 @@ LFFFF           = $FFFF
                 PLA
                 PLX
                 PLA
-                LDA     #$8E
+                LDA     #$8E                        ; Enter Language Rom
+                                                    ; X = Rom socket with Language Rom
                 JMP     OSBYTE
 
 .help_serv      LDA     (comm_line),Y
@@ -442,32 +443,32 @@ LFFFF           = $FFFF
                 PLA
                 RTS
 
-.ukn_status     JSR     L8141
+.ukn_status     JSR     prt_status
 
                 JSR     L815A
 
-                LDA     #$A1
-                JSR     OSBYTE
+                LDA     #$A1                        ; Read configuration RAM/EEPROM
+                JSR     OSBYTE                      ; X = byte to read  - Exit Y = value
 
                 TYA
                 LDX     #$00
-.L80C8          ROR     A
+.prnt_fji       ROR     A
                 BCC     L80D3
 
                 PHA
-                LDA     L8021,X
+                LDA     fmt_flag,X
                 JSR     OSWRCH
 
                 PLA
 .L80D3          INX
                 CPX     #$03
-                BCC     L80C8
+                BCC     prnt_fji
 
                 JSR     OSNEWL
 
                 BRA     ukn_command
 
-.clm_prv_wk     STZ     L0DF0,X
+.clm_prv_wk     STZ     rom_tble,X
                 BRA     ukn_command
 
 .ukn_osbyte     LDA     L00EF
@@ -490,13 +491,13 @@ LFFFF           = $FFFF
                 BNE     ukn_command
 
                 TAY
-                LDA     L0DF0,Y
+                LDA     rom_tble,Y
                 ORA     #$80
-                STA     L0DF0,Y
+                STA     rom_tble,Y
                 BRA     L8110
 
 .L8108          TAY
-                LDA     L0DF0,Y
+                LDA     rom_tble,Y
 .L810C          TSX
                 STA     L0101,X
 .L8110          TSX
@@ -505,10 +506,11 @@ LFFFF           = $FFFF
 
 .L8116          JSR     L815A
 
-                LDA     #$A1
-                JSR     OSBYTE
+                LDA     #$A1                            ; Read Configuration RAM/EEPROM
+                                                        ; X byte to read (or 255 to read RAM/EEPROM size)
+                JSR     OSBYTE                          ; Y contains value Read
 
-                TYA
+                TYA                                     ; Move result to A
                 BRA     L810C
 
 .L8121          DEY
@@ -537,7 +539,7 @@ LFFFF           = $FFFF
                 CMP     #$21
 .L8140          RTS
 
-.L8141          LDX     #$00
+.prt_status     LDX     #$00
 .L8143          LDA     L814E,X
                 BEQ     L8162
 
@@ -569,22 +571,29 @@ LFFFF           = $FFFF
 
                 EQUB    $0D,$00
 
-.lang_start     CMP     #$01
-                BNE     L8140
+.lang_start     CMP     #$01                      ; Claim Private Workspave in RAM
+                BNE     L8140                     ; No - Exit
 
                 CLI
                 JSR     LB56A
+
+                ; Setup the BRK Vector  &81B9
 
                 LDA     L81B4
                 STA     BRKV
                 LDA     L81B5
                 STA     BRKV+1
+
+                ; Reset Stack
+
                 LDX     #$FF
                 TXS
                 STX     L004E
                 JSR     LB19D
 
-                LDA     #$83
+                LDA     #$83                        ; Read OSHWM, bottom of user memory
+                                                    ; Y Page (MSB)
+                                                    ; X Page (LSB)  // TODO is this correct?
                 JSR     OSBYTE
 
                 CPX     L001F
@@ -599,17 +608,17 @@ LFFFF           = $FFFF
 
                 JSR     LAB51
 
-                JMP     L81B9
+                JMP     brk_handr
 
 .L81B6          JSR     LB1F3
 
-.L81B9          JSR     LA99A
+.brk_handr      JSR     LA99A
 
-                LDA     #$04
-                LDX     #$00
+                LDA     #$04                        ; Define Action of cursor editing keys
+                LDX     #$00                        ; Cursor keys have editing effect
                 JSR     OSBYTE
 
-                LDA     #$E1
+                LDA     #$E1                        ; Set function key (standard f0-f10) as softkey
                 LDX     #$01
                 LDY     #$00
                 JSR     OSBYTE
@@ -629,7 +638,7 @@ LFFFF           = $FFFF
 
                 JMP     L81FC
 
-.L81E2          JSR     LAA12
+.L81E2          JSR     str_ptr
 
                 ORA     L420D
                 EQUS    "Bytes free "
@@ -651,7 +660,7 @@ LFFFF           = $FFFF
                 ROR     A
                 BCC     L8230
 
-                JSR     LAA12
+                JSR     str_ptr
 
                 EQUS    "Input file is "
 
@@ -660,34 +669,34 @@ LFFFF           = $FFFF
 .L821A          LDA     L0041
                 BNE     L8226
 
-                JSR     LAA12
+                JSR     str_ptr
 
                 EQUS    "not "
 
                 EQUB    $00
 
-.L8226          JSR     LAA12
+.L8226          JSR     str_ptr
 
                 EQUS    "empty"
 
                 EQUB    $0D,$00
 
-.L8230          JSR     LAA12
+.L8230          JSR     str_ptr
 
                 EQUS    "Screen mode "
 
                 EQUB    $00
 
-.L8240          LDA     L0037
-                ORA     #$30
-                JSR     OSWRCH
+.L8240          LDA     L0037                           ; Read Screen Mode
+                ORA     #$30                            ; convert to decimal ASCII
+                JSR     OSWRCH                          ; Print Screen Mode
 
-                JSR     OSNEWL
+                JSR     OSNEWL                          ; Print New Line
 
                 LDA     L0784
                 BEQ     L8279
 
-                JSR     LAA12
+                JSR     str_ptr
 
                 EQUS    "Printer "
 
@@ -706,9 +715,9 @@ LFFFF           = $FFFF
 .L826A          LDA     L006C
                 BEQ     L8276
 
-                JSR     LAA12
+                JSR     str_ptr
 
-                EQUS    " (m)"
+                EQUS    " (m)"                              ; Print driver supports Microspacing
 
                 EQUB    $00
 
@@ -723,7 +732,7 @@ LFFFF           = $FFFF
                 BNE     L829E
 
                 STX     L0083
-                JSR     LAA12
+                JSR     str_ptr
 
                 EQUS    "Marker(s) set "
 
@@ -762,21 +771,21 @@ LFFFF           = $FFFF
                 TXS
                 INX
                 STX     L0069
-                JSR     LAA12
+                JSR     str_ptr
 
                 AND     L003E,X
-                LDX     #$00
+                LDX     #$00                            ; Input buffer at &0500
                 STX     L0085
                 LDX     #$05
                 STX     L0086
-                LDX     #$44
+                LDX     #$44                            ; Max line length
                 STX     L0087
-                LDX     #$20
+                LDX     #$20                            ; Min acceptable value (Space)
                 STX     L0088
-                LDX     #$FF
+                LDX     #$FF                            ; Max acceptable value (Any character > 20)
                 STX     L0089
                 LDX     #$85
-                LDA     #$00
+                LDA     #$00                            ; Input line of text
                 STA     L007F
                 TAY
                 JSR     OSWORD
@@ -797,7 +806,7 @@ LFFFF           = $FFFF
 
 .L82FE          JSR     LAB51
 
-                JMP     L81B9
+                JMP     brk_handr
 
 .L8304          LDY     #$00
                 JSR     L8F1E
@@ -808,7 +817,7 @@ LFFFF           = $FFFF
                 CMP     #$2A
                 BNE     L831B
 
-                LDX     #$00
+                LDX     #$00                        ; Call OSCLI (String is at &0500)
                 LDY     #$05
                 JSR     OSCLI
 
@@ -822,7 +831,7 @@ LFFFF           = $FFFF
                 CPY     #$19
                 BCC     L8331
 
-.L8326          JSR     LAA12
+.L8326          JSR     str_ptr
 
                 EQUS    "Mistake"
 
@@ -843,7 +852,7 @@ LFFFF           = $FFFF
                 LDY     #$04
                 JSR     LAAAA
 
-                JMP     L81B9
+                JMP     brk_handr
 
                 JSR     L84DA
 
@@ -898,19 +907,19 @@ LFFFF           = $FFFF
                 LDY     L001E
                 JSR     LA8C1
 
-                JSR     LAA12
+                JSR     str_ptr
 
                 EQUS    " string(s) changed"
 
                 EQUB    $FF
 
-.L83AA          JSR     LAA12
+.L83AA          JSR     str_ptr
 
                 EQUS    "No target given"
 
                 EQUB    $FF
 
-.L83BD          JSR     LAA12
+.L83BD          JSR     str_ptr
 
                 EQUS    "No string found"
 
@@ -1294,7 +1303,7 @@ L84B8 = L84B6+2
 
 .L8607          JSR     L8513
 
-                JSR     LAA12
+                JSR     str_ptr
 
                 EQUS    "Not enough memory"
 
@@ -1330,7 +1339,7 @@ L84B8 = L84B6+2
 
                 BCS     L8660
 
-.L864C          JSR     LAA12
+.L864C          JSR     str_ptr
 
                 EQUS    "Not all read in"
 
@@ -1392,7 +1401,7 @@ L84B8 = L84B6+2
 
                 JMP     LB19D
 
-.L86B4          JSR     LAA12
+.L86B4          JSR     str_ptr
 
                 EQUS    "Bad mode"
 
@@ -1421,7 +1430,7 @@ L84B8 = L84B6+2
                 STX     L006C
 .L86DE          RTS
 
-.L86DF          JSR     LAA12
+.L86DF          JSR     str_ptr
 
                 EQUS    "Driver does not support microspacing"
 
@@ -1446,7 +1455,7 @@ L84B8 = L84B6+2
                 LDY     L8745,X
                 BNE     L871A
 
-                JSR     LAA12
+                JSR     str_ptr
 
                 EQUS    "Bad flag"
 
@@ -1479,7 +1488,7 @@ L84B8 = L84B6+2
                 CMP     #$1B
                 BNE     L8761
 
-                JSR     LAA12
+                JSR     str_ptr
 
                 EQUS    "Frump!"
 
@@ -1585,7 +1594,7 @@ L84B8 = L84B6+2
                 LDY     L008E
                 JSR     LA8C1
 
-                JSR     LAA12
+                JSR     str_ptr
 
                 EQUS    " word(s) counted."
 
@@ -1667,7 +1676,7 @@ L84B8 = L84B6+2
 
                 LDX     #$00
 .L887A          STX     L007C
-.L887C          JSR     LAA12
+.L887C          JSR     str_ptr
 
                 EQUS    "Folding "
 
@@ -1676,13 +1685,13 @@ L84B8 = L84B6+2
 .L8888          LDA     L007C
                 BPL     L8893
 
-                JSR     LAA12
+                JSR     str_ptr
 
                 EQUS    "off"
 
                 EQUB    $FF
 
-.L8893          JSR     LAA12
+.L8893          JSR     str_ptr
 
 .L8897          ROR     L20FF
 L8899 = L8897+2
@@ -1802,7 +1811,7 @@ L8899 = L8897+2
 
 .L8957          JSR     L8513
 
-                JSR     LAA12
+                JSR     str_ptr
 
                 EQUS    "File not found"
 
@@ -1996,13 +2005,13 @@ L8899 = L8897+2
                 LDY     L0054,X
 .L8AA7          RTS
 
-.L8AA8          JSR     LAA12
+.L8AA8          JSR     str_ptr
 
                 EQUS    "Bad marker"
 
                 EQUB    $FF
 
-.L8AB6          JSR     LAA12
+.L8AB6          JSR     str_ptr
 
                 EQUS    "Marker not set"
 
@@ -2020,7 +2029,7 @@ L8899 = L8897+2
 
 .L8ADA          JSR     L8513
 
-                JSR     LAA12
+                JSR     str_ptr
 
                 EQUS    "Editing "
 
@@ -2042,7 +2051,7 @@ L8899 = L8897+2
 .L8AFC          BIT     L003C
                 BVS     L8B0E
 
-                JSR     LAA12
+                JSR     str_ptr
 
                 EQUS    " to "
 
@@ -2057,7 +2066,7 @@ L8899 = L8897+2
 
                 RTS
 
-.L8B16          JSR     LAA12
+.L8B16          JSR     str_ptr
 
                 EQUS    "No File"
 
@@ -2729,7 +2738,7 @@ L8899 = L8897+2
                 CPX     #$14
                 BNE     L8EEC
 
-.L8F00          JSR     LAA12
+.L8F00          JSR     str_ptr
 
                 EQUS    "Bad filename"
 
@@ -2788,7 +2797,7 @@ L8899 = L8897+2
 
                 BCS     L8F76
 
-                JSR     LAA12
+                JSR     str_ptr
 
                 EQUS    "Not with cassette"
 
@@ -2829,7 +2838,7 @@ L8899 = L8897+2
 
 .L8F9F          JSR     OSNEWL
 
-.L8FA2          JSR     LAA12
+.L8FA2          JSR     str_ptr
 
                 EQUS    "No text"
 
@@ -3059,7 +3068,7 @@ L8899 = L8897+2
 
 .L9102          JSR     L8513
 
-                JSR     LAA12
+                JSR     str_ptr
 
                 EQUS    "Nested macro call"
 
@@ -3491,7 +3500,7 @@ L8899 = L8897+2
 
                 JSR     L8513
 
-                JSR     LAA12
+                JSR     str_ptr
 
                 ORA     L6150
                 EQUS    "Page "
@@ -3502,7 +3511,7 @@ L8899 = L8897+2
                 LDY     L07B7
                 JSR     LA8C1
 
-                JSR     LAA12
+                JSR     str_ptr
 
                 ROL     L002E
                 JSR     LA969
@@ -7343,7 +7352,7 @@ LA4A0 = LA49F+1
 
 .LA9C0          STX     L0087
                 STY     L0088
-                JSR     LA9F4
+                JSR     sac_cur_pos
 
                 JSR     LA99E
 
@@ -7374,17 +7383,19 @@ LA4A0 = LA49F+1
                 LDA     #$67
                 BNE     LA9A3
 
-.LA9F4          LDA     #$86
+            ; Save the edit cursor position
+
+.sac_cur_pos    LDA     #$86                            ; Get edit Text Cursor position
                 JSR     OSBYTE
 
-                STX     L0089
-                STY     L008A
+                STX     L0089                           ; X cursor position
+                STY     L008A                           ; Y cursor position
                 RTS
 
-.LA9FE          LDX     L0089
-                LDY     L008A
+.LA9FE          LDX     L0089                           ; Get X cursor Pos
+                LDY     L008A                           ; Get Y cursor Pos
 .LAA02          PHA
-                LDA     #$1F
+                LDA     #$1F                            ; Move text cursor to X,Y
                 JSR     OSWRCH
 
                 TXA
@@ -7396,34 +7407,36 @@ LA4A0 = LA49F+1
                 PLA
 .LAA11          RTS
 
-.LAA12          STY     L0084
-                PLA
-                CLC
-                ADC     #$01
-                STA     L0087
-                PLA
-                ADC     #$00
+                ; Get pointer to address after JSR because it holds a string we want to print
+
+.str_ptr        STY     L0084                       ; Save Y
+                PLA                                 ; get return Address off Stack (LSB)
+                CLC                                 ; Clear Carry
+                ADC     #$01                        ; move on 1 byte
+                STA     L0087                       ; Store for further use below
+                PLA                                 ; get return Address off Stack (MSB)
+                ADC     #$00                        ; Increment (with carry)
                 STA     L0088
                 LDY     #$00
                 BEQ     LAA27
 
-.LAA23          JSR     OSASCI
+.prt_str        JSR     OSASCI                      ; Write Character
 
                 INY
-.LAA27          LDA     (L0087),Y
-                BMI     LAA3C
+.LAA27          LDA     (L0087),Y                   ; Get next character
+                BMI     LAA3C                       ; Is top bit set?
 
-                BNE     LAA23
+                BNE     prt_str
 
-                TYA
+                TYA                                 ; Transfer char count to A
                 SEC
-                ADC     L0087
+                ADC     L0087                       ; Add eith Carry to stored return address + 1
                 STA     L0087
-                BCC     LAA37
+                BCC     LAA37                       ; Over page boundary?
 
-                INC     L0088
-.LAA37          LDY     L0084
-                JMP     (L0087)
+                INC     L0088                       ; Need to increment MSB
+.LAA37          LDY     L0084                       ; restore Y
+                JMP     (L0087)                     ; Jump to code after string
 
 .LAA3C          JSR     OSNEWL
 
@@ -8391,10 +8404,10 @@ LA4A0 = LA49F+1
 .LAFBB          PHY
                 STX     L0082
 .LAFBE          LDY     #$00
-.LAFC0          LDX     L0500,Y
+.LAFC0          LDX     L0500,Y                     ; push the buffer to stack
                 PHX
                 INY
-                CPY     #$1E
+                CPY     #$1E                        ; 29 characters
                 BNE     LAFC0
 
                 JSR     LAF95
@@ -8404,12 +8417,12 @@ LA4A0 = LA49F+1
                 PHA
                 STZ     L0500
                 LDX     #$00
-                LDY     #$05
-                LDA     #$0E
-                JSR     OSWORD
+                LDY     #$05                        ; OSWORD Buffer at &0500
+                LDA     #$0E                        ; Read Real-time clock
+                JSR     OSWORD                      ; return clock value as string
 
-                LDA     L0500
-                BEQ     LB003
+                LDA     L0500               
+                BEQ     LB003                       ; Block did not change, so no real time clock
 
                 PLA
                 LDY     #$04
@@ -8437,7 +8450,7 @@ LA4A0 = LA49F+1
 .LB004          LDX     L0082
                 JSR     LA89B
 
-.LB009          LDY     #$1D
+.LB009          LDY     #$1D                    ; restore string buffer from stack
 .LB00B          PLA
                 STA     L0500,Y
                 DEY
@@ -8724,31 +8737,31 @@ LA4A0 = LA49F+1
                 CLC
 .LB19C          RTS
 
-.LB19D          LDA     #$87
+.LB19D          LDA     #$87                            ; Character at X and Mode Y
                 JSR     OSBYTE
 
-                STY     L0037
-                LDA     #$A3
-                LDX     #$FF
+                STY     L0037                           ; save Screen Mode
+                LDA     #$A3                            ; Application Support Call
+                LDX     #$FF                            ; VIEW family workspace flag
                 STX     L0052
-                LDY     #$01
+                LDY     #$01                            ; Read workspace flag
                 JSR     OSBYTE
 
                 CPY     #$01
                 BNE     LB1B5
 
-                STY     L0052
-.LB1B5          LDA     #$84
+                STY     L0052                           ; Store copy of Workspace flag
+.LB1B5          LDA     #$84                            ; Read top of user memory
                 JSR     OSBYTE
 
-                STX     L000F
-                STY     L0010
-                LDA     #$A0
-                LDX     #$09
+                STX     L000F                           ; HimemLSB
+                STY     L0010                           ; HimemMSB
+                LDA     #$A0                            ; Read VDU Variable
+                LDX     #$09                            ; Current text window bottom row
                 JSR     OSBYTE
 
-                STY     L0036
-                STX     L0035
+                STY     L0036                           ; current text window bottom row
+                STX     L0035                           ; current text window bottom row
                 JSR     LB1D4
 
                 BCS     LB1D3
@@ -8758,8 +8771,8 @@ LA4A0 = LA49F+1
                 ROL     L0052
 .LB1D3          RTS
 
-.LB1D4          LDA     #$82
-                JSR     OSBYTE
+.LB1D4          LDA     #$82                            ; Read High Order Address
+                JSR     OSBYTE                          ; &YYXX0000
 
                 SEC
                 INY
@@ -8792,14 +8805,14 @@ LA4A0 = LA49F+1
                 CMP     #$0D
                 BEQ     LB230
 
-.LB200          LDA     #$A3
-                LDX     #$FF
+.LB200          LDA     #$A3                        ; Application Support
+                LDX     #$FF                        ; Acorn View Family
                 STX     L0050
-                LDY     #$06
+                LDY     #$06                        ; Y < &80 so read ROM's workspave byte at &DF0+romnum
                 JSR     OSBYTE
 
-                STZ     L004F
-                INC     L004F
+                STZ     L004F                       ; Store 0 in &004F
+                INC     L004F                       ; Then Increment
                 STZ     L0051
                 TYA
                 AND     #$04
@@ -8822,11 +8835,11 @@ LA4A0 = LA49F+1
                 BPL     LB228
 
                 STZ     L0784
-.LB230          LDA     #$83
+.LB230          LDA     #$83                        ; Read OSHWM, bottom of user memory
                 JSR     OSBYTE
 
-                STX     L001F
-                STY     L0020
+                STX     L001F                       ; LSB of page
+                STY     L0020                       ; MSB of page  // TODO still not sure the endness is right
                 INY
                 INX
                 STX     L000B
@@ -8940,23 +8953,23 @@ LA4A0 = LA49F+1
                 LDA     #$0F
                 JSR     OSWRCH
 
-                LDA     #$E1
+                LDA     #$E1                        ; Function keys interpretation
                 LDY     #$00
                 LDX     #$02
                 JSR     OSBYTE
 
-                LDA     #$E2
+                LDA     #$E2                        ; Shift-Function keys interpretation
                 LDY     #$00
                 LDX     #$02
                 JSR     OSBYTE
 
-                LDA     #$E3
+                LDA     #$E3                        ; Ctrl-Function keys interpretation
                 STA     L003D
                 LDY     #$00
                 LDX     #$02
                 JSR     OSBYTE
 
-                LDA     #$04
+                LDA     #$04                        ; Cursor keys as soft keys
                 LDX     #$02
                 STX     L0073
                 STX     L0076
@@ -9027,7 +9040,7 @@ LB387 = LB386+1
                 STZ     L0000
                 ASL     A
                 BRK
-.LB38E          EQUB    $1B
+.LB38E          EQUB    $1B                         ; This doesnt look like real code
 
                 ORA     L097F
                 ORA     (L00B5),Y
