@@ -371,6 +371,7 @@ LE181           = $E181
 LE182           = $E182
 LE1A0           = $E1A0
 LE208           = $E208
+LE20A           = $E20A
 LE242           = $E242
 LE281           = $E281
 LE282           = $E282
@@ -6843,9 +6844,26 @@ LA54E = LA54D+1
 
                 EQUS    "Mode "
 
-                EQUB    $00,$00,$00,$03,$20,$0A,$E2,$68
-                EQUB    $00,$8F,$E2,$02,$01,$80,$E0,$02
-                EQUB    $00,$00,$EF,$01,$00,$00,$EF
+.LA8F7          BRK
+                EQUB    $00
+
+                BRK
+                EQUB    $03
+
+                JSR     LE20A
+
+                PLA
+                BRK
+                EQUB    $8F
+
+                ORA     (L0080,X)
+                CPX     #$02
+                BRK
+                EQUB    $00
+
+                ORA     (L0000,X)
+                BRK
+                EQUB    $EF
 
                 EQUS    " flags set: "
 

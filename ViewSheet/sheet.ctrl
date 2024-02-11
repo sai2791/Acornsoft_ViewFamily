@@ -2,8 +2,8 @@ cpu 65c02
 load $8000 ViewSheet.rom
 symbols bbc.sym
 symbols ViewSheet.sym
-save ViewSheet.asm
-hexdump ViewSheet.hex
+save n-ViewSheet.asm
+hexdump n-ViewSheet.hex
 
 
 entry $8000
@@ -114,5 +114,3 @@ string $B16A 17 ; "Too few arguments"
 byte $BF22
 byte $BD89
 ;byte $BDCA
-
-entry $BDCA

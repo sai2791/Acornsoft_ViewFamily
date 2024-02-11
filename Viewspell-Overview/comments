@@ -3,4 +3,4 @@ osbyte $&85  on entry X = for which mode
 
 L0008 seems to be something to do with mode or next mode to choose.
 
-
+L004A and L004B seem to be how many bytes of memory are left for text

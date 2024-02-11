@@ -1,0 +1,250 @@
+cpu 65C02
+load $8000 viewspell.rom
+save viewspell-1.1.asm
+symbols viewspell-1.1.sym
+symbols bbc.sym
+hexdump viewspell-1.1.hex
+
+
+entry $8000
+entry $8003
+byte $8006 ; rom type
+byte $8007 ; Copyright offset
+byte $8008
+
+
+string $8009 9 ; "ViewSpell"
+string $8013 3 ; "1.1"
+string $8017 17 ; "(C)1985 Acornsoft"
+entry $8029
+string $8038 9 ; "W.MASTER1"
+entry $8042
+string $8088 6 ; "Insert"
+entry $808F
+string $8095 16 ; "disc & hit a key"
+entry $80A6
+string $80E6 6 ; "Escape"
+entry $80ED
+string $8145 7 ; "Mistake"
+stringhi $816F 3 ; "nam"
+entry $8173
+string $8215 7 ; " unique"
+; entry $821C ; -> Results in bad code
+entry $821E
+string $8272 11 ; "Memory full"
+entry $827E
+string $82AC 4 ; "mode"
+entry $82B1
+string $82EB 9 ; "ViewSpell"
+entry $82F6
+string $8300 10 ; "Bytes free"
+entry $830B
+string $833F 6 ; "Source"
+entry $8346
+byte $8357
+byte $8358
+byte $8359
+string $835A 11 ; "Screen mode"
+entry $8366
+string $866F 3 ; "All"
+entry $8673
+stringhi $87C9 8 ; "Nick Dea"
+entry $87D2
+stringhi $8853 5 ; "Savin"
+entry $8859
+stringhi $890B 6 ; "Markin"
+string $8D7C 8 ; "Checking"
+stringhi $9071 6 ; "Loadin"
+entry $9078
+string $92C7 6 ; "letter"
+entry $92CE
+string $92EF 7 ; "M)aster"
+entry $92F7
+string $9302 5 ; "U)ser"
+entry $9308
+string $9313 5 ; "T)ext"
+entry $9319
+string $9338 8 ; "Too long"
+string $93C9 9 ; "directory"
+entry $93D3
+string $94CD 3 ; "not"
+string $94D4 5 ; "found"
+entry $94DA
+string $94EF 5 ; "Word?"
+entry $94F5
+string $9568 2 ; "In"
+string $956E 6 ; "master"
+stringhi $9578 9 ; "dictionar"
+entry $9582
+string $9693 4 ; "Full"
+string $97B4 7 ; "Deleted"
+entry $97BC
+stringhi $9932 4 ; "CMAR"
+stringhi $9937 5 ; "CReat"
+stringhi $993D 3 ; "MAR"
+stringhi $9941 3 ; "SAv"
+stringhi $9945 5 ; "SCree"
+stringhi $994B 3 ; "NAm"
+stringhi $9954 4 ; "CHec"
+stringhi $9959 6 ; "CONtex"
+stringhi $9962 3 ; "LIs"
+stringhi $9966 5 ; "Searc"
+stringhi $996C 3 ; "Loa"
+stringhi $9970 3 ; "Mod"
+stringhi $9977 3 ; "REa"
+stringhi $997B 5 ; "PREfi"
+stringhi $9981 5 ; "MARKE"
+stringhi $9987 3 ; "USe"
+stringhi $998B 3 ; "MAR"
+string $9BE8 6 ; " words"
+entry $9BEF
+string $9C40 4 ; "file"
+entry $9C45
+string $9CD4 4 ; "word"
+entry $9CD9
+stringhi $9EFA 5 ; "strin"
+entry $9F00
+string $A46B 23 ; "Press BREAK to continue"
+entry $A483
+string $A581 5 ; "VIEW "
+string $A588 10 ; "ViewSheet "
+string $A594 10 ; "ViewStore "
+string $A5A0 10 ; "ViewSpell "
+string $A5AC 9 ; "commands:"
+string $A5B9 8 ; " target "
+string $A5C7 9 ; "(result) "
+string $A5D2 3 ; "(12"
+string $A5D8 4 ; "file"
+string $A5E8 6 ; "ESCAPE"
+string $A5F5 4 ; "/off"
+string $A5FB 6 ; "Mode n"
+string $A604 3 ; "New"
+string $A60A 5 ; "Print"
+string $A617 4 ; "Read"
+string $A61E 4 ; "Save"
+string $A624 6 ; "Screen"
+string $A62C 7 ; " margin"
+string $A636 4 ; "text"
+string $A63C 4 ; "left"
+string $A642 6 ; "centre"
+string $A64A 5 ; "right"
+string $A651 7 ; "define "
+string $A665 6 ; "footer"
+string $A66D 6 ; "header"
+string $A675 4 ; "page"
+string $A67B 5 ; "macro"
+string $A683 6 ; " ;set "
+string $A68B 8 ; " justify"
+string $A696 4 ; " n ;"
+string $A69C 4 ; " (n)"
+string $A6A6 4 ; "Load"
+string $A6AD 4 ; "name"
+string $A6B3 6 ; "Search"
+string $A6BB 6 ; "Stored"
+stringhi $A6C3 6 ; "Create"
+string $A6CB 6 ; "prefix"
+string $A6D3 6 ; "string"
+string $A6DC 10 ; " (letter ("
+string $A6EB 4 ; "mark"
+string $A6F5 4 ; "List"
+string $A703 7 ; "Command"
+string $A710 12 ; "OverView 1.0"
+string $A71F 5 ; "Sheet"
+string $A725 5 ; "Store"
+string $A72B 5 ; "Spell"
+string $A732 6 ; "*Keep "
+string $A739 4 ; "/ram"
+string $A73E 8 ; "/quiet ("
+string $A748 6 ; "*Wide "
+string $A754 6 ; "Change"
+string $A75D 5 ; "Clear"
+string $A763 6 ; "Count "
+string $A76A 4 ; "Edit"
+string $A772 3 ; "out"
+string $A777 7 ; "Field n"
+string $A77F 6 ; "Finish"
+string $A786 6 ; "Fold ("
+string $A78E 7 ; "Format "
+string $A797 10 ; "Microspace"
+string $A7A4 7 ; "More (1"
+string $A7B2 4 ; "Quit"
+string $A7B8 3 ; " (1"
+string $A7BC 7 ; "Replace"
+string $A7D1 10 ; "Setup (FJI"
+string $A7DC 8 ; "Sheets ("
+string $A7E7 5 ; "Write"
+string $A7F8 6 ; "bottom"
+string $A7FF 3 ; "CE "
+string $A807 3 ; "DF "
+string $A80D 3 ; "DH "
+string $A813 3 ; "DM "
+string $A81B 8 ; "EM ;end "
+string $A824 9 ; "EP ;even "
+string $A834 3 ; "FO "
+string $A83C 3 ; "HE "
+string $A849 12 ; "HT 1/2/*/- n"
+string $A856 9 ; "highlight"
+string $A860 3 ; "LJ "
+string $A86B 8 ; "printer "
+string $A878 19 ; "blanks between line"
+string $A88C 8 ; "OP ;odd "
+string $A896 3 ; "PB "
+string $A89D 6 ; " break"
+string $A8AF 7 ; " length"
+string $A8B7 3 ; "RJ "
+string $A8BF 14 ; "SR r n (+/- n)"
+string $A8CE 8 ; "register"
+string $A8DA 3 ; "top"
+string $A8DE 3 ; "TS "
+string $A8E3 11 ; " ;two-sided"
+string $A8F4 6 ; " n x y"
+string $A8FC 9 ; "Headings "
+string $A915 8 ; "Protect "
+string $A91F 3 ; "*RC"
+string $A925 8 ; " slot (T"
+string $A946 7 ; "Utility"
+string $A952 3 ; "Add"
+string $A959 5 ; "Check"
+string $A965 6 ; " (word"
+string $A976 9 ; "er (1/2 ("
+string $A991 4 ; "User"
+string $AB5E 4 ; "Keep"
+entry $AB63
+string $AB81 4 ; " ON "
+
+entry $AB86
+string $AB8C 5 ; " RAM "
+string $ABC5 10 ; "Bad syntax"
+string $ACB0 9 ; "Not found"
+string $AD4C 7 ; "No page"
+string $ADEA 4 ; "Wide"
+entry $ADEF
+string $AE29 4 ; " OFF"
+string $AE33 3 ; " ON"
+entry $AE38
+tring $AFF7 16 ; "Too much to keep"
+tring $B23B 6 ; "`Spell"
+string $B242 5 ; "Sheet"
+string $B248 5 ; "Store"
+string $B24E 4 ; "VIEW"
+string $B43E 4 ; "KEEP"
+string $B446 4 ; "WIDE"
+string $B44B 5 ; "SPELL"
+string $B451 4 ; "READ"
+entry $8457
+string $B45A 3 ; "OFF"
+string $B45E 3 ; "RAM"
+string $B462 5 ; "QUIET"
+string $B468 5 ; "BASIC"
+string $B46E 4 ; "WORD"
+string $B473 4 ; "VIEW"
+string $B478 8 ; "COMMANDS"
+string $B481 6 ; "STORED"
+string $B488 5 ; "SHEET"
+string $B48E 5 ; "STORE"
+string $B494 5 ; "SPELL"
+string $B4FE 13 ; "Keeping *****"
+string $B50C 3 ; "(C)"
+
+entry $85A5 ; seems to be the brkv
+entry $88E9 ; close a file

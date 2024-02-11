@@ -17,8 +17,8 @@ L000F           = $000F
 L0010           = $0010
 L0011           = $0011
 L0012           = $0012
-L0013           = $0013
-L0014           = $0014
+PageLSB           = $0013
+PageMSB           = $0014
 L0015           = $0015
 L0016           = $0016
 L0017           = $0017
@@ -116,6 +116,7 @@ L0073           = $0073
 L0077           = $0077
 L007A           = $007A
 L007F           = $007F
+L0080           = $0080
 L0081           = $0081
 L0082           = $0082
 L0084           = $0084
@@ -125,7 +126,7 @@ L00C9           = $00C9
 L00EF           = $00EF
 L00F0           = $00F0
 L00F1           = $00F1
-L00F2           = $00F2
+cmd_line        = $00F2
 L00FD           = $00FD
 L00FF           = $00FF
 L0101           = $0101
@@ -213,14 +214,22 @@ L07EC           = $07EC
 L07ED           = $07ED
 L07EE           = $07EE
 L07EF           = $07EF
+L0880           = $0880
+L0881           = $0881
 L0889           = $0889
 L0A81           = $0A81
 L0C8D           = $0C8D
-L0DF0           = $0DF0
+rom_table           = $0DF0
+L1380           = $1380
+L1480           = $1480
+L1781           = $1781
 L2BBB           = $2BBB
+L2F38           = $2F38
 L30E6           = $30E6
 L35FA           = $35FA
 L3607           = $3607
+L3F3A           = $3F3A
+L4A52           = $4A52
 L54F8           = $54F8
 L6284           = $6284
 L67E8           = $67E8
@@ -253,12 +262,14 @@ OSBYTE          = $FFF4
 OSCLI           = $FFF7
 
                 org     $8000
-.langent        JMP     rom_serv
+.langent        JMP     lang_serv
 
-.servent        JMP     L802A
+.servent        JMP     serv_cmd
 
                 CLC
-.L8009          EQUS    "ViewSheet"
+.L8009          EQUS    "Vie"
+
+.L800C          EQUS    "wSheet"
 
                 EQUB    $00
 
@@ -270,7 +281,7 @@ OSCLI           = $FFF7
 
                 EQUB    $00
 
-.L802A          PHA
+.serv_cmd       PHA
                 TXA
                 PHA
                 TYA
@@ -281,45 +292,45 @@ OSCLI           = $FFF7
                 BEQ     help_cmd
 
                 CMP     #$07
-                BEQ     L808B
+                BEQ     ukn_osbyte
 
                 CMP     #$02
-                BEQ     L807F
+                BEQ     clm_prv_ram
 
                 CMP     #$04
-                BNE     L807C
+                BNE     ukn_command
 
                 LDX     #$FF
                 DEY
 .L8046          INX
                 INY
-                LDA     L80C0,X
+                LDA     sheet_str,X                   ; SHEET
                 BMI     L8063
 
-                LDA     (L00F2),Y
-                AND     #$DF
-                CMP     L80C0,X
+                LDA     (cmd_line),Y
+                AND     #$DF                      ; Change to uppercase
+                CMP     sheet_str,X
                 BEQ     L8046
 
-                CMP     #$0E
-                BNE     L807C
+                CMP     #$0E                      
+                BNE     ukn_command
 
 .L805A          PLA
                 PLA
                 TAX
                 PLA
-                LDA     #$8E
+                LDA     #$8E                      ; Enter Language Rom
                 JMP     OSBYTE
 
-.L8063          LDA     (L00F2),Y
-                CMP     #$21
+.L8063          LDA     (cmd_line),Y
+                CMP     #$21                      ; is !?
                 BCC     L805A
 
-                BCS     L807C
+                BCS     ukn_command
 
-.help_cmd       LDA     (L00F2),Y
-                CMP     #$0D
-                BNE     L807C
+.help_cmd       LDA     (cmd_line),Y
+                CMP     #$0D                      ; is <CR>?
+                BNE     ukn_command
 
                 JSR     OSNEWL
 
@@ -328,35 +339,35 @@ OSCLI           = $FFF7
 
                 JSR     OSNEWL
 
-.L807C          JMP     exit
+.ukn_command    JMP     exit
 
-.L807F          TSX
+.clm_prv_ram    TSX
                 LDA     L0102,X
                 TAX
                 LDA     #$00
-                STA     L0DF0,X
-                BEQ     L807C
+                STA     rom_table,X
+                BEQ     ukn_command
 
-.L808B          LDA     L00EF
+.ukn_osbyte     LDA     L00EF
                 CMP     #$A3
-                BNE     L807C
+                BNE     ukn_command
 
                 LDA     L00F0
                 CMP     #$FF
-                BNE     L807C
+                BNE     ukn_command
 
                 TSX
                 LDA     L0102,X
                 LDY     L00F1
                 CPY     #$02
-                BNE     L807C
+                BNE     ukn_command
 
                 TAY
-                LDA     L0DF0,Y
+                LDA     rom_table,Y
                 STA     L0101,X
                 LDA     #$00
                 STA     L0103,X
-                BEQ     L807C
+                BEQ     ukn_command
 
 .L80AF          INC     L005E
 .L80B1          LDY     L005E
@@ -371,12 +382,14 @@ OSCLI           = $FFF7
 
 .L80BF          RTS
 
-.L80C0          EQUS    "SHEET"
+.sheet_str      EQUS    "SHEET"
 
                 EQUB    $FF
 
-.rom_serv       CMP     #$01
-                BNE     L80BF
+.lang_serv      CMP     #$01
+                BNE     L80BF                      ; Next Rom
+
+                ; Setup Brk Vector
 
                 CLI
                 STA     L0056
@@ -388,13 +401,13 @@ OSCLI           = $FFF7
 
                 JSR     LAE62
 
-                LDA     #$83
-                JSR     OSBYTE
+                LDA     #$83                        ; Read OSHWM bottom of user memory
+                JSR     OSBYTE                      ; XY contains 'PAGE'
 
-                CPX     L0013
+                CPX     PageLSB                   
                 BNE     L80EF
 
-                CPY     L0014
+                CPY     PageMSB
                 BNE     L80EF
 
                 JSR     LADC6
@@ -426,32 +439,35 @@ OSCLI           = $FFF7
                 ROR     L005B
                 JSR     L9783
 
-                LDA     #$04
+                LDA     #$04                    ; Cursor keys have edit default
                 LDX     #$00
                 JSR     OSBYTE
 
-                LDA     #$E1
+                LDA     #$E1                    ; Standard function keys
                 LDX     #$01
                 LDY     #$00
-                JSR     OSBYTE
+                JSR     OSBYTE                  ; 
 
-                LDX     #$00
-                JSR     L9721
+.L8127          LDX     #$00
+L8128 = L8127+1
+.L8129          JSR     L9721
 
                 LDX     #$00
                 JSR     prt_help_msg
 
                 JSR     OSNEWL
 
-                JSR     LADA9
+.L8134          JSR     LADA9
 
+L8135 = L8134+1
                 BCS     L8152
 
                 JSR     LAD3D
 
-                ORA     L7942
+.L813C          ORA     L7942
                 EQUS    "Bytes free "
 
+L813E = L813C+2
                 EQUB    $00
 
 .L8149          JSR     LA2BA
@@ -484,7 +500,7 @@ OSCLI           = $FFF7
                 EQUB    $00
 
 .L8181          LDX     #$00
-.L8183          LDA     L06A5,X
+.L8183          LDA     L06A5,X                ; Print the printer driver name
                 JSR     OSASCI
 
                 CMP     #$0D
@@ -496,7 +512,7 @@ OSCLI           = $FFF7
 .L8190          JSR     OSNEWL
 
 .L8193          LDX     #$FF
-                TXS
+                TXS                             ; Reset Stack Pointer
                 JSR     LAD3D
 
                 AND     L003E,X
@@ -512,7 +528,7 @@ OSCLI           = $FFF7
                 LDX     #$20
                 STX     L0069
                 LDX     #$66
-                LDA     #$00
+                LDA     #$00                    ; Input line of text
                 STA     L005D
                 STA     L005E
                 TAY
@@ -585,8 +601,8 @@ OSCLI           = $FFF7
                 LDA     L005C
                 BNE     L8237
 
-                LDA     #$85
-                LDX     L0064
+                LDA     #$85                ; get address of start of screen ram
+                LDX     L0064               ; L0064 is mode?
                 JSR     OSBYTE
 
                 CPY     L0020
@@ -1098,11 +1114,11 @@ L8483 = L8482+1
                 STA     L0071
                 RTS
 
-.L855C          LDA     #$82
+.L855C          LDA     #$82            ; Read High Order Byte (Are you in the tube)
                 JSR     OSBYTE
 
-                STX     L0504
-                STY     L0505
+                STX     L0504           High Order LSB
+                STY     L0505           High Order MSB
                 STX     L050C
                 STY     L050D
                 STX     L0510
@@ -1111,7 +1127,7 @@ L8483 = L8482+1
 
 .L8574          LDA     #$00
                 TAY
-                JSR     OSARGS
+                JSR     OSARGS          ; Get sequential pointer of open object
 
                 CMP     #$03
                 RTS
@@ -1151,8 +1167,8 @@ L8483 = L8482+1
                 LDA     #$83
                 JSR     OSBYTE
 
-                STX     L0013
-                STY     L0014
+                STX     PageLSB
+                STY     PageMSB
                 TXA
                 SEC
                 ADC     #$EE
@@ -1255,7 +1271,7 @@ L8483 = L8482+1
 
 .L865D          JMP     L8193
 
-                BIT     L005B
+.L8660          BIT     L005B
                 BMI     L8666
 
                 BVC     L867C
@@ -1302,38 +1318,38 @@ L8483 = L8482+1
                 LDA     #$E1
                 STA     L0054
                 STA     L0055
+                LDY     #$00                ; Function keys
+                LDX     #$02
+                JSR     OSBYTE
+
+                LDA     #$E2                ; Shift-function keys
                 LDY     #$00
                 LDX     #$02
                 JSR     OSBYTE
 
-                LDA     #$E2
+                LDA     #$E3                ; ctrl-function keys
                 LDY     #$00
                 LDX     #$02
                 JSR     OSBYTE
 
-                LDA     #$E3
-                LDY     #$00
-                LDX     #$02
-                JSR     OSBYTE
-
-                LDA     #$04
+                LDA     #$04                ; treat cursor keys as softkeys
                 LDX     #$02
                 JSR     OSBYTE
 
                 LDA     #$00
                 TAY
-.L86CF          STA     (L0013),Y
+.L86CF          STA     (PageLSB),Y
                 INY
                 BNE     L86CF
 
-                INC     L0014
+                INC     PageMSB
                 LDX     #$EE
-.L86D8          STA     (L0013),Y
+.L86D8          STA     (PageLSB),Y
                 INY
                 DEX
                 BNE     L86D8
 
-                DEC     L0014
+                DEC     PageMSB
                 TAY
                 STY     L0050
                 STY     L0048
@@ -3823,11 +3839,11 @@ L93DF = L93DE+1
 
                 INY
 .L9624          CLC
-                ADC     L0013
+                ADC     PageLSB
                 STA     L006A
                 TYA
                 ADC     L06CD,X
-                ADC     L0014
+                ADC     PageMSB
                 STA     L006B
                 LDY     #$00
                 STY     L0063
@@ -4263,7 +4279,7 @@ L93DF = L93DE+1
 
                 EQUB    $00,$D7,$FF,$FF,$FF,$FF
 
-.L98B0          LDA     #$03
+.L98B0          LDA     #$03            ; Read Timer Interval
                 LDX     #$98
                 LDY     #$06
                 JSR     OSWORD
@@ -4297,7 +4313,7 @@ L93DF = L93DE+1
                 LDX     #$AB
                 LDY     #$98
                 LDA     #$04
-                JMP     OSWORD
+                JMP     OSWORD          ; Write timer interval
 
 .L98EA          SEC
                 JSR     LAB6D
@@ -7875,7 +7891,7 @@ L9E9D = L9E9C+1
                 PHY
                 LDX     #$00
                 LDY     #$00
-                LDA     #$7E
+                LDA     #$7E            ; Acknowledge escape
                 JSR     OSBYTE
 
 .exit           PLY
@@ -7883,8 +7899,8 @@ L9E9D = L9E9C+1
 .LAD92          PLA
                 RTS
 
-.LAD94          LDA     #$15
-                LDX     #$00
+.LAD94          LDA     #$15            ; Flush keyboard buffer
+                LDX     #$00            
                 JMP     OSBYTE
 
 .LAD9B          PHA
@@ -7976,16 +7992,16 @@ L9E9D = L9E9C+1
                 LDA     screen_mode
                 JSR     OSWRCH
 
-.LAE25          LDA     #$87
+.LAE25          LDA     #$87                ; Get Screen Mode
                 JSR     OSBYTE
 
                 STY     screen_mode
-                LDA     #$84
+                LDA     #$84                ; Read top of user memory
                 JSR     OSBYTE
 
-                STX     L0021
-                STY     L0022
-                LDA     #$A0
+                STX     L0021               ; HIMEMLSB
+                STY     L0022               ; HIMEMMSB
+                LDA     #$A0                ; Get bottom of current text window
                 LDX     #$09
                 JSR     OSBYTE
 
@@ -7995,15 +8011,15 @@ L9E9D = L9E9C+1
                 DEX
                 DEX
                 STX     L0053
-                LDA     #$A3
-                LDX     #$FF
+                LDA     #$A3                ; Application Support
+                LDX     #$FF                ; View Family workspace flag
                 STX     L005C
                 LDY     #$02
                 JSR     OSBYTE
 
                 LDX     #$00
                 CPY     #$02
-                LDA     #$82
+                LDA     #$82                ; Read High order address
                 JSR     OSBYTE
 
                 INY
@@ -8325,30 +8341,69 @@ LAF8A = LAF89+1
                 EQUB    $87,$06,$2B,$00,$01,$00,$01,$0E
                 EQUB    $0F,$09,$0E,$6F,$0A
 
-.LB073          EQUB    $0A
+.LB073          ASL     A
+.LB074          BRK
+                EQUB    $64
 
-.LB074          EQUB    $00,$64,$00,$E8,$03,$10,$27,$4D
-                EQUB    $52,$4A,$43,$00
+                BRK
+                EQUB    $E8
 
+                BPL     LB0A2
+
+                EOR     L4A52
+                BRK
 .LB080          EQUB    $44
 
-.LB081          EQUB    $41
+.LB081          EOR     (L0046,X)
+LB082 = LB081+1
+                BRK
+                EQUB    $4C
 
-.LB082          EQUB    $46,$00,$4C,$20,$52,$00,$42,$10
-                EQUB    $4D,$00,$00
+                JSR     L0052
 
-.LB08D          EQUB    $0B,$09,$14,$2F,$3E,$38,$2F,$81
-                EQUB    $0B,$09,$12,$15,$0F,$1E,$29,$81
-                EQUB    $17,$0C,$81,$17,$34,$3A,$3F,$81
-                EQUB    $15,$1E,$0C,$80,$15,$1A,$36,$3E
-                EQUB    $81,$08,$0C,$81,$08,$18,$29,$3E
-                EQUB    $3E,$35,$81,$18,$29,$3E,$3A,$2F
-                EQUB    $3E,$80,$13,$3E,$3A,$3F,$32,$35
-                EQUB    $3C,$28,$81,$0B,$18,$81,$0B,$29
-                EQUB    $32,$35,$2F,$81,$16,$34,$3F,$3E
-                EQUB    $80,$08,$3A,$2D,$3E,$81,$14,$1D
-                EQUB    $3D,$80,$14,$15,$80,$00
+                BPL     LB0D8
 
+                BRK
+                EQUB    $00
+
+                ORA     #$14
+                ROL     L2F38,X
+                STA     (L000B,X)
+                ORA     #$12
+                ORA     L000F,X
+                ASL     L8129,X
+                TSB     L1781
+.LB0A1          BIT     L003A,X
+LB0A2 = LB0A1+1
+                STA     (L0015,X)
+                ASL     L800C,X
+                ORA     L001A,X
+                ROL     L003E,X
+                STA     (L0008,X)
+                TSB     L0881
+                CLC
+                AND     #$3E
+                ROL     L8135,X
+                CLC
+                AND     #$3E
+                DEC     A
+                ROL     L1380,X
+                ROL     L3F3A,X
+                AND     (L0035)
+                BIT     L8128,X
+                CLC
+                STA     (L000B,X)
+                AND     #$32
+                AND     L002F,X
+                STA     (L0016,X)
+                BIT     L003F,X
+                ROL     L0880,X
+                DEC     A
+.LB0D8          AND     L813E
+                TRB     L001D
+                AND     L1480,X
+                ORA     L0080,X
+                BRK
 .LB0E3          EQUS    "Brackets"
 
                 EQUB    $00

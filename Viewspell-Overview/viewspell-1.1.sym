@@ -1,0 +1,26 @@
+lang_entry=$804D
+serv_entry=$A300
+
+get_scr_mode = $8029
+ACCON = $FE34
+ROMSEL = $00F4 
+ROMSEL_REG = $FE30
+read_byt_file = $9C34 
+opn_file_in = $9CBF
+
+call_osfind = $9CC1
+
+ROMTBL = $0DF0
+close_file = $88E9
+ins_brkv = $85A5
+rom_string = $8008
+rom_type -$8006
+
+PageLSB = $0018
+PageMSB = $0019
+
+TubeAddLSB = $0081
+TubeAddMSB = $0082
+
+load_file = $9C5F
+
