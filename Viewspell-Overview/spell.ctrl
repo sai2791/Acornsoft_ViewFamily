@@ -12,7 +12,6 @@ byte $8006 ; rom type
 byte $8007 ; Copyright offset
 byte $8008
 
-
 string $8009 9 ; "ViewSpell"
 string $8013 3 ; "1.1"
 string $8017 17 ; "(C)1985 Acornsoft"
@@ -222,8 +221,8 @@ entry $ADEF
 string $AE29 4 ; " OFF"
 string $AE33 3 ; " ON"
 entry $AE38
-tring $AFF7 16 ; "Too much to keep"
-tring $B23B 6 ; "`Spell"
+string $AFF7 16 ; "Too much to keep"
+string $B23C 5 ; "Spell"
 string $B242 5 ; "Sheet"
 string $B248 5 ; "Store"
 string $B24E 4 ; "VIEW"
@@ -248,3 +247,23 @@ string $B50C 3 ; "(C)"
 
 entry $85A5 ; seems to be the brkv
 entry $88E9 ; close a file
+
+word $b86D
+word $b86F
+byte $b870
+
+; looks like a table
+word $B3C4 7
+
+;word $BF66 4
+
+
+byte $A32B 14  ; Some kind of table
+byte $A32C 14  ; some kind of table
+
+entry $A33A
+entry $A329
+entry $A3EE
+entry $A421
+
+byte $A418 8   ; some kind of table

@@ -327,12 +327,12 @@ OSCLI           = $FFF7
                 DEY
 .L8031          INX
                 INY
-                LDA     L805A,X
+                LDA     L805A,X    ; compare to WORD
                 BMI     L804E
 
                 LDA     (cmd_line),Y
-                AND     #$DF
-                CMP     L805A,X
+                AND     #$DF       ; change to upper case
+                CMP     L805A,X    ; compare to WORD
                 BEQ     L8031
 
 .L8040          BEQ     L800B
@@ -342,12 +342,12 @@ OSCLI           = $FFF7
                 PLA
                 TAX
                 PLA
-                LDA     #$8E
+                LDA     #$8E    ; HIMEM
                 JMP     OSBYTE
 
 .L804E          LDA     (cmd_line),Y
-                CMP     #$21
-                BCC     L8045
+                CMP     #$21    ; Character !
+                BCC     L8045   ; less than
 
 .nextrom        PLA
                 TAY
@@ -367,9 +367,9 @@ OSCLI           = $FFF7
                 JSR     LB2EB
 
                 LDA     L8093
-                STA     BRKV
+                STA     BRKV        ; low order byte
                 LDA     L8094
-                STA     BRKV+1
+                STA     BRKV+1      ; high order byte
                 LDX     #$FF
                 TXS
                 STX     L004E
@@ -398,14 +398,14 @@ OSCLI           = $FFF7
 
 .L8098          JSR     LA73A
 
-                LDA     #$04
-                LDX     #$00
+                LDA     #$04       ; Define action of cursor editing keys
+                LDX     #$00       ; default (Normal)
                 JSR     OSBYTE
 
                 LDA     #$E1
                 LDX     #$01
                 LDY     #$00
-                JSR     OSBYTE
+                JSR     OSBYTE     ; Ctrl Function key interpretation
 
                 JSR     LA785
 
@@ -6917,7 +6917,7 @@ L8785 = L8783+2
 
                 RTS
 
-.LA751          LDA     #$17
+.LA751          LDA     #$17      ; CRTC Register Programming (next value is 0)
                 JSR     OSWRCH
 
                 LDA     #$00
@@ -6956,10 +6956,10 @@ L8785 = L8783+2
                 CPX     #$07
                 BEQ     LA743
 
-                LDA     #$67
+                LDA     #$67    
                 BNE     LA743
 
-.LA794          LDA     #$86
+.LA794          LDA     #$86     ; Text Cursor Position
                 JSR     OSBYTE
 
                 STX     L0089
@@ -8299,12 +8299,12 @@ LAC94 = LAC93+1
                 CLC
 .LAF30          RTS
 
-.LAF31          LDA     #$87
+.LAF31          LDA     #$87     ; Character at text pos, and screen Mode
                 JSR     OSBYTE
 
-                STY     L0037
-                LDA     #$A3
-                LDX     #$F3
+                STY     L0037    ; Store screen mode (0-7) not shadow
+                LDA     #$A3     ; Application Support
+                LDX     #$F3     ; 65Tube Emulator?? (Why not &ff view family workspace flag)
                 STX     L0052
                 LDY     L8008
                 JSR     OSBYTE
@@ -8313,18 +8313,18 @@ LAC94 = LAC93+1
                 BCS     LAF4A
 
                 ROR     L0052
-.LAF4A          LDA     #$84
+.LAF4A          LDA     #$84     ; Read top of user memory
                 JSR     OSBYTE
 
-                STX     L000F
-                STY     L0010
-                LDA     #$A0
-                LDX     #$09
+                STX     L000F    ; HIMEM low byte
+                STY     L0010    ; HIMEM high byte
+                LDA     #$A0     ; Read VDU Variable
+                LDX     #$09     ; Current text window bottom row
                 JSR     OSBYTE
 
                 STY     L0036
                 STX     L0035
-                JSR     LAF69
+                JSR     LAF69     ; Get the high Order Address
 
                 BCS     LAF68
 
@@ -8333,7 +8333,7 @@ LAC94 = LAC93+1
                 ROL     L0052
 .LAF68          RTS
 
-.LAF69          LDA     #$82
+.LAF69          LDA     #$82      ; Read High Order Address
                 JSR     OSBYTE
 
                 SEC
@@ -8377,7 +8377,7 @@ LAC94 = LAC93+1
                 DEX
                 BPL     LAFA2
 
-.LAFA7          LDA     #$83
+.LAFA7          LDA     #$83      ; Read OSHWM bottom of user memory (Page)
                 JSR     OSBYTE
 
                 STX     L001F
@@ -8495,24 +8495,24 @@ LAC94 = LAC93+1
                 LDA     #$0F
                 JSR     OSWRCH
 
-                LDA     #$E1
+                LDA     #$E1     ; ctrl function key interpretation
                 LDY     #$00
                 LDX     #$8C
                 JSR     OSBYTE
 
-                LDA     #$E2
+                LDA     #$E2     ; ctrl function key interpretation
                 LDY     #$00
                 LDX     #$9C
                 JSR     OSBYTE
 
-                LDA     #$E3
+                LDA     #$E3     ; ctrl function key interpretation
                 STA     L003D
                 LDY     #$00
                 LDX     #$AC
                 JSR     OSBYTE
 
-                LDA     #$04
-                LDX     #$02
+                LDA     #$04     ; Define action of cursor keys
+                LDX     #$02     ; Soft keys 11-15
                 STX     L0073
                 STX     L0076
                 JMP     OSBYTE
@@ -8827,14 +8827,14 @@ LB2DA = LB2D8+2
                 INX
                 RTS
 
-.LB2EB          JSR     LAF69
+.LB2EB          JSR     LAF69       ; Get the High Order Address
 
                 BCC     LB2D2
 
                 LDX     #$FF
 .LB2F2          INX
                 LDA     LB35D,X
-                STA     L0654,X
+                STA     L0654,X     ; Setup some table
                 BNE     LB2F2
 
                 LDA     #$C5
@@ -8865,7 +8865,7 @@ LB2DA = LB2D8+2
 
                 LDA     L0089
                 CMP     #$C0
-                BEQ     LB356
+                BEQ     LB356     ; 
 
 .LB332          JSR     LB2C0
 
@@ -8894,7 +8894,7 @@ LB2DA = LB2D8+2
 
 .LB356          LDX     #$54
                 LDY     #$06
-                JMP     OSCLI
+                JMP     OSCLI     ; Star command @0654 (Command block)
 
 .LB35D          ROL     A
                 JSR     L4100

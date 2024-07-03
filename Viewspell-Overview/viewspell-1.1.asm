@@ -150,13 +150,8 @@ L00AC           = $00AC
 L00AD           = $00AD
 L00AE           = $00AE
 L00B1           = $00B1
-L00B5           = $00B5
-L00B7           = $00B7
 L00B9           = $00B9
 L00BA           = $00BA
-L00BF           = $00BF
-L00C5           = $00C5
-L00C7           = $00C7
 L00C8           = $00C8
 L00C9           = $00C9
 L00D0           = $00D0
@@ -168,7 +163,6 @@ L00DA           = $00DA
 L00DB           = $00DB
 L00DC           = $00DC
 L00DD           = $00DD
-L00E2           = $00E2
 L00E4           = $00E4
 L00E6           = $00E6
 L00EF           = $00EF
@@ -338,7 +332,6 @@ L09F8           = $09F8
 L09F9           = $09F9
 L09FA           = $09FA
 L0BAE           = $0BAE
-L0D6C           = $0D6C
 L0DE7           = $0DE7
 L0DE8           = $0DE8
 L0DE9           = $0DE9
@@ -348,7 +341,6 @@ L0E32           = $0E32
 L1010           = $1010
 L1020           = $1020
 L1040           = $1040
-L17FF           = $17FF
 L1820           = $1820
 L190D           = $190D
 L1D5E           = $1D5E
@@ -360,7 +352,6 @@ L208D           = $208D
 L20BE           = $20BE
 L20F8           = $20F8
 L2575           = $2575
-L29A3           = $29A3
 L3020           = $3020
 L30BE           = $30BE
 L3688           = $3688
@@ -370,21 +361,16 @@ L5050           = $5050
 L530D           = $530D
 L5839           = $5839
 L5EC9           = $5EC9
-L656B           = $656B
 L6956           = $6956
-L6F74           = $6F74
 L7020           = $7020
 L70A8           = $70A8
-L756D           = $756D
 LC000           = $C000
 LC003           = $C003
 LC020           = $C020
 LD5BC           = $D5BC
 defvec          = $D940
 LDAB9           = $DAB9
-LDFDE           = $DFDE
 LE06F           = $E06F
-LE2E1           = $E2E1
 LF05E           = $F05E
 LF080           = $F080
 ROMSEL_REG      = $FE30
@@ -6770,17 +6756,15 @@ LA30D = LA30C+1
                 LDA     LA32B,X
                 PHA
 .LA327          LDA     ROMSEL
-                TSX
+.LA329          TSX
                 RTS
 
-.LA32B          AND     #$A3
-LA32C = LA32B+1
-                AND     #$A3
-                EOR     (L00A3)
-                AND     #$A3
-                INC     L29A3
-                AND     (L00A4,X)
-                CMP     (L00BF,X)
+.LA32B          EQUB    $29,$A3,$29,$A3,$52,$A3,$29,$A3
+                EQUB    $EE,$A3,$29,$A3,$21,$A4
+
+.LA32C          EQUB    $A3,$29,$A3,$52,$A3,$29,$A3,$EE
+                EQUB    $A3,$29,$A3,$21,$A4,$C1
+
                 AND     #$A3
                 LDA     (L00A4,X)
                 AND     #$A3
@@ -6938,11 +6922,13 @@ LA32C = LA32B+1
                 PHA
                 RTS
 
-.LA418          EOR     L00AB,X
-LA419 = LA418+1
-                SBC     (L00B5),Y
-                LDA     LA49A
-                LDX     L0098,Y
+.LA418          EQUB    $55
+
+.LA419          EQUB    $AB,$F1,$B5,$CF,$AD,$9A,$A4
+
+                EQUB    $F3
+
+.LA421          LDX     L0098,Y
                 PHA
                 JSR     LB1F2
 
@@ -7015,7 +7001,7 @@ LA419 = LA418+1
                 TXA
                 BPL     LA49D
 
-.LA49A          RTS
+                RTS
 
                 LDX     ROMSEL
 .LA49D          LDA     #$8E
@@ -8688,20 +8674,12 @@ LAA7F = LAA7D+2
                 JSR     LB173
 
                 BRK
-                EQUB    $54
+                EQUS    "Too much to keep"
 
-                JSR     L756D
+                EQUB    $00
 
-                PLA
-                JSR     L6F74
+.LB008          JSR     LAB06
 
-                JSR     L656B
-
-                ADC     L0070
-                BRK
-.LB008          EQUB    $20
-
-                ASL     L00AB
                 BCC     LB06A
 
                 LDY     #$0F
@@ -9093,9 +9071,9 @@ LAA7F = LAA7D+2
 
                 RTS
 
-                BVS     LB2A4
+.LB23C          EQUS    "Spell"
 
-                JMP     (L0D6C)
+                EQUB    $0D
 
                 EQUS    "Sheet"
 
@@ -9161,8 +9139,7 @@ LAA7F = LAA7D+2
                 CPX     #$42
                 BEQ     LB2A7
 
-.LB2A3          LDY     #$E7
-LB2A4 = LB2A3+1
+                LDY     #$E7
                 LDA     (L00A8),Y
 .LB2A7          LDY     #$E8
                 STA     (L00A8),Y
@@ -9343,62 +9320,25 @@ LB2A4 = LB2A3+1
                 STA     (L00A8),Y
                 JMP     LB3A7
 
-.LB3C4          LDX     L00B7,Y
-                CLV
-                LDA     LBBBA,Y
-                LDX     L00BF,Y
-                LDY     LBAAD
-                LDX     L00BF,Y
-                ASL     L0016,X
-                LDX     L00BF,Y
-                LDX     L00B7,Y
-                CLV
-                LDA     LBFBE,Y
-                BRK
-                EQUB    $B6
+.LB3C4          EQUW    $B7B6,$B9B8,$BBBA,$BFBE
+                EQUW    $AC00,$BAAD,$BEBB
 
-                CLV
-                LDA     L17FF,Y
-                BRK
-.LB3E9          EQUB    $FF
+                EQUB    $BF,$00,$FF,$17,$16,$16,$BE,$BF
+                EQUB    $00,$B6,$B7,$B8,$B9,$BE,$BF,$00
+                EQUB    $B6,$B7,$B8,$B9,$FF,$17,$00
 
-                LDX     L00B7,Y
-                BRK
-                EQUB    $FF
+.LB3E9          EQUB    $FF,$FF,$FF,$FF,$B6,$B7,$FF,$FF
+                EQUB    $00,$FF,$FF,$B6,$B7,$FF,$FF,$00
+                EQUB    $FF,$FF,$FF,$FF,$FF,$FF,$00,$FF
+                EQUB    $FF,$FF,$FF,$FF,$FF,$00,$FF,$FF
+                EQUB    $FF,$FF,$FF,$FF,$00
 
-                LDX     L00B7,Y
-                BRK
-                EQUB    $FF
+.LB40E          EQUB    $DA,$DB,$DC,$DD,$DE,$DF,$E1,$E2
+                EQUB    $00,$C1,$C2,$C6,$C7,$C4,$C5,$00
+                EQUB    $DA,$DB,$DC,$DD,$E1,$E2,$00,$DA
+                EQUB    $DB,$DC,$DD,$E1,$E2,$00,$DA,$DB
+                EQUB    $DC,$DD,$E1,$E2,$00
 
-                BRK
-                EQUB    $FF
-
-                BRK
-                EQUB    $FF
-
-                BRK
-.LB40E          EQUB    $DA
-
-                CMP     LDFDE,X
-                SBC     (L00E2,X)
-                BRK
-                EQUB    $C1
-
-                DEC     L00C7
-                CPY     L00C5
-                BRK
-                EQUB    $DA
-
-                CMP     LE2E1,X
-                BRK
-                EQUB    $DA
-
-                CMP     LE2E1,X
-                BRK
-                EQUB    $DA
-
-                CMP     LE2E1,X
-                BRK
 .LB433          DEY
 .LB434          INY
                 LDA     (L00F2),Y
@@ -10027,10 +9967,15 @@ LB2A4 = LB2A3+1
 
                 JMP     L095E
 
-                ORA     (L000A,X)
-                STZ     L0052
-.LB871          ORA     #$98
-LB872 = LB871+1
+                EQUW    $0A01
+
+                EQUW    $5264
+
+                EQUB    $52
+
+                EQUB    $09
+
+.LB872          TYA
                 CLC
                 ADC     L00F2
                 STA     L00F2
@@ -10381,7 +10326,6 @@ LB872 = LB871+1
 
 .LBAAC          JSR     LBBB0
 
-LBAAD = LBAAC+1
                 BEQ     LBAB4
 
                 JSR     LBD92
@@ -10539,9 +10483,8 @@ LBAAD = LBAAC+1
 
 .LBBB6          JSR     LBBBF
 
-.LBBB9          JSR     LBD36
+                JSR     LBD36
 
-LBBBA = LBBB9+1
                 JMP     LBC5C
 
 .LBBBF          STA     L031F
@@ -11201,5 +11144,5 @@ LBF82 = LBF80+2
                 ADC     (L0056)
                 ADC     #$65
 .BeebDisEndAddr
-SAVE "viewspell-1.1.bin",BeebDisStartAddr,BeebDisEndAddr
+SAVE "./viewspell-1.1.bin",BeebDisStartAddr,BeebDisEndAddr
 
