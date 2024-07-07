@@ -13,8 +13,8 @@ L000B           = $000B
 L000C           = $000C
 L000D           = $000D
 L000E           = $000E
-L000F           = $000F
-L0010           = $0010
+HIMEMlsb           = $000F
+HIMEMmsb           = $0010
 L0011           = $0011
 L0012           = $0012
 L0013           = $0013
@@ -29,8 +29,8 @@ L001B           = $001B
 L001C           = $001C
 L001D           = $001D
 L001E           = $001E
-L001F           = $001F
-L0020           = $0020
+PageLSB           = $001F
+PageMSB           = $0020
 L0021           = $0021
 L0022           = $0022
 L0023           = $0023
@@ -319,7 +319,7 @@ OSCLI           = $FFF7
                 TYA
                 PHA
                 TSX
-                LDA     L0103,X
+                LDA     L0103,X   ; Rom Service Command
                 CMP     #$04
                 BNE     nextrom
 
@@ -327,12 +327,12 @@ OSCLI           = $FFF7
                 DEY
 .L8031          INX
                 INY
-                LDA     L805A,X    ; compare to WORD
+                LDA     command,X  ; compare to WORD
                 BMI     L804E
 
                 LDA     (cmd_line),Y
                 AND     #$DF       ; change to upper case
-                CMP     L805A,X    ; compare to WORD
+                CMP     command,X  ; compare to WORD
                 BEQ     L8031
 
 .L8040          BEQ     L800B
@@ -356,7 +356,7 @@ OSCLI           = $FFF7
                 PLA
 .langexit       RTS
 
-.L805A          EQUS    "WORD"
+.command        EQUS    "WORD"
 
                 EQUB    $FF
 
@@ -375,13 +375,13 @@ OSCLI           = $FFF7
                 STX     L004E
                 JSR     LAF31
 
-                LDA     #$83
+                LDA     #$83        ; Read Page (OSHWM)
                 JSR     OSBYTE
 
-                CPX     L001F
+                CPX     PageLSB
                 BNE     L8095
 
-                CPY     L0020
+                CPY     PageMSB
                 BNE     L8095
 
                 JSR     L8E3A
@@ -1613,12 +1613,12 @@ L8785 = L8783+2
                 STA     L008E
                 BCS     L8860
 
-                CMP     L0010
+                CMP     HIMEMmsb
                 BCC     L8863
 
                 BNE     L8860
 
-                CPX     L000F
+                CPX     HIMEMlsb
                 BCC     L8863
 
 .L8860          JMP     L84F3
@@ -2586,7 +2586,7 @@ L8785 = L8783+2
                 BNE     L8E61
 
                 LDY     #$00
-                CMP     (L001F),Y
+                CMP     (PageLSB),Y
                 BNE     L8E61
 
                 LDA     L000D
@@ -3997,11 +3997,11 @@ L8785 = L8783+2
                 BCC     L9656
 
                 INC     L001C
-.L9656          LDA     L000F
+.L9656          LDA     HIMEMlsb
                 SEC
                 SBC     L001B
                 TAX
-                LDA     L0010
+                LDA     HIMEMmsb
                 SBC     L001C
                 BNE     L966C
 
@@ -7345,12 +7345,12 @@ LA85D = LA85C+1
                 ADC     L008C
                 STA     L008E
                 TAY
-                CPY     L0010
+                CPY     HIMEMmsb
                 BCC     LA9EA
 
                 BNE     LAA46
 
-                CPX     L000F
+                CPX     HIMEMlsb
                 BCS     LAA46
 
 .LA9EA          STX     L000D
@@ -7588,10 +7588,10 @@ LA85D = LA85C+1
                 LDY     L0070
                 DEY
                 LDA     L0085
-                STA     (L001F),Y
+                STA     (PageLSB),Y
                 DEY
                 LDA     L0086
-                STA     (L001F),Y
+                STA     (PageLSB),Y
                 JSR     LAB49
 
                 PLA
@@ -7604,26 +7604,26 @@ LA85D = LA85C+1
                 INY
 .LAB49          STY     L0070
                 INY
-                LDA     (L001F),Y
+                LDA     (PageLSB),Y
                 CLC
                 ADC     #$03
                 STA     L0006
                 DEY
-                LDA     (L001F),Y
+                LDA     (PageLSB),Y
                 ADC     #$00
                 STA     L0007
-.LAB5A          JSR     LAB7C
+.LAB5A          JSR     LAB7C       ; Store 0 in &003E and &003F
 
 .LAB5D          LDA     (L0006),Y
-                CMP     #$3E
+                CMP     #$3E        ; Char ">"
                 BNE     LAB65
 
                 STY     L003F
-.LAB65          CMP     #$3C
+.LAB65          CMP     #$3C        ; Char "<"
                 BNE     LAB6B
 
                 STY     L003E
-.LAB6B          CMP     #$0D
+.LAB6B          CMP     #$0D        ; CR
                 BEQ     LAB74
 
                 INY
@@ -7633,10 +7633,10 @@ LA85D = LA85C+1
 .LAB74          STY     L003A
                 LDA     L003F
                 CMP     L003E
-                BCC     LAB82
+                BCC     LAB82      ; RTS
 
-.LAB7C          LDY     #$00
-                STY     L003E
+.LAB7C          LDY     #$00       ; Called only from AB5A
+                STY     L003E      ; and run on from AB74
                 STY     L003F
 .LAB82          RTS
 
@@ -8316,8 +8316,8 @@ LAC94 = LAC93+1
 .LAF4A          LDA     #$84     ; Read top of user memory
                 JSR     OSBYTE
 
-                STX     L000F    ; HIMEM low byte
-                STY     L0010    ; HIMEM high byte
+                STX     HIMEMlsb    ; HIMEM low byte
+                STY     HIMEMmsb    ; HIMEM high byte
                 LDA     #$A0     ; Read VDU Variable
                 LDX     #$09     ; Current text window bottom row
                 JSR     OSBYTE
@@ -8336,21 +8336,21 @@ LAC94 = LAC93+1
 .LAF69          LDA     #$82      ; Read High Order Address
                 JSR     OSBYTE
 
-                SEC
-                INY
-                BNE     LAF76
+                SEC               ; Set Carry
+                INY               ; if 6502/65C02 00 becomes 01, otherwise FF becomes 00
+                BNE     LAF76     ; branch if unexpanded machine
 
-                INX
-                BNE     LAF76
+                INX               ; if 6502/65C02 00 becomes 01, otherwise FF becomes 00
+                BNE     LAF76     ; branch if unexpanded machine
 
                 CLC
 .LAF76          RTS
 
-.LAF77          LDA     L000F
+.LAF77          LDA     HIMEMlsb
                 SEC
                 SBC     L000D
                 TAX
-                LDA     L0010
+                LDA     HIMEMmsb
                 SBC     L000E
                 TAY
 .LAF82          RTS
@@ -8380,8 +8380,8 @@ LAC94 = LAC93+1
 .LAFA7          LDA     #$83      ; Read OSHWM bottom of user memory (Page)
                 JSR     OSBYTE
 
-                STX     L001F
-                STY     L0020
+                STX     PageLSB   ; LSB Page
+                STY     PageMSB   ; MSB Page
                 INY
                 INX
                 STX     L000B
@@ -8394,7 +8394,7 @@ LAC94 = LAC93+1
                 STY     L0040
                 LDA     #$AA
                 STA     L000A
-                STA     (L001F),Y
+                STA     (PageLSB),Y
                 LDA     L000B
                 SEC
                 SBC     #$01
@@ -8429,10 +8429,10 @@ LAC94 = LAC93+1
                 STA     (L0085),Y
                 LDY     #$FF
                 LDA     #$CC
-                STA     (L001F),Y
+                STA     (PageLSB),Y
                 DEY
                 LDA     #$05
-                STA     (L001F),Y
+                STA     (PageLSB),Y
                 JSR     LB033
 
                 JSR     LB04A
@@ -8621,7 +8621,7 @@ LB145 = LB143+2
                 LDY     #$55
                 ADC     (L00A0,X)
                 LDY     #$2F
-                LDA     (L0020,X)
+                LDA     (PageMSB,X)
                 LDX     #$0C
                 LDA     (L001D,X)
                 LDA     (L0026,X)
@@ -8705,7 +8705,7 @@ LB1E8 = LB1E6+2
                 ORA     (L003E)
                 STA     (L000B,X)
                 ORA     #$12
-                ORA     L000F,X
+                ORA     HIMEMlsb,X
                 ASL     L8129,X
                 PHP
                 ROL     L293A,X
@@ -8774,7 +8774,7 @@ LB25F = LB25E+1
 
                 STA     LAC94
                 STY     L0025,X
-                STA     L001F,X
+                STA     PageLSB,X
                 STA     L0021,X
                 STX     L00B1,Y
                 ROR     LD795
@@ -8832,10 +8832,10 @@ LB2DA = LB2D8+2
                 BCC     LB2D2
 
                 LDX     #$FF
-.LB2F2          INX
-                LDA     LB35D,X
+.settbl         INX
+                LDA     tbl1,X
                 STA     L0654,X     ; Setup some table
-                BNE     LB2F2
+                BNE     settbl
 
                 LDA     #$C5
                 STA     L008E
@@ -8896,7 +8896,7 @@ LB2DA = LB2D8+2
                 LDY     #$06
                 JMP     OSCLI     ; Star command @0654 (Command block)
 
-.LB35D          ROL     A
+.tbl1           ROL     A
                 JSR     L4100
 
                 BRK
@@ -9231,7 +9231,7 @@ LB3CD = LB3CC+1
                 BRK
                 EQUB    $00
 
-                ORA     (L0020,X)
+                ORA     (PageMSB,X)
                 BRK
                 EQUB    $00
 
@@ -10200,7 +10200,7 @@ LB75D = LB75C+1
 
                 BPL     LB7AD
 
-.LB7AD          ORA     (L0020,X)
+.LB7AD          ORA     (PageMSB,X)
                 BRK
                 EQUB    $00
 
@@ -10344,7 +10344,7 @@ LB75D = LB75C+1
                 BRK
                 EQUB    $00
 
-                STA     (L0010)
+                STA     (HIMEMmsb)
                 BRK
                 EQUB    $00
 
