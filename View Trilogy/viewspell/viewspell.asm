@@ -6,7 +6,7 @@ L0004           = $0004
 L0005           = $0005
 L0006           = $0006
 L0007           = $0007
-L0008           = $0008
+mode           = $0008
 L0009           = $0009
 L000A           = $000A
 L000B           = $000B
@@ -22,8 +22,8 @@ L0014           = $0014
 L0015           = $0015
 L0016           = $0016
 L0017           = $0017
-L0018           = $0018
-L0019           = $0019
+PAGElsb           = $0018
+PAGEmsb           = $0019
 L001A           = $001A
 L001B           = $001B
 L001C           = $001C
@@ -182,7 +182,7 @@ L00E5           = $00E5
 L00EF           = $00EF
 L00F0           = $00F0
 L00F1           = $00F1
-L00F2           = $00F2
+cmd_line           = $00F2
 L00F3           = $00F3
 rom_slot        = $00F4
 L00F6           = $00F6
@@ -344,7 +344,7 @@ L0D13           = $0D13
 L0DE7           = $0DE7
 L0DE8           = $0DE8
 L0DE9           = $0DE9
-L0DF0           = $0DF0
+RomWrkSpace     = $0DF0
 L0E0F           = $0E0F
 L0EB9           = $0EB9
 L1000           = $1000
@@ -479,9 +479,9 @@ OSCLI           = $FFF7
                 TYA
                 PHA
                 TSX
-                LDA     L0103,X
+                LDA     L0103,X    ; Rom Service Command
                 CMP     #$04
-                BNE     L805D
+                BNE     nextrom
 
                 LDX     #$FF
                 DEY
@@ -496,20 +496,20 @@ OSCLI           = $FFF7
                 BEQ     L803A
 
                 CMP     #$0E
-                BNE     L805D
+                BNE     nextrom
 
-.L804E          PLA
+.EntLangRom     PLA
                 PLA
                 TAX
                 PLA
-                LDA     #$8E
-.L8054          JMP     OSBYTE
+                LDA     #$8E       ; Enter Language Rom (X is slot #)
+.CallOsbyte     JMP     OSBYTE
 
-.L8057          LDA     (L00F2),Y
-                CMP     #$21
-                BCC     L804E
+.L8057          LDA     (cmd_line),Y
+                CMP     #$21       ; Char !
+                BCC     EntLangRom ; Enter Language Rom
 
-.L805D          PLA
+.nextrom        PLA
                 TAY
                 PLA
                 TAX
@@ -517,11 +517,11 @@ OSCLI           = $FFF7
                 RTS
 
 .L8063          LDX     #$55
-                LDA     #$A0
-                BNE     L8054
+                LDA     #$A0       ; Current Screen Mode
+                BNE     CallOsbyte ; Osbyte
 
-.L8069          LDA     #$86
-                BNE     L8054
+.L8069          LDA     #$86       ; text cursor position
+                BNE     CallOsbyte ; Osbyte
 
 .L806D          EQUS    "SPELL"
 
@@ -539,7 +539,7 @@ OSCLI           = $FFF7
 
                 JMP     L8316
 
-.L808B          LDA     #$7E
+.L808B          LDA     #$7E        ; Acknowledge Escape
                 JSR     OSBYTE
 
                 JSR     L9BDB
@@ -561,8 +561,8 @@ OSCLI           = $FFF7
                 STA     BRKV
                 LDA     #$85
                 STA     BRKV+1
-                LDA     #$A3
-                LDX     #$F3
+                LDA     #$A3      ; Application Support
+                LDX     #$F3      ; 65Tube Emulator
                 LDY     L8008
                 JSR     OSBYTE
 
@@ -625,7 +625,7 @@ OSCLI           = $FFF7
 
 .L811C          LDX     #$CE
                 LDY     #$86
-                LDA     #$00
+                LDA     #$00      ; Input Line of text
                 JSR     OSWORD
 
                 BCS     L80FA
@@ -735,7 +735,7 @@ OSCLI           = $FFF7
 .L81C0          LDA     #$00
 L81C1 = L81C0+1
                 ADC     L9944,X
-                STA     L0008
+                STA     mode
                 LDA     L9945,X
                 STA     L0009
                 LDX     L0010
@@ -755,7 +755,7 @@ L81C1 = L81C0+1
 
 .L81DF          LDA     L0484
                 CMP     #$0D
-                JMP     (L0008)
+                JMP     (mode)
 
                 CLC
                 BEQ     L81AA
@@ -765,7 +765,7 @@ L81C1 = L81C0+1
 
                 JSR     L8483
 
-                LDA     L0019
+                LDA     PAGEmsb
                 PHA
                 JSR     L93A2
 
@@ -906,7 +906,7 @@ L825D = L825B+2
 
                 LDA     #$00
                 TAX
-                STA     L0008
+                STA     mode
 .L82C4          LDA     L0484,X
                 CMP     #$21
                 BCC     L82F0
@@ -918,16 +918,16 @@ L825D = L825B+2
                 BCC     L82E7
 
                 STA     L0016
-                LDA     L0008
-                ASL     L0008
+                LDA     mode
+                ASL     mode
                 ASL     A
                 ASL     A
                 ASL     A
                 CLC
-                ADC     L0008
+                ADC     mode
                 CLC
                 ADC     L0016
-                STA     L0008
+                STA     mode
                 INX
                 BNE     L82C4
 
@@ -945,8 +945,8 @@ L825D = L825B+2
                 LDA     L004B
                 BEQ     L830C
 
-                LDA     #$85
-                LDX     L0008
+                LDA     #$85        ; Read base if Display ram for mode
+                LDX     mode
                 JSR     OSBYTE
 
                 TXA
@@ -962,7 +962,7 @@ L825D = L825B+2
 .L830C          LDA     #$16
                 JSR     OSWRCH
 
-                LDA     L0008
+                LDA     mode
                 JSR     OSWRCH
 
 .L8316          JSR     L8437
@@ -999,12 +999,12 @@ L825D = L825B+2
                 LDY     L0020
 .L8353          LDA     L0027
                 CLC
-                STX     L0008
-                SBC     L0008
+                STX     mode
+                SBC     mode
                 TAX
                 LDA     L0028
-                STY     L0008
-                SBC     L0008
+                STY     mode
+                SBC     mode
                 TAY
                 JSR     L858F
 
@@ -1110,7 +1110,7 @@ L8379 = L8378+1
 
                 JSR     L884E
 
-                STA     (L0018,X)
+                STA     (PAGElsb,X)
                 STA     L000A
                 STA     L0400
                 TYA
@@ -1144,7 +1144,7 @@ L8379 = L8378+1
                 LDA     #$08
                 JSR     OSWRCH
 
-                LDA     #$86
+                LDA     #$86       ; Text Cursor Position
                 JSR     OSBYTE
 
                 INX
@@ -1181,15 +1181,15 @@ L8379 = L8378+1
                 TYA
                 JSR     OSWRCH
 
-                LDX     L0018
-                LDY     L0019
+                LDX     PAGElsb
+                LDY     PAGEmsb
                 RTS
 
-.L8479          LDA     #$83
+.L8479          LDA     #$83      ; Read OSHWM (Page)
                 JSR     OSBYTE
 
-.L847E          STX     L0018
-                STY     L0019
+.L847E          STX     PAGElsb
+                STY     PAGEmsb
                 RTS
 
 .L8483          JSR     L8479
@@ -1209,7 +1209,7 @@ L8379 = L8378+1
                 STX     L001F
                 STY     L003B
                 STY     L0020
-.L849B          LDA     #$84
+.L849B          LDA     #$84       ; Read HIMEM 
                 JSR     OSBYTE
 
                 LDX     #$00
@@ -1227,7 +1227,7 @@ L8379 = L8378+1
                 RTS
 
 .L84B2          LDA     #$00
-                STA     L0019
+                STA     PAGEmsb
                 CPX     L0023
                 BNE     L84C3
 
@@ -1370,7 +1370,7 @@ L8379 = L8378+1
                 STA     L0010
                 BEQ     L85CC
 
-.L8597          STA     L0008
+.L8597          STA     mode
                 INX
                 LDA     L85DB,X
                 STA     L0009
@@ -1385,12 +1385,12 @@ L8379 = L8378+1
 
                 BNE     L85B2
 
-                CPX     L0008
+                CPX     mode
                 BCC     L85BF
 
 .L85B2          TXA
                 SEC
-                SBC     L0008
+                SBC     mode
                 TAX
                 TYA
                 SBC     L0009
@@ -1628,7 +1628,7 @@ L86D7 = L86D6+1
 
                 LDY     #$A2
                 LDY     #$86
-                LDA     #$00
+                LDA     #$00      ; Input line of text
                 STA     L0055
                 JSR     OSWORD
 
@@ -1637,7 +1637,7 @@ L86D7 = L86D6+1
                 PLA
                 TAX
                 LDY     #$00
-                LDA     L0008
+                LDA     mode
                 CMP     #$0D
                 BNE     L86D7
 
@@ -1844,7 +1844,7 @@ L8820 = L881F+1
                 BNE     L885D
 
                 LDY     #$00
-                CMP     (L0018),Y
+                CMP     (PAGElsb),Y
 .L885D          RTS
 
 .L885E          LDA     L0060
@@ -1965,7 +1965,7 @@ L8820 = L881F+1
                 JSR     OSGBPB
 
                 LDY     L0526
-                LDA     #$00
+                LDA     #$00      ; Close file by Handle (in Y)
                 STA     L007C
                 JSR     OSFIND
 
@@ -2355,7 +2355,7 @@ L8820 = L881F+1
 .L8B72          PHA
                 LDA     #$00
                 STA     L0083
-                LDA     #$82
+                LDA     #$82       ; Read High Order Address
                 JSR     OSBYTE
 
                 STX     L0081
@@ -2553,13 +2553,13 @@ L8820 = L881F+1
 .L8C97          LDY     L0000,X
                 BEQ     L8C78
 
-                LDA     #$00
+                LDA     #$00      ; Close all files
                 STA     L0000,X
 .L8C9F          JMP     OSFIND
 
 .L8CA2          LDX     #$C4
                 LDY     #$04
-                LDA     #$80
+                LDA     #$80       ; Open file for output (if exist length = 0)
                 JSR     OSFIND
 
                 TAY
@@ -2835,12 +2835,12 @@ L8820 = L881F+1
                 BCS     L8E77
 
                 LDA     L0025
-                STA     L0008
+                STA     mode
                 LDA     L0026
                 ADC     #$03
                 STA     L0009
                 LDY     #$FF
-                LDA     (L0008),Y
+                LDA     (mode),Y
                 CMP     #$5B
                 BCS     L8E61
 
@@ -2851,7 +2851,7 @@ L8820 = L881F+1
                 INY
                 TYA
                 CLC
-                ADC     L0008
+                ADC     mode
                 STA     L000C
                 LDA     L0009
                 ADC     #$00
@@ -2908,14 +2908,14 @@ L8820 = L881F+1
 .L8EBC          JSR     L8ED1
 
                 DEY
-.L8EC0          LDA     (L0008),Y
+.L8EC0          LDA     (mode),Y
                 CMP     #$5B
                 BCS     L8EBC
 
 .L8EC6          JSR     L8ED1
 
                 DEY
-.L8ECA          LDA     (L0008),Y
+.L8ECA          LDA     (mode),Y
                 CMP     #$5B
                 BCC     L8EC6
 
@@ -2963,7 +2963,7 @@ L8820 = L881F+1
                 INX
                 BNE     L8EFE
 
-                JMP     L805D
+                JMP     nextrom
 
 .L8F09          LDA     #$0D
 .L8F0B          BIT     L004C
@@ -3072,10 +3072,10 @@ L8820 = L881F+1
 
                 DEC     L0043
                 STY     L0059
-                STY     L0008
+                STY     mode
                 DEY
 .L8FAB          LDA     (L0042),Y
-                STA     (L0008),Y
+                STA     (mode),Y
                 DEY
                 BNE     L8FAB
 
@@ -3118,7 +3118,7 @@ L8820 = L881F+1
 .L8FE3          LDY     #$7F
                 JSR     L9A13
 
-                STX     L0008
+                STX     mode
                 CMP     L004B
                 BCC     L8FF7
 
@@ -3126,7 +3126,7 @@ L8820 = L881F+1
 
                 RTS
 
-.L8FF1          LDA     L0008
+.L8FF1          LDA     mode
                 CMP     L004A
                 BCS     L8FE2
 
@@ -3305,15 +3305,15 @@ L8820 = L881F+1
                 BCS     L9111
 
                 LDA     #$FF
-                STA     L0008
+                STA     mode
                 LDA     L0026
                 ADC     #$03
                 STA     L0009
                 LDY     #$00
-                LDA     (L0008),Y
+                LDA     (mode),Y
                 STA     L005B
                 LDA     #$FE
-                STA     (L0008),Y
+                STA     (mode),Y
                 BNE     L912A
 
 .L9111          INC     L004F
@@ -3597,7 +3597,7 @@ L8820 = L881F+1
 .L92A3          LDY     #$FF
 .L92A5          JSR     L99EB
 
-.L92A8          STY     L0008
+.L92A8          STY     mode
                 STX     L0012
                 DEY
                 LDX     #$00
@@ -3619,7 +3619,7 @@ L8820 = L881F+1
 .L92C6          PHP
                 STY     L000E
                 STX     L000C
-                LDY     L0008
+                LDY     mode
                 LDX     L0012
                 PLP
                 RTS
@@ -3639,7 +3639,7 @@ L8820 = L881F+1
                 LDY     #$01
                 JSR     L94B2
 
-                STX     L0018
+                STX     PAGElsb
                 PLA
                 AND     #$DF
                 CMP     #$55
@@ -3670,7 +3670,7 @@ L8820 = L881F+1
 .L930C          LDA     #$33
                 LDY     #$41
 .L9310          PHA
-                LDX     L0018
+                LDX     PAGElsb
                 BEQ     L9323
 
                 CPX     #$0E
@@ -3718,14 +3718,14 @@ L8820 = L881F+1
 
                 JMP     L8319
 
-.L9361          STX     L0018
+.L9361          STX     PAGElsb
                 BNE     L936C
 
 .L9365          LDA     L040E,Y
                 JSR     L8F0B
 
                 INY
-.L936C          CPY     L0018
+.L936C          CPY     PAGElsb
                 BNE     L9365
 
                 JMP     L8F09
@@ -3878,7 +3878,7 @@ L93B8 = L93B6+2
 
                 JSR     L8F6F
 
-                LDA     #$80
+                LDA     #$80      ; Open file for Output
                 JSR     OSFIND
 
                 STA     L0062
@@ -5137,10 +5137,10 @@ L9641 = L9640+1
 
                 INC     L0104,X
 .L9BEA          LDA     L0103,X
-                STA     L0018
+                STA     PAGElsb
                 LDA     L0104,X
-                STA     L0019
-                LDA     (L0018),Y
+                STA     PAGEmsb
+                LDA     (PAGElsb),Y
                 PHA
                 AND     #$7F
                 JSR     L9C05
@@ -5160,10 +5160,10 @@ L9641 = L9640+1
 
                 JMP     L844F
 
-.L9C0C          CMP     #$5F
+.L9C0C          CMP     #$5F        ; Char _
                 BNE     L9C1D
 
-.L9C10          LDA     #$86
+.L9C10          LDA     #$86        ; Text Cursor Position
                 JSR     OSBYTE
 
                 TXA
@@ -5172,7 +5172,7 @@ L9641 = L9640+1
                 LDA     #$0D
                 JMP     L8F1A
 
-.L9C1D          CMP     #$60
+.L9C1D          CMP     #$60         ; Char '  Backtick
                 BNE     L9BC2
 
 .L9C21          JSR     L9BDB
@@ -5252,7 +5252,7 @@ L9641 = L9640+1
                 CLC
                 RTS
 
-.L9C9B          LDA     #$FF
+.L9C9B          LDA     #$FF      ; Load File
 .L9C9D          LDX     #$7D
                 LDY     #$00
                 JMP     OSFILE
@@ -5260,7 +5260,7 @@ L9641 = L9640+1
 .L9CA4          LDA     #$FF
 .L9CA6          LDY     #$01
                 LDX     #$00
-                STA     L0018
+                STA     PAGElsb
                 LDA     L0484
                 JSR     L927C
 
@@ -5283,7 +5283,7 @@ L9641 = L9640+1
 
                 BCS     L9CB7
 
-.L9CCF          BIT     L0018
+.L9CCF          BIT     PAGElsb
                 BMI     L9CF5
 
                 CMP     #$3F
@@ -5319,7 +5319,7 @@ L9641 = L9640+1
                 PLA
 .L9CFF          RTS
 
-.L9D00          LDA     #$40
+.L9D00          LDA     #$40        ; Open File for Input
 .L9D02          LDX     L007D
                 LDY     L007E
                 JSR     OSFIND
@@ -5678,7 +5678,7 @@ L9EFC = L9EFB+1
                 SBC     #$01
                 BNE     L9F2F
 
-.L9F10          STX     L0019
+.L9F10          STX     PAGEmsb
                 STA     L001E
                 LDY     #$01
 .L9F16          LDA     L0484,Y
@@ -5715,7 +5715,7 @@ L9F3A = L9F39+1
                 SBC     #$0C
                 BNE     L9F16
 
-                LDY     L0019
+                LDY     PAGEmsb
                 BNE     L9F53
 
                 STX     L0546
@@ -6840,7 +6840,7 @@ LA327 = LA325+2
 
                 SBC     #$92
 .LA385          SBC     #$0A
-                EOR     L0DF0,X
+                EOR     RomWrkSpace,X
                 AND     #$3F
                 CMP     #$01
                 PLA
@@ -7035,7 +7035,7 @@ LA46E = LA46D+1
 
                 JMP     LA9A0
 
-.LA49A          LDA     #$8E
+.LA49A          LDA     #$8E     ; Enter Language Rom
                 JMP     OSBYTE
 
 .LA49F          TSX
@@ -7175,7 +7175,7 @@ LA46E = LA46D+1
 
 .LA581          ASL     A
                 TSB     LBFD5
-                ORA     L0008
+                ORA     mode
                 ORA     (L00FF,X)
                 ORA     L00B7,X
                 AND     (L000E)
@@ -7183,7 +7183,7 @@ LA46E = LA46D+1
                 CMP     (L00BF,X)
                 BMI     LA5C1
 
-.LA597          LDA     #$44
+.LA597          LDA     #$44       ; Test for sideways RAM
                 LDX     #$00
                 JSR     OSBYTE
 
@@ -7355,7 +7355,7 @@ LA69D = LA69C+1
                 STA     (L00A8),Y
                 RTS
 
-.LA6B5          LDA     #$75
+.LA6B5          LDA     #$75       ; Read VDU Status Byte
                 JSR     OSBYTE
 
                 TXA
@@ -7364,10 +7364,10 @@ LA69D = LA69C+1
                 ASL     A
                 ASL     A
                 PHP
-                LDA     #$87
+                LDA     #$87        ; Character at text cursor and Screen Mode
                 JSR     OSBYTE
 
-                TYA
+                TYA     ; Screen Mode
                 ASL     A
                 PLP
                 ROR     A
@@ -7607,7 +7607,7 @@ LA69D = LA69C+1
                 STA     (L00A8),Y
                 LDY     #$E1
                 STA     (L00A8),Y
-                LDA     #$C0
+                LDA     #$C0       ; Open a file for update.
                 LDX     #$E9
                 LDY     L00A9
                 JSR     OSFIND
@@ -7668,8 +7668,8 @@ LA69D = LA69C+1
 .LA88F          LDY     #$D2
                 LDA     (L00A8),Y
                 TAY
-                LDA     #$00
-                JSR     OSFIND
+                LDA     #$00       ; Close file by Handle (in Y)
+                JSR     OSFIND  
 
 .LA899          LDA     #$00
                 JSR     LAF82
@@ -7761,7 +7761,7 @@ LA69D = LA69C+1
                 LDY     #$E9
                 STY     L00AD
 .LA928          LDY     L00AC
-                LDA     (L00F2),Y
+                LDA     (cmd_line),Y
                 LDY     L00AD
                 STA     (L00A8),Y
                 CMP     #$0D
@@ -7848,10 +7848,10 @@ LA69D = LA69C+1
                 BCC     LA9C5
 
 .LA993          LDX     rom_slot
-                EOR     L0DF0,X
+                EOR     RomWrkSpace,X
                 AND     #$02
-                EOR     L0DF0,X
-                STA     L0DF0,X
+                EOR     RomWrkSpace,X
+                STA     RomWrkSpace,X
 .LA9A0          LDX     #$00
 .LA9A2          LDA     LA9C6,X
                 BEQ     LA9AD
@@ -8082,7 +8082,7 @@ LAA9E = LAA9D+1
                 LDA     (L00A8),Y
                 BPL     LAAF7
 
-                LDA     #$40
+                LDA     #$40      ; Open file for input
                 LDX     #$E9
                 LDY     L00A9
                 JSR     OSFIND
@@ -8091,11 +8091,11 @@ LAA9E = LAA9D+1
                 BEQ     LAB6D
 
                 LDA     #$00
-                JSR     OSFIND
+                JSR     OSFIND     ; Close All files
 
 .LAAF7          JSR     LAE13
 
-                LDA     #$83
+                LDA     #$83       ; Read Bottom of user Memory (OSHWM Page)
                 JSR     OSBYTE
 
                 TYA
@@ -8110,15 +8110,15 @@ LAA9E = LAA9D+1
                 LDY     #$AE
                 LDA     (L00A8),Y
                 TAX
-                LDA     #$72
+                LDA     #$72        ; Specify Video Memory to use Shadow/Normal
                 JSR     OSBYTE
 
-                LDA     #$16
+                LDA     #$16        ; VDU for mode
                 JSR     OSWRCH
 
                 LDY     #$AF
                 LDA     (L00A8),Y
-                JSR     OSWRCH
+                JSR     OSWRCH      ; Change Mode
 
                 BIT     L00AE
                 BPL     LAB2E
@@ -8204,7 +8204,7 @@ LAB84 = LAB83+1
 
                 LDA     L0109,X
                 LDX     rom_slot
-                EOR     L0DF0,X
+                EOR     RomWrkSpace,X
                 AND     #$C0
                 BNE     LABB1
 
@@ -8251,7 +8251,7 @@ LAB84 = LAB83+1
 
                 LDY     #$AF
                 STA     (L00A8),Y
-                LDA     #$83
+                LDA     #$83       ; Read OSWHM (Page)
                 JSR     OSBYTE
 
                 TYA
@@ -8261,7 +8261,7 @@ LAB84 = LAB83+1
                 LDA     #$08
 .LABFB          LDY     #$B0
                 STA     (L00A8),Y
-                LDA     #$84
+                LDA     #$84       ; Read top of user memory (HIMEM)
                 JSR     OSBYTE
 
                 TYA
@@ -8272,7 +8272,7 @@ LAB84 = LAB83+1
 .LAC0B          LDY     #$B1
                 STA     (L00A8),Y
                 LDX     rom_slot
-                LDA     L0DF0,X
+                LDA     RomWrkSpace,X
                 ASL     A
                 ROL     A
                 ROL     A
@@ -8391,7 +8391,7 @@ LAB84 = LAB83+1
                 PHA
                 TYA
                 PHA
-                STX     L00F2
+                STX     cmd_line
                 STY     L00F3
                 LDY     #$FF
 .LACC5          INY
@@ -8414,7 +8414,7 @@ LAB84 = LAB83+1
                 TXA
                 BMI     LACE5
 
-                LDA     #$8E
+                LDA     #$8E     ; Enter Language Rom
                 JMP     OSBYTE
 
 .LACE5          JMP     LB05C
@@ -8456,7 +8456,7 @@ LAB84 = LAB83+1
 .LAD18          LDA     LAEFD,X
                 BMI     LAD33
 
-                EOR     (L00F2),Y
+                EOR     (cmd_line),Y
                 AND     #$DF
                 BNE     LAD27
 
@@ -8464,7 +8464,7 @@ LAB84 = LAB83+1
                 INY
                 BNE     LAD18
 
-.LAD27          LDA     (L00F2),Y
+.LAD27          LDA     (cmd_line),Y
                 INY
                 CMP     #$2E
                 BEQ     LAD39
@@ -8474,7 +8474,7 @@ LAB84 = LAB83+1
                 SEC
                 BCS     LAD3B
 
-.LAD33          LDA     (L00F2),Y
+.LAD33          LDA     (cmd_line),Y
                 CMP     #$21
                 BCS     LAD2E
 
@@ -8517,15 +8517,15 @@ LAB84 = LAB83+1
                 SBC     #$92
 .LAD67          SBC     #$0A
 .LAD69          AND     #$3F
-                EOR     L0DF0,X
+                EOR     RomWrkSpace,X
                 AND     #$3F
-                EOR     L0DF0,X
-                STA     L0DF0,X
+                EOR     RomWrkSpace,X
+                STA     RomWrkSpace,X
                 PLP
                 RTS
 
 .LAD78          LDX     rom_slot
-                LDA     L0DF0,X
+                LDA     RomWrkSpace,X
                 AND     #$3F
                 CMP     #$04
                 RTS
@@ -8543,7 +8543,7 @@ LAB84 = LAB83+1
                 CMP     #$FF
                 JMP     LB05C
 
-.LAD94          LDA     #$FD
+.LAD94          LDA     #$FD        ; Read Last Reset Type
 .LAD96          LDX     #$00
                 LDY     #$FF
                 JMP     OSBYTE
@@ -8680,7 +8680,7 @@ LAB84 = LAB83+1
                 LDA     (L00A8),Y
                 ORA     #$01
                 STA     (L00A8),Y
-.LAE6C          LDY     #$42
+.LAE6C          LDY     #$42         
                 LDX     #$DF
 .LAE70          LDA     L00A9
                 PHA
@@ -8762,7 +8762,7 @@ LAB84 = LAB83+1
                 BRK
 .LAEF2          DEY
 .LAEF3          INY
-                LDA     (L00F2),Y
+                LDA     (cmd_line),Y
                 CMP     #$20
                 BEQ     LAEF3
 
@@ -9498,8 +9498,8 @@ LAB84 = LAB83+1
 
                 TYA
                 CLC
-                ADC     L00F2
-                STA     L00F2
+                ADC     cmd_line
+                STA     cmd_line
                 BCC     LB396
 
                 INC     L00F3
@@ -9511,7 +9511,7 @@ LAB84 = LAB83+1
 
 .LB39F          RTS
 
-.LB3A0          LDA     L0DF0,X
+.LB3A0          LDA     RomWrkSpace,X     
                 AND     #$C0
                 CMP     #$40
                 BNE     LB39F
@@ -9682,7 +9682,7 @@ LAB84 = LAB83+1
 
 .LB4BF          LDX     L0066
                 LDY     L0067
-                LDA     #$40
+                LDA     #$40       ; Open file for input
                 JSR     OSFIND
 
                 CMP     #$00
@@ -9744,7 +9744,7 @@ LAB84 = LAB83+1
                 LDA     #$02
                 STA     L005B
                 LDX     #$00
-                TXA
+                TXA                 ; Close file (Handle in Y)
 .LB52F          STX     L0060
                 LDY     L07EC,X
                 BEQ     LB539
@@ -9764,7 +9764,7 @@ LAB84 = LAB83+1
                 ROR     L005B
                 JMP     OSNEWL
 
-.LB54D          LDA     #$05
+.LB54D          LDA     #$05        ; Read IO Processor Memory
                 LDX     #$6E
                 LDY     #$00
                 JSR     OSWORD
@@ -9778,7 +9778,7 @@ LAB84 = LAB83+1
                 STA     L000C
                 LDY     L0698
                 LDA     #$00
-                JMP     OSFIND
+                JMP     OSFIND       ; Close file (Handle in Y)
 
 .LB56B          JSR     LB6DC
 
@@ -10172,7 +10172,7 @@ LAB84 = LAB83+1
                 TSB     L0924
                 ORA     L0030
 .LB7D8          ORA     (L0012)
-                ASL     L0018
+                ASL     PAGElsb
                 ORA     #$0C
                 ORA     (L0003),Y
                 LSR     L000D
@@ -10579,7 +10579,7 @@ LB82B = LB829+2
                 TXA
                 PHA
                 LDX     rom_slot
-                LDA     L0DF0,X
+                LDA     RomWrkSpace,X
                 AND     #$3F
                 CMP     #$24
                 PLA
@@ -11253,10 +11253,10 @@ LBEBD = LBEBC+1
                 LDA     #$00
                 STA     L0105,X
                 LDX     rom_slot
-                LDA     L0DF0,X
+                LDA     RomWrkSpace,X
                 AND     #$3F
                 ORA     LBF28,Y
-                STA     L0DF0,X
+                STA     RomWrkSpace,X
                 LDY     #$80
                 STY     L00F1
 .LBF54          RTS
@@ -11281,7 +11281,7 @@ LBEBD = LBEBC+1
                 RTS
 
 .LBF6A          LDX     rom_slot
-                LDA     L0DF0,X
+                LDA     RomWrkSpace,X
 .LBF6F          ASL     A
                 ROL     A
                 ROL     A
