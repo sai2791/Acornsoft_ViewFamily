@@ -397,7 +397,7 @@ OSCLI           = $FFF7
                 PLA
                 TAX
                 PLA
-                LDA     #$8E
+                LDA     #$8E        ; Enter Language Rom
                 JMP     OSBYTE
 
 .L8102          LDA     (cmd_line),Y
@@ -493,12 +493,12 @@ OSCLI           = $FFF7
 
 .L8184          JSR     L8DF1
 
-                LDA     #$04
+                LDA     #$04     ; Define Action of Cursor Editing Keys
                 STA     L05D2
-                LDX     #$00
+                LDX     #$00     ; Default
                 JSR     OSBYTE
 
-                LDA     #$E1
+                LDA     #$E1     ; Default Function Keys
                 LDX     #$01
                 LDY     #$00
                 JSR     OSBYTE
@@ -672,8 +672,8 @@ OSCLI           = $FFF7
 
                 BNE     L82A4
 
-                LDA     #$85
-                LDX     x_cur_pos
+                LDA     #$85       ; Read base of display RAM for mode
+                LDX     x_cur_pos  ; Mode in X
                 JSR     OSBYTE
 
                 CPY     L0009
@@ -1192,7 +1192,7 @@ L83F5 = L83F4+1
                 STA     L006A
 .L859A          JMP     (L0059)
 
-.L859D          LDA     #$86
+.L859D          LDA     #$86      ; Read text cursor position
                 JSR     OSBYTE
 
                 STX     L005F
@@ -1289,26 +1289,26 @@ L83F5 = L83F4+1
 .L863E          LDA     #$0D
                 JSR     OSWRCH
 
-                LDA     #$E1
+                LDA     #$E1       ; Function Key interpretation
                 LDY     #$00
                 STY     L05D2
                 LDX     #$8C
                 JSR     OSBYTE
 
-                LDA     #$E2
+                LDA     #$E2       ; Shift Function key Interpretation
                 LDY     #$00
                 STY     L007D
                 STY     L0075
                 LDX     #$9C
                 JSR     OSBYTE
 
-                LDA     #$E3
+                LDA     #$E3       ; Ctrl Function Key Interpretation
                 LDY     #$00
                 LDX     #$AC
                 JSR     OSBYTE
 
-                LDA     #$04
-                LDX     #$02
+                LDA     #$04       ; Cursor Editing Keys 
+                LDX     #$02       ; remap as soft keys
                 JSR     OSBYTE
 
                 LDA     L0022
@@ -1800,7 +1800,7 @@ L83F5 = L83F4+1
 
                 BPL     L8917
 
-.L893E          LDA     #$15
+.L893E          LDA     #$15       ; Flush keyboard Buffer
                 LDX     #$00
                 JSR     OSBYTE
 
@@ -2631,7 +2631,7 @@ L8D8C = L8D8B+1
 .L8DD5          JSR     LADC0
 
                 STA     L007D
-.L8DDA          LDA     #$86
+.L8DDA          LDA     #$86        ; Read Base of display RAM for Mode (mode in X)
                 JSR     OSBYTE
 
                 STX     x_cur_pos
@@ -2795,7 +2795,7 @@ L8D8C = L8D8B+1
 
 .L8ECC          JSR     L8DF5
 
-                LDA     #$98
+                LDA     #$98     ; Examine keyboard buffer
                 LDX     #$00
                 JSR     OSBYTE
 
@@ -4758,7 +4758,7 @@ L8D8C = L8D8B+1
                 LDA     L0025
                 BNE     L99A4
 
-                LDA     #$85
+                LDA     #$85        ; Read base of display Ram for a given mode (mode in X)
                 JSR     OSBYTE
 
                 CPY     L0009
@@ -6269,7 +6269,7 @@ L9A98 = L9A97+1
 .LA1F0          STA     x_cur_pos
                 STX     L0501
                 STY     L0502
-                LDA     #$82
+                LDA     #$82       ; Read High Order Address
                 JSR     OSBYTE
 
                 STX     L0503
@@ -7575,7 +7575,7 @@ L9A98 = L9A97+1
 
                 RTS
 
-.getpage        LDA     #$83
+.getpage        LDA     #$83    ; Read OSHWM, bottom of user memory (PAGE)
                 JSR     OSBYTE
 
                 INX
@@ -7625,7 +7625,7 @@ L9A98 = L9A97+1
                 STA     L0506
                 LDA     #$FF
 .LA9C3          PHA
-                LDA     #$82
+                LDA     #$82       ; Read High Order Address
                 JSR     OSBYTE
 
                 STX     L0504
@@ -7839,12 +7839,12 @@ L9A98 = L9A97+1
 
                 JMP     L8E05
 
-.modencall      LDA     #$87
+.modencall      LDA     #$87       ; Read character at text cursor and screen mode
                 JSR     OSBYTE
 
                 STY     scr_mode
-                LDA     #$A3
-                LDX     #$F3
+                LDA     #$A3       ; Application Support
+                LDX     #$F3       ; 65Tube Emulator
                 STX     L0025
                 LDY     L8008
                 JSR     OSBYTE
@@ -7853,20 +7853,20 @@ L9A98 = L9A97+1
                 BCS     readsystem
 
                 ROR     L0025
-.readsystem     LDA     #$84
+.readsystem     LDA     #$84       ; Read top of user memory (HIMEM)
                 JSR     OSBYTE
 
                 STX     himemlsb
                 STY     himemmsb
-                LDA     #$A0
-                LDX     #$09
+                LDA     #$A0       ; Read VDU Variable
+                LDX     #$09       ; Current text window bottom row
                 JSR     OSBYTE
 
                 INY
                 INX
                 STY     textwiny
                 STX     textwinx
-                LDA     #$82
+                LDA     #$82       ; Read Hight Order Address
                 JSR     OSBYTE
 
                 INY
@@ -8104,7 +8104,7 @@ LAB89 = LAB88+1
                 PHA
                 TYA
                 PHA
-                LDA     #$7E
+                LDA     #$7E      ; Acknowledge ESCAPE condition
                 JSR     OSBYTE
 
                 SEC
@@ -8273,7 +8273,7 @@ LAB89 = LAB88+1
                 LDX     #$7E
                 STX     L005D
                 LDX     #$59
-                LDA     #$00
+                LDA     #$00      ; Input Line of text
                 TAY
                 JSR     OSWORD
 
