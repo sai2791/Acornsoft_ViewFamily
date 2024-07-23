@@ -13,8 +13,8 @@ L000B           = $000B
 L000C           = $000C
 L000D           = $000D
 L000E           = $000E
-HIMEMlsb           = $000F
-HIMEMmsb           = $0010
+HIMEMlsb        = $000F
+HIMEMmsb        = $0010
 L0011           = $0011
 L0012           = $0012
 L0013           = $0013
@@ -29,8 +29,8 @@ L001B           = $001B
 L001C           = $001C
 L001D           = $001D
 L001E           = $001E
-PageLSB           = $001F
-PageMSB           = $0020
+PageLSB         = $001F
+PageMSB         = $0020
 L0021           = $0021
 L0022           = $0022
 L0023           = $0023
@@ -121,7 +121,7 @@ L0080           = $0080
 L0081           = $0081
 L0082           = $0082
 L0083           = $0083
-L0084           = $0084
+scrmode         = $0084
 L0085           = $0085
 L0086           = $0086
 L0087           = $0087
@@ -167,7 +167,7 @@ L0103           = $0103
 L0108           = $0108
 USERV           = $0200
 BRKV            = $0202
-BRKV+1          = $0203
+BRKV1           = $0203
 IRQ1V           = $0204
 IRQ2V           = $0206
 CLIV            = $0208
@@ -369,7 +369,7 @@ OSCLI           = $FFF7
                 LDA     L8093
                 STA     BRKV        ; low order byte
                 LDA     L8094
-                STA     BRKV+1      ; high order byte
+;;                 STA     BRKV+1      ; high order byte
                 LDX     #$FF
                 TXS
                 STX     L004E
@@ -493,7 +493,7 @@ OSCLI           = $FFF7
 .L813C          EQUB    $BD
 
 .L813D          STY     L0007
-L813E = L813D+1
+;; ;; L813E = L813D+1
                 CMP     #$0D
                 BEQ     L8149
 
@@ -552,7 +552,7 @@ L813E = L813D+1
 
 .L8195          JSR     OSNEWL
 
-.L8198          JSR     LA726
+.L8198          JSR     ackEscape
 
                 JSR     L83FF
 
@@ -567,22 +567,22 @@ L813E = L813D+1
                 LDX     #$00
                 STX     L0085
                 LDX     #$05
-                STX     L0086
+                STX     L0086    
                 LDX     #$44
                 STX     L0087
-                LDX     #$20
+                LDX     #$20      
                 STX     L0088
                 LDX     #$7E
                 STX     L0089
-                LDX     #$85
+                LDX     #$85       
                 LDA     #$00
                 STA     L007F
                 TAY
-                JSR     OSWORD
+                JSR     OSWORD     ; Read Input
 
                 BCC     L81E3
 
-                JSR     LA726
+                JSR     ackEscape
 
                 JSR     L8E3A
 
@@ -609,7 +609,7 @@ L813E = L813D+1
 
                 LDX     #$00
                 LDY     #$05
-                JSR     OSCLI
+                JSR     OSCLI    ; * command from &0500
 
 .L81F7          JMP     L8198
 
@@ -645,14 +645,14 @@ L813E = L813D+1
                 JMP     L8098
 
                 LDX     #$00
-.L822A          LDA     LB1B4,X
+.prtname        LDA     LB1B4,X
                 BEQ     L8237
 
                 EOR     #$5B
-                JSR     OSASCI
+                JSR     OSASCI   ; decodes as Mark Colton
 
                 INX
-                BNE     L822A
+                BNE     prtname
 
 .L8237          JMP     L8195
 
@@ -731,7 +731,7 @@ L813E = L813D+1
 
 .L82C4          INY
                 LDA     L0500,Y
-                STA     L0084
+                STA     scrmode
                 CMP     L007E
                 BEQ     L82D0
 
@@ -756,7 +756,7 @@ L813E = L813D+1
                 LDY     #$50
                 JSR     LA760
 
-                JSR     LA712
+                JSR     flushkeyb
 
                 BCS     L82D0
 
@@ -855,7 +855,7 @@ L813E = L813D+1
                 LDA     L8394,X
                 BNE     L837E
 
-.L837C          LDA     L0084
+.L837C          LDA     scrmode
 .L837E          LDX     L007A
                 BNE     L8385
 
@@ -969,16 +969,16 @@ L813E = L813D+1
 
                 LDA     #$02
                 STA     L004E
-                LDA     #$40
-                JSR     L880C
+                LDA     #$40        ; open file for input
+                JSR     callosfind
 
                 STA     L006A
                 JSR     L88AC
 
                 JSR     L8DD3
 
-                LDA     #$80
-                JSR     L880C
+                LDA     #$80        ; open file for output
+                JSR     callosfind
 
                 STA     L006B
                 LDX     #$00
@@ -1084,8 +1084,8 @@ L813E = L813D+1
 
                 BEQ     L850B
 
-                LDA     #$80
-                JSR     L880C
+                LDA     #$80         ; open file for output
+                JSR     callosfind
 
                 STA     L004D
                 JSR     L8D05
@@ -1116,8 +1116,8 @@ L813E = L813D+1
 
                 JSR     L84E9
 
-                LDA     #$40
-                JSR     L880C
+                LDA     #$40          ; open file for input
+                JSR     callosfind
 
                 STA     L004D
                 LDA     L005F
@@ -1169,7 +1169,7 @@ L813E = L813D+1
                 DEX
                 BNE     L85A0
 
-                STA     L0084
+                STA     scrmode
                 LDA     L0052
                 ROR     A
                 BCS     L8593
@@ -1179,8 +1179,8 @@ L813E = L813D+1
                 BNE     L8593
 
                 LDA     #$85
-                LDX     L0084
-                JSR     OSBYTE
+                LDX     scrmode
+                JSR     OSBYTE  ; find bottom of ram for mode x
 
                 CPY     L000E
                 BCC     L8590
@@ -1193,9 +1193,9 @@ L813E = L813D+1
 .L8590          JMP     L84F3
 
 .L8593          LDA     #$16
-                JSR     OSWRCH
+                JSR     OSWRCH  ; change mode
 
-                LDA     L0084
+                LDA     scrmode 
                 JSR     OSWRCH
 
                 JMP     LAF31
@@ -1401,7 +1401,7 @@ L813E = L813D+1
 
 .L86FB          EQUB    $52
 
-.L86FC          LSR     A
+.L86FC          LSR     A          ; looks like data maybe a table
                 EOR     L004C
                 LSR     A
                 BRK
@@ -1430,7 +1430,7 @@ L813E = L813D+1
 
                 BCS     L873B
 
-                LDA     #$2E
+                LDA     #$2E     ; Char "."
                 JSR     OSWRCH
 
                 LDA     L0008
@@ -1492,7 +1492,7 @@ L813E = L813D+1
 .L877F          JSR     LA7B2
 
 .L8783          ROR     L20FF
-L8785 = L8783+2
+;; L8785 = L8783+2
                 LDA     (L00A7)
                 EQUS    "Bad file"
 
@@ -1524,18 +1524,18 @@ L8785 = L8783+2
                 BNE     L8785
 
 .L87B5          LDA     #$00
-                STA     L0502
-                LDA     #$04
-                STA     L0503
-                LDA     #$82
-                JSR     OSBYTE
+                STA     L0502   ; load address osbyte block &02
+                LDA     #$04    
+                STA     L0503   ; load address is &0400
+                LDA     #$82    
+                JSR     OSBYTE  ; Read high order address YYXX0000
 
-                STX     L0504
-                STY     L0505
+                STX     L0504   ; XX
+                STY     L0505   ; YY
                 LDA     #$00
-                STA     L0506
-                LDA     #$FF
-                JSR     L8900
+                STA     L0506   ; execute address &0000
+                LDA     #$FF    ; Load file
+                JSR     L8900   ; osfile
 
                 LDX     #$00
 .L87D6          LDA     L075C,X
@@ -1562,17 +1562,17 @@ L8785 = L8783+2
 
                 JMP     LA6B6
 
-.L87FD          LDA     #$05
-                JSR     L8900
+.L87FD          LDA     #$0     ; Read Information
+                JSR     L8900   ; osfile
 
                 TAY
                 BEQ     L8816
 
-                LDA     L050A
+                LDA     L050A   ; file length
                 ORA     L050B
                 RTS
 
-.L880C          LDY     #$07
+.callosfind     LDY     #$07
                 LDX     #$5C
                 JSR     OSFIND
 
@@ -1624,7 +1624,7 @@ L8785 = L8783+2
 .L8860          JMP     L84F3
 
 .L8863          LDA     #$82
-                JSR     OSBYTE
+                JSR     OSBYTE   ; Read High Order Address YYXX0000
 
                 STX     L0504
                 STY     L0505
@@ -1696,7 +1696,7 @@ L8785 = L8783+2
                 STA     L050E
                 LDA     L000E
                 STA     L050F
-                LDA     #$82
+                LDA     #$82    ; read high order address YYXX0000
                 JSR     OSBYTE
 
                 STX     L050C
@@ -1704,7 +1704,7 @@ L8785 = L8783+2
                 STX     L0510
                 STY     L0511
                 LDA     #$00
-                JSR     L8900
+                JSR     L8900   ; osfile (save file &00)
 
                 JMP     L8198
 
@@ -1713,7 +1713,7 @@ L8785 = L8783+2
                 LDY     #$07
                 STY     L0501
 .L890A          LDX     #$00
-                LDY     #$05
+                LDY     #$05    ; osfile block is &0500
                 JMP     OSFILE
 
 .L8911          LDA     L005F
@@ -2006,7 +2006,7 @@ L8785 = L8783+2
                 BNE     L8B1F
 
 .L8AD3          LDA     L06D8,X
-                STX     L0084
+                STX     scrmode
                 CMP     #$20
                 BNE     L8AEC
 
@@ -2137,17 +2137,17 @@ L8785 = L8783+2
                 BNE     L8B2F
 
 .L8B97          LDA     L0083
-                STX     L0084
+                STX     scrmode
                 LDX     L0049
                 CPX     #$14
                 BCS     L8BA6
 
                 STA     L0654,X
                 INC     L0049
-.L8BA6          LDX     L0084
+.L8BA6          LDX     scrmode
                 JMP     L8BE7
 
-.L8BAB          STX     L0084
+.L8BAB          STX     scrmode
                 LDA     L0083
                 CMP     #$20
                 BEQ     L8BD7
@@ -2171,7 +2171,7 @@ L8785 = L8783+2
 
                 LDA     #$00
                 STA     L0081
-                LDX     L0084
+                LDX     scrmode
                 INX
                 CPX     L007A
                 BCC     L8B70
@@ -2180,7 +2180,7 @@ L8785 = L8783+2
 
 .L8BD7          JSR     L8C07
 
-                LDX     L0084
+                LDX     scrmode
                 STA     L0081
 .L8BDE          INC     L008D
                 BNE     L8BE4
@@ -2254,7 +2254,7 @@ L8785 = L8783+2
 .L8C41          LDA     #$00
                 STA     L004E
                 STA     L0083
-                STA     L0084
+                STA     scrmode
 .L8C49          LDY     L004D
                 JSR     L8CC9
 
@@ -2264,7 +2264,7 @@ L8785 = L8783+2
                 CMP     #$7F
                 BCC     L8C63
 
-                LDX     L0084
+                LDX     scrmode
                 BNE     L8C49
 
                 JSR     LAF29
@@ -2324,7 +2324,7 @@ L8785 = L8783+2
 
 .L8CA5          CLC
 .L8CA6          PHP
-                LDA     L0084
+                LDA     scrmode
                 BEQ     L8CAE
 
                 JSR     L8CB2
@@ -2340,11 +2340,11 @@ L8785 = L8783+2
                 BNE     L8CBE
 
                 INC     L0086
-.L8CBE          STA     L0084
+.L8CBE          STA     scrmode
                 CMP     #$0D
                 BNE     L8CC8
 
-                STY     L0084
+                STY     scrmode
                 STY     L0083
 .L8CC8          RTS
 
@@ -2415,10 +2415,10 @@ L8785 = L8783+2
 .L8D2C          RTS
 
 .L8D2D          TSX
-                STX     L0084
+                STX     scrmode
                 JMP     OSBPUT
 
-.L8D33          LDX     L0084
+.L8D33          LDX     scrmode
                 INX
                 INX
                 TXS
@@ -2434,7 +2434,7 @@ L8785 = L8783+2
                 STA     L004E
                 LDA     #$00
                 LDY     L004D
-                JMP     OSFIND
+                JMP     OSFIND   ; Save file
 
 .L8D4E          LDX     #$00
                 STX     L008D
@@ -2678,7 +2678,7 @@ L8785 = L8783+2
 
 .L8ECE          JSR     L83FF
 
-                JSR     LA726
+                JSR     ackEscape
 
                 JSR     L8FE0
 
@@ -2686,8 +2686,8 @@ L8785 = L8783+2
 
                 JMP     L8198
 
-.L8EDD          LDA     #$40
-                JSR     L880C
+.L8EDD          LDA     #$40    ; Open file for Input
+                JSR     callosfind   ; OSFIND
 
                 STA     L004D
 .L8EE4          LDA     L0031
@@ -3142,7 +3142,7 @@ L8785 = L8783+2
                 BCS     L91D9
 
                 INY
-                STY     L0084
+                STY     scrmode
                 STA     L0083
                 LDA     #$00
                 STA     L0082
@@ -3185,7 +3185,7 @@ L8785 = L8783+2
                 CPX     #$82
                 BCC     L91BD
 
-.L91D7          LDY     L0084
+.L91D7          LDY     scrmode
 .L91D9          JMP     L915B
 
 .L91DC          CMP     #$3E
@@ -3285,7 +3285,7 @@ L8785 = L8783+2
                 JSR     LA7B2
 
                 ROL     L002E
-                JSR     LA712
+                JSR     flushkeyb
 
                 BCS     L9280
 
@@ -3421,7 +3421,7 @@ L8785 = L8783+2
                 JSR     L93CE
 
 .L932F          LDY     #$00
-                LDX     L0084
+                LDX     scrmode
                 BEQ     L9346
 
 .L9335          TXA
@@ -3498,7 +3498,7 @@ L8785 = L8783+2
                 CPX     #$84
                 BCC     L9382
 
-.L939A          STX     L0084
+.L939A          STX     scrmode
                 LDA     L0069
                 BPL     L93A5
 
@@ -3681,7 +3681,7 @@ L8785 = L8783+2
                 BEQ     L94DE
 
                 LSR     A
-                STA     L0084
+                STA     scrmode
                 LDA     L003E
                 BEQ     L94C3
 
@@ -3691,7 +3691,7 @@ L8785 = L8783+2
                 SEC
                 ADC     L003F
                 SEC
-                SBC     L0084
+                SBC     scrmode
                 BCS     L94C3
 
                 LDA     #$00
@@ -3974,7 +3974,7 @@ L8785 = L8783+2
                 LDY     #$03
                 LDA     (L0004),Y
                 AND     #$DF
-                STA     L0084
+                STA     scrmode
                 INY
                 LDA     (L0004),Y
                 JSR     L8C1F
@@ -3988,7 +3988,7 @@ L8785 = L8783+2
 .L9643          DEY
                 STA     (L001B),Y
                 DEY
-                LDA     L0084
+                LDA     scrmode
                 STA     (L001B),Y
                 LDA     #$04
                 CLC
@@ -4151,7 +4151,7 @@ L8785 = L8783+2
                 BNE     L9763
 
 .L9737          DEY
-                STY     L0084
+                STY     scrmode
                 LDX     #$FF
 .L973C          INY
                 LDA     (L008D),Y
@@ -4174,7 +4174,7 @@ L8785 = L8783+2
                 CMP     #$20
                 BCS     L9751
 
-                LDY     L0084
+                LDY     scrmode
                 LDA     L9765,X
                 BPL     L973C
 
@@ -4288,7 +4288,7 @@ L8785 = L8783+2
                 BEQ     L9815
 
 .L97FB          LDA     L0039
-                STA     L0084
+                STA     scrmode
                 INY
                 CPY     L0043
                 BEQ     L9825
@@ -4324,7 +4324,7 @@ L8785 = L8783+2
 
                 LDA     L003E
                 SEC
-                SBC     L0084
+                SBC     scrmode
                 BCC     L97E3
 
                 ADC     #$00
@@ -4334,9 +4334,9 @@ L8785 = L8783+2
                 SBC     #$84
                 BCC     L9840
 
-                STA     L0084
+                STA     scrmode
                 TXA
-                SBC     L0084
+                SBC     scrmode
                 TAX
 .L9840          STX     L0082
                 STX     L008D
@@ -4413,7 +4413,7 @@ L8785 = L8783+2
                 LDA     L0081
                 BEQ     L98D0
 
-                STY     L0084
+                STY     scrmode
                 LDY     L0039
                 CPY     L0046
                 LDA     #$00
@@ -4421,7 +4421,7 @@ L8785 = L8783+2
 
                 LDA     L0500,Y
 .L98C6          CLC
-                ADC     L0084
+                ADC     scrmode
                 INC     L0039
                 TAY
                 LDA     #$00
@@ -4711,8 +4711,8 @@ L8785 = L8783+2
                 PLA
                 PLA
                 LDA     #$40
-                STA     L0084
-                BIT     L0084
+                STA     scrmode
+                BIT     scrmode
 .L9A74          RTS
 
 .L9A75          TYA
@@ -4739,7 +4739,7 @@ L8785 = L8783+2
                 TYA
                 BNE     L9ABA
 
-                STY     L0084
+                STY     scrmode
                 BEQ     L9AA3
 
 .L9A9D          INC     L008D
@@ -4758,9 +4758,9 @@ L8785 = L8783+2
                 CMP     #$0B
                 BNE     L9A9D
 
-                ROL     L0084
+                ROL     scrmode
                 SEC
-                ROR     L0084
+                ROR     scrmode
                 BCS     L9A9D
 
 .L9ABA          LDA     (L0089),Y
@@ -4770,7 +4770,7 @@ L8785 = L8783+2
                 LDX     L003F
                 BEQ     L9AE3
 
-                LDX     L0084
+                LDX     scrmode
                 BEQ     L9AE3
 
                 LDX     L0083
@@ -4788,7 +4788,7 @@ L8785 = L8783+2
 .L9AD7          LDA     L003F
                 BEQ     L9AE5
 
-                LDA     L0084
+                LDA     scrmode
                 BEQ     L9AE5
 
                 LDA     L0083
@@ -6431,7 +6431,7 @@ L8785 = L8783+2
                 JMP     LA4A1
 
 .LA495          INC     L0039
-                STX     L0084
+                STX     scrmode
                 LDX     L0080
                 INC     L0080
                 CPX     L0071
@@ -6492,7 +6492,7 @@ L8785 = L8783+2
                 JSR     LA51D
 
 .LA4EA          PLA
-.LA4EB          LDX     L0084
+.LA4EB          LDX     scrmode
                 RTS
 
 .LA4EE          TYA
@@ -6567,11 +6567,11 @@ L8785 = L8783+2
                 JMP     OSWRCH
 
 .LA54F          LDX     L0082
-                STA     L0084
+                STA     scrmode
                 LDA     L07CC,X
                 BEQ     LA562
 
-                LDA     L0084
+                LDA     scrmode
 .LA55A          JSR     OSWRCH
 
                 DEC     L07CC,X
@@ -6598,14 +6598,14 @@ L8785 = L8783+2
                 CMP     #$20
                 BCS     LA589
 
-                STY     L0084
+                STY     scrmode
                 LDY     L0069
                 BPL     LA587
 
                 SBC     #$1B
                 TAX
                 LDA     L002A,X
-.LA587          LDY     L0084
+.LA587          LDY     scrmode
 .LA589          LDX     #$01
                 CLC
                 RTS
@@ -6616,10 +6616,10 @@ L8785 = L8783+2
 .LA591          LDA     L003F
                 BEQ     LA58D
 
-                STY     L0084
+                STY     scrmode
                 BNE     LA5A9
 
-.LA599          STY     L0084
+.LA599          STY     scrmode
                 LDY     L0039
 .LA59D          INY
                 CPY     L003A
@@ -6638,7 +6638,7 @@ L8785 = L8783+2
 
 .LA5B0          LDX     #$01
 .LA5B2          LDA     #$20
-                LDY     L0084
+                LDY     scrmode
                 SEC
                 RTS
 
@@ -6819,7 +6819,7 @@ L8785 = L8783+2
                 BCS     LA6F1
 
                 INY
-                STA     L0084
+                STA     scrmode
                 ASL     L008D
                 ROL     L008E
                 LDX     L008E
@@ -6836,7 +6836,7 @@ L8785 = L8783+2
 
                 INX
 .LA6E3          CLC
-                ADC     L0084
+                ADC     scrmode
                 STA     L008D
                 TXA
                 ADC     L008E
@@ -6868,22 +6868,22 @@ L8785 = L8783+2
                 STX     L003D
                 RTS
 
-.LA712          LDA     #$15
+.flushkeyb      LDA     #$15
                 LDX     #$00
-                JSR     OSBYTE
+                JSR     OSBYTE   ; flush the keyboard buffer
 
 .LA719          JSR     OSRDCH
 
-                CMP     #$1B
+                CMP     #$1B     ; Escape Char
                 CLC
-                BNE     LA725
+                BNE     LA725    ; Not Escape
 
-                JSR     LA726
+                JSR     ackEscape    ; Escape was pressed
 
                 SEC
 .LA725          RTS
 
-.LA726          PHA
+.ackEscape      PHA
                 TXA
                 PHA
                 TYA
@@ -6891,7 +6891,7 @@ L8785 = L8783+2
                 LDX     #$00
                 LDY     #$00
                 LDA     #$7E
-                JSR     OSBYTE
+                JSR     OSBYTE   ; Ack Escape
 
                 PLA
                 TAY
@@ -6906,11 +6906,11 @@ L8785 = L8783+2
 .LA73E          JSR     LA751
 
                 LDA     #$20
-.LA743          JSR     OSWRCH
+.LA743          JSR     OSWRCH   ; Write space
 
                 LDA     #$00
                 LDX     #$06
-.LA74A          JSR     OSWRCH
+.LA74A          JSR     OSWRCH   ; Write null
 
                 DEX
                 BNE     LA74A
@@ -6981,7 +6981,7 @@ L8785 = L8783+2
                 PLA
 .LA7B1          RTS
 
-.LA7B2          STY     L0084
+.LA7B2          STY     scrmode
                 PLA
                 CLC
                 ADC     #$01
@@ -7007,7 +7007,7 @@ L8785 = L8783+2
                 BCC     LA7D7
 
                 INC     L0088
-.LA7D7          LDY     L0084
+.LA7D7          LDY     scrmode
                 JMP     (L0087)
 
 .LA7DC          JSR     OSNEWL
@@ -7047,7 +7047,7 @@ L8785 = L8783+2
                 INY
                 LDA     (L0085),Y
                 AND     #$DF
-                STA     L0084
+                STA     scrmode
                 LDA     LB1C0,X
                 BEQ     LA848
 
@@ -7056,7 +7056,7 @@ L8785 = L8783+2
                 EOR     #$5B
                 STA     L0083
                 AND     #$DF
-                CMP     L0084
+                CMP     scrmode
                 BEQ     LA809
 
 .LA822          INX
@@ -7100,7 +7100,7 @@ L8785 = L8783+2
 
 .LA859          INC     LA85D
 .LA85C          LDA     #$00
-LA85D = LA85C+1
+;; ;; LA85D = LA85C+1
                 ADC     LB10B,Y
                 STA     L008E
                 LDY     #$00
@@ -7135,10 +7135,10 @@ LA85D = LA85C+1
 
                 JMP     LA8A5
 
-.LA897          STA     L0084
+.LA897          STA     scrmode
                 LDA     #$00
                 SEC
-                SBC     L0084
+                SBC     scrmode
                 STA     L008B
                 JSR     LA9CD
 
@@ -7251,7 +7251,7 @@ LA85D = LA85C+1
 
 .LA93B          JSR     LACA0
 
-                JSR     LA712
+                JSR     flushkeyb
 
                 BCC     LA93B
 
@@ -7781,7 +7781,7 @@ LA85D = LA85C+1
                 INX
                 INX
                 INX
-.LAC45          STX     L0084
+.LAC45          STX     scrmode
 .LAC47          LDA     (L008D),Y
                 INY
                 CMP     #$20
@@ -7794,12 +7794,12 @@ LA85D = LA85C+1
 .LAC54          CMP     #$0D
                 BEQ     LAC2F
 
-                CPY     L0084
+                CPY     scrmode
                 BEQ     LAC47
 
                 BCC     LAC47
 
-                LDA     L0084
+                LDA     scrmode
                 LDX     L0083
                 BEQ     LAC65
 
@@ -7831,7 +7831,7 @@ LA85D = LA85C+1
                 LDY     #$4B
 .LAC93          JSR     LA760
 
-LAC94 = LAC93+1
+;; ;; LAC94 = LAC93+1
                 INC     L0075
                 JSR     LA719
 
@@ -7949,7 +7949,7 @@ LAC94 = LAC93+1
                 CLC
 .LAD38          RTS
 
-.LAD39          STY     L0084
+.LAD39          STY     scrmode
                 JSR     LAD21
 
                 LDY     #$00
@@ -7970,14 +7970,14 @@ LAC94 = LAC93+1
                 LDA     (L008B),Y
                 STA     L008E
 .LAD5A          CLV
-.LAD5B          LDY     L0084
+.LAD5B          LDY     scrmode
                 RTS
 
 .LAD5E          RTI
 
 .LAD5F          JSR     LAD39
 
-                STY     L0084
+                STY     scrmode
                 BVC     LADA2
 
                 PHA
@@ -8018,7 +8018,7 @@ LAC94 = LAC93+1
                 LDX     L0082
 .LADA2          JSR     LA644
 
-.LADA5          LDY     L0084
+.LADA5          LDY     scrmode
                 RTS
 
 .LADA8          LDX     #$08
@@ -8089,12 +8089,12 @@ LAC94 = LAC93+1
                 JMP     LADEF
 
 .LAE0A          LDA     (L0002),Y
-                STY     L0084
+                STY     scrmode
                 LDY     L0081
                 BEQ     LAE14
 
                 STA     (L0002),Y
-.LAE14          LDY     L0084
+.LAE14          LDY     scrmode
                 CPY     L0040
                 BNE     LADDF
 
@@ -8111,13 +8111,13 @@ LAC94 = LAC93+1
                 TYA
                 CLC
                 ADC     L0080
-                STA     L0084
+                STA     scrmode
 .LAE30          JSR     LA4EE
 
                 BNE     LAE50
 
                 LDA     #$00
-                CPY     L0084
+                CPY     scrmode
                 BCC     LAE49
 
                 TYA
@@ -8142,7 +8142,7 @@ LAC94 = LAC93+1
                 BCS     LAE79
 
                 LDY     L0040
-.LAE5D          STY     L0084
+.LAE5D          STY     scrmode
                 LDX     #$10
                 TYA
                 CLC
@@ -8155,7 +8155,7 @@ LAC94 = LAC93+1
 
                 LDA     (L0002),Y
                 TAX
-.LAE6F          LDY     L0084
+.LAE6F          LDY     scrmode
                 TXA
                 STA     (L0002),Y
                 INY
@@ -8577,7 +8577,7 @@ LAC94 = LAC93+1
 
 .LB0FD          BPL     LB126
 
-LB0FE = LB0FD+1
+;; ;; LB0FE = LB0FD+1
                 INX
                 STZ     L0000
                 ASL     A
@@ -8586,7 +8586,7 @@ LB0FE = LB0FD+1
 
                 ORA     L097F
 .LB10A          ORA     (L00B1)
-LB10B = LB10A+1
+;; ;; LB10B = LB10A+1
                 STA     (L00B2)
                 PLY
                 LDA     (L00AE),Y
@@ -8613,7 +8613,7 @@ LB10B = LB10A+1
                 TSX
                 LDY     #$EC
 .LB143          STA     L9DF0,X
-LB145 = LB143+2
+;; ;; LB145 = LB143+2
                 DEX
                 LDY     #$9E
                 INC     A
@@ -8655,12 +8655,12 @@ LB145 = LB143+2
                 STA     L009F
                 STY     romslot
                 EOR     L0082,X
-                CMP     (L0084),Y
+                CMP     (scrmode),Y
                 TRB     LD184
                 DEY
                 STY     L8D33
 .LB1B3          STY     L0016
-LB1B4 = LB1B3+1
+;; ;; LB1B4 = LB1B3+1
                 DEC     A
                 AND     #$30
                 CLC
@@ -8678,7 +8678,7 @@ LB1B4 = LB1B3+1
                 STA     (L0015,X)
                 ASL     L800C,X
 .LB1D1          ORA     L0914,X
-LB1D3 = LB1D1+2
+;; ;; LB1D3 = LB1D1+2
                 ROL     L003A,X
                 STA     (L0008,X)
                 ASL     L2E0F,X
@@ -8688,7 +8688,7 @@ LB1D3 = LB1D1+2
                 STA     (L0016,X)
                 TRB     L0029
 .LB1E6          ROL     L0881,X
-LB1E8 = LB1E6+2
+;; ;; LB1E8 = LB1E6+2
                 CLC
                 AND     #$3E
                 ROL     L8135,X
@@ -8745,7 +8745,7 @@ LB1E8 = LB1E6+2
                 SEC
                 ROL     L1781,X
 .LB25E          BIT     L003A,X
-LB25F = LB25E+1
+;; ;; LB25F = LB25E+1
                 BRA     LB263
 
 .LB264          EOR     L0052
@@ -8791,10 +8791,10 @@ LB25F = LB25E+1
                 STA     L00CF,X
                 STA     L00E8,X
                 STA     L00F0,X
-                STA     L0084,X
+                STA     scrmode,X
                 STY     L0017,X
 .LB2BF          STX     L008A,Y
-LB2C0 = LB2BF+1
+;; ;; LB2C0 = LB2BF+1
                 BNE     LB2CF
 
                 LDX     #$08
@@ -8815,7 +8815,7 @@ LB2C0 = LB2BF+1
                 LSR     A
 .LB2D8          JSR     LB2DE
 
-LB2DA = LB2D8+2
+;; ;; LB2DA = LB2D8+2
                 PLA
                 AND     #$0F
 .LB2DE          CMP     #$0A
@@ -9015,7 +9015,7 @@ LB2DA = LB2D8+2
 
 .LB3CC          BCC     LB40E
 
-LB3CD = LB3CC+1
+;; ;; LB3CD = LB3CC+1
                 TSB     L0000
                 AND     (L0024,X)
                 BPL     LB367
@@ -9703,7 +9703,7 @@ LB3CD = LB3CC+1
                 PHP
 .LB609          BPL     LB61B
 
-LB60A = LB609+1
+;; LB60A = LB609+1
                 BPL     LB61D
 
                 BPL     LB61F
@@ -9726,7 +9726,7 @@ LB60A = LB609+1
 
 .LB61C          JSR     L0000
 
-LB61D = LB61C+1
+;; LB61D = LB61C+1
 .LB61F          BRK
                 EQUB    $00
 
@@ -10041,7 +10041,7 @@ LB61D = LB61C+1
 
 .LB720          BPL     LB724
 
-LB721 = LB720+1
+;; LB721 = LB720+1
                 BPL     LB724
 
 .LB724          BRK
@@ -10106,7 +10106,7 @@ LB721 = LB720+1
                 ORA     (L0000,X)
 .LB75C          JSR     L0000
 
-LB75D = LB75C+1
+;; LB75D = LB75C+1
                 BRK
                 EQUB    $24
 
@@ -10457,7 +10457,7 @@ LB75D = LB75C+1
                 ORA     (L0000,X)
                 BRA     LB87C
 
-.LB87C          BIT     L0084
+.LB87C          BIT     scrmode
                 BRK
                 EQUB    $00
 
@@ -10907,7 +10907,7 @@ LB75D = LB75C+1
 .LBFF7          CPY     #$B5
                 ADC     L00B5
 .LBFFB          LDA     L00B5,X
-LBFFC = LBFFB+1
+;; LBFFC = LBFFB+1
                 ADC     #$B5
 .LBFFF          LDA     L0000,X
 .BeebDisEndAddr
