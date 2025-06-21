@@ -1,25 +1,26 @@
+    cpu 1
+
 ; Constants
-osbyte_acknowledge_escape                   = 126
-osbyte_enter_language                       = 142
-osbyte_read_char_at_cursor                  = 135
-osbyte_read_high_order_address              = 130
-osbyte_read_himem                           = 132
-osbyte_read_himem_for_mode                  = 133
-osbyte_read_os_version                      = 0
-osbyte_read_oshwm                           = 131
-osbyte_read_text_cursor_pos                 = 134
-osbyte_read_vdu_status                      = 117
-osbyte_reserved_for_application_software    = 163
-osbyte_test_for_sideways_ram                = 68
-osbyte_write_shadow_memory_use              = 114
-osfind_close                                = 0
-osfind_open_input                           = 64
-osfind_open_output                          = 128
-osfind_open_random_access                   = 192
-osgbpb_append_bytes                         = 2
-osgbpb_read_bytes_from_current_position     = 4
-osword_read_io_memory                       = 5
-osword_read_line                            = 0
+osbyte_acknowledge_escape               = 126
+osbyte_enter_language                   = 142
+osbyte_read_char_at_cursor              = 135
+osbyte_read_high_order_address          = 130
+osbyte_read_himem                       = 132
+osbyte_read_himem_for_mode              = 133
+osbyte_read_os_version                  = 0
+osbyte_read_oshwm                       = 131
+osbyte_read_text_cursor_pos             = 134
+osbyte_read_vdu_status                  = 117
+osbyte_test_for_sideways_ram            = 68
+osbyte_write_shadow_memory_use          = 114
+osfind_close                            = 0
+osfind_open_input                       = 64
+osfind_open_output                      = 128
+osfind_open_random_access               = 192
+osgbpb_append_bytes                     = 2
+osgbpb_read_bytes_from_current_position = 4
+osword_read_io_memory                   = 5
+osword_read_line                        = 0
 
 ; Memory locations
 l0000                   = &0000
@@ -30,7 +31,7 @@ l0004                   = &0004
 l0005                   = &0005
 l0006                   = &0006
 l0007                   = &0007
-l0008                   = &0008
+current_mode            = &0008
 l0009                   = &0009
 l000a                   = &000a
 l000b                   = &000b
@@ -46,7 +47,8 @@ l0014                   = &0014
 l0015                   = &0015
 l0016                   = &0016
 l0017                   = &0017
-top                     = &0018
+l0018                   = &0018
+l0019                   = &0019
 l001a                   = &001a
 l001b                   = &001b
 l001c                   = &001c
@@ -58,7 +60,7 @@ l0021                   = &0021
 l0022                   = &0022
 l0023                   = &0023
 l0024                   = &0024
-adjusted_himem          = &0025
+himem                   = &0025
 l0027                   = &0027
 l0028                   = &0028
 l0029                   = &0029
@@ -103,7 +105,6 @@ l004f                   = &004f
 l0050                   = &0050
 l0052                   = &0052
 l0053                   = &0053
-l0054                   = &0054
 l0055                   = &0055
 l0056                   = &0056
 l0057                   = &0057
@@ -165,7 +166,6 @@ l00ac                   = &00ac
 l00ad                   = &00ad
 l00ae                   = &00ae
 l00af                   = &00af
-l00b5                   = &00b5
 l00d0                   = &00d0
 l00d2                   = &00d2
 l00d3                   = &00d3
@@ -197,27 +197,18 @@ brkv                    = &0202
 cliv                    = &0208
 bytev                   = &020a
 wrchv                   = &020e
-remv                    = &022c
 ind1v                   = &0230
 ind2v                   = &0232
 ind3v                   = &0234
 l026a                   = &026a
 l027d                   = &027d
 l0308                   = &0308
-l0309                   = &0309
 l030a                   = &030a
 l030b                   = &030b
 l0318                   = &0318
 l0319                   = &0319
-l031b                   = &031b
-l031c                   = &031c
-l031d                   = &031d
 l031e                   = &031e
 l031f                   = &031f
-l0320                   = &0320
-l0321                   = &0321
-l0322                   = &0322
-l0323                   = &0323
 l033a                   = &033a
 l033b                   = &033b
 l033c                   = &033c
@@ -234,10 +225,7 @@ l0354                   = &0354
 l0355                   = &0355
 l0357                   = &0357
 l0358                   = &0358
-l035d                   = &035d
-l035e                   = &035e
 l035f                   = &035f
-l0360                   = &0360
 l0364                   = &0364
 l0365                   = &0365
 l036a                   = &036a
@@ -259,17 +247,15 @@ l0436                   = &0436
 l0437                   = &0437
 l043f                   = &043f
 l0441                   = &0441
-l044d                   = &044d
 l044e                   = &044e
 l044f                   = &044f
 l0482                   = &0482
 l0483                   = &0483
-l0484                   = &0484
+input_buffer            = &0484
 l0485                   = &0485
 l04c2                   = &04c2
 l04c3                   = &04c3
 l04c4                   = &04c4
-l04c5                   = &04c5
 l04e5                   = &04e5
 l04e6                   = &04e6
 l0500                   = &0500
@@ -298,13 +284,9 @@ l069f                   = &069f
 l06a0                   = &06a0
 l06a1                   = &06a1
 l06a2                   = &06a2
-l07b0                   = &07b0
 l07ec                   = &07ec
-l0de7                   = &0de7
-l0de8                   = &0de8
-l0de9                   = &0de9
-l0df0                   = &0df0
-l1000                   = &1000
+l08ff                   = &08ff
+rom_workspace_array     = &0df0
 l1100                   = &1100
 l1101                   = &1101
 l1102                   = &1102
@@ -320,25 +302,16 @@ l110e                   = &110e
 l1112                   = &1112
 l1115                   = &1115
 l1116                   = &1116
-l1118                   = &1118
-l111a                   = &111a
 l111c                   = &111c
 l111e                   = &111e
-l1120                   = &1120
-l11b2                   = &11b2
-l190d                   = &190d
-l1d5e                   = &1d5e
 l4152                   = &4152
 l464f                   = &464f
 l4c00                   = &4c00
 l4e4f                   = &4e4f
-l530d                   = &530d
 l6000                   = &6000
 l6129                   = &6129
 l616f                   = &616f
-l6369                   = &6369
 l646f                   = &646f
-l6920                   = &6920
 l6956                   = &6956
 l6d61                   = &6d61
 l6f66                   = &6f66
@@ -348,26 +321,25 @@ l7361                   = &7361
 l7465                   = &7465
 l746f                   = &746f
 le06f                   = &e06f
-lf060                   = &f060
-romsel                  = &fe30
+lfe34                   = &fe34
 tube_status_register_3  = &fee4
 tube_data_register_3    = &fee5
 lff2f                   = &ff2f
 lff37                   = &ff37
+lff6b                   = &ff6b
 lff6f                   = &ff6f
 lff8b                   = &ff8b
-nvwrch                  = &ffcb
 osfind                  = &ffce
 osgbpb                  = &ffd1
 osbget                  = &ffd7
 osargs                  = &ffda
 osfile                  = &ffdd
+osrdch                  = &ffe0
 osasci                  = &ffe3
 osnewl                  = &ffe7
 oswrch                  = &ffee
 osword                  = &fff1
 osbyte                  = &fff4
-oscli                   = &fff7
 
     org &8000
 
@@ -384,7 +356,7 @@ oscli                   = &fff7
     equb &c2                                                          ; 8006: c2          .
 .copyright_offset
     equb copyright - rom_header                                       ; 8007: 16          .
-; &8008 referenced 2 times by &80b4, &b32e
+; &8008 referenced 1 time by &80b4
 .binary_version
     equb 0                                                            ; 8008: 00          .
 .title
@@ -421,23 +393,22 @@ oscli                   = &fff7
     beq loop_c803a                                                    ; 8048: f0 f0       ..
     cmp #&0e                                                          ; 804a: c9 0e       ..
     bne c805d                                                         ; 804c: d0 0f       ..
-; ***************************************************************************************
 ; &804e referenced 1 time by &805b
-.enter_language_rom
+.loop_c804e
     pla                                                               ; 804e: 68          h
     pla                                                               ; 804f: 68          h
     tax                                                               ; 8050: aa          .              ; X=ROM number
     pla                                                               ; 8051: 68          h
     lda #osbyte_enter_language                                        ; 8052: a9 8e       ..
-; &8054 referenced 2 times by &8067, &806b
-.c8054
+; &8054 referenced 1 time by &806b
+.loop_c8054
     jmp osbyte                                                        ; 8054: 4c f4 ff    L..            ; Enter language ROM X
 
 ; &8057 referenced 1 time by &803f
 .c8057
     lda (os_text_ptr),y                                               ; 8057: b1 f2       ..
     cmp #&21 ; '!'                                                    ; 8059: c9 21       .!
-    bcc enter_language_rom                                            ; 805b: 90 f1       ..
+    bcc loop_c804e                                                    ; 805b: 90 f1       ..
 ; &805d referenced 3 times by &8035, &804c, &8f06
 .c805d
     pla                                                               ; 805d: 68          h
@@ -447,43 +418,36 @@ oscli                   = &fff7
     pla                                                               ; 8061: 68          h
     rts                                                               ; 8062: 60          `
 
-; &8063 referenced 2 times by &83a4, &83bf
-.sub_c8063
-    ldx #&55 ; 'U'                                                    ; 8063: a2 55       .U
-    lda #&a0                                                          ; 8065: a9 a0       ..
-    bne c8054                                                         ; 8067: d0 eb       ..             ; ALWAYS branch
+    equb &a2, &55, &a9, &a0, &d0, &eb                                 ; 8063: a2 55 a9... .U.
 
 ; &8069 referenced 3 times by &8319, &8452, &8ef4
 .sub_c8069
     lda #&86                                                          ; 8069: a9 86       ..
-    bne c8054                                                         ; 806b: d0 e7       ..             ; ALWAYS branch
+    bne loop_c8054                                                    ; 806b: d0 e7       ..             ; ALWAYS branch
 
 ; &806d referenced 2 times by &803c, &8045
 .l806d
     equs "SPELL"                                                      ; 806d: 53 50 45... SPE
 ; &8072 referenced 1 time by &8417
 .l8072
-    equb &ff                                                          ; 8072: ff          .
-    equb 2, &23, &21                                                  ; 8073: 02 23 21    .#!
+    equb &ff, 2, &23, &21                                             ; 8072: ff 02 23... ..#
 ; &8076 referenced 1 time by &8409
 .l8076
     equb 0                                                            ; 8076: 00          .
     equs "W.MASTER1"                                                  ; 8077: 57 2e 4d... W.M
-    equb &0d                                                          ; 8080: 0d          .
+    equb &0d, &a9, 0, &85, &4b                                        ; 8080: 0d a9 00... ...
 
-    lda #0                                                            ; 8081: a9 00       ..
-    sta l004b                                                         ; 8083: 85 4b       .K
 ; &8085 referenced 1 time by &80ce
 .sub_c8085
     jsr sub_c83dc                                                     ; 8085: 20 dc 83     ..
     jmp c8316                                                         ; 8088: 4c 16 83    L..
 
 ; ***************************************************************************************
-; &808b referenced 2 times by &80fa, &8768
+; &808b referenced 1 time by &80fa
 .acknowledge_escape
     lda #osbyte_acknowledge_escape                                    ; 808b: a9 7e       .~
     jsr osbyte                                                        ; 808d: 20 f4 ff     ..            ; Clear escape condition and perform escape effects
-    jsr sub_c9bdb                                                     ; 8090: 20 db 9b     ..
+    jsr print_inline_string                                           ; 8090: 20 db 9b     ..
     equs "_Escape"                                                    ; 8093: 5f 45 73... _Es
     equb &8d                                                          ; 809a: 8d          .
 
@@ -496,17 +460,18 @@ oscli                   = &fff7
     cmp #1                                                            ; 809c: c9 01       ..
     bne return_1                                                      ; 809e: d0 fb       ..
     cli                                                               ; 80a0: 58          X
-    lda #&0c                                                          ; 80a1: a9 0c       ..             ; clear the screen
+    lda #&0c                                                          ; 80a1: a9 0c       ..
     jsr oswrch                                                        ; 80a3: 20 ee ff     ..            ; Write character 12
+.install_brk_handler
     lda #&e4                                                          ; 80a6: a9 e4       ..
     sta brkv                                                          ; 80a8: 8d 02 02    ...
     lda #&85                                                          ; 80ab: a9 85       ..
-; break handler is at 85e4
     sta brkv+1                                                        ; 80ad: 8d 03 02    ...
-    lda #osbyte_reserved_for_application_software                     ; 80b0: a9 a3       ..             ; 65Tube Emulator
+    lda #&a3                                                          ; 80b0: a9 a3       ..
+.application_software_65Tube
     ldx #&f3                                                          ; 80b2: a2 f3       ..
-    ldy binary_version                                                ; 80b4: ac 08 80    ...            ; #0, Unknown
-    jsr osbyte                                                        ; 80b7: 20 f4 ff     ..            ; Reserved for application software
+    ldy binary_version                                                ; 80b4: ac 08 80    ...            ; Y = &00; seems to be internal bank number
+    jsr osbyte                                                        ; 80b7: 20 f4 ff     ..
     lda #&c0                                                          ; 80ba: a9 c0       ..
     cpy #&80                                                          ; 80bc: c0 80       ..
     bcc c80c1                                                         ; 80be: 90 01       ..
@@ -526,20 +491,27 @@ oscli                   = &fff7
     bcs c8103                                                         ; 80d1: b0 30       .0
 ; &80d3 referenced 2 times by &88bd, &94dc
 .sub_c80d3
-    jsr sub_c9bdb                                                     ; 80d3: 20 db 9b     ..
+    jsr print_inline_string                                           ; 80d3: 20 db 9b     ..
     equs "_Insert"                                                    ; 80d6: 5f 49 6e... _In
-    equb &a0, &20, &57, &85, &20, &db, &9b                            ; 80dd: a0 20 57... . W
-    equs "disc & hit a key"                                           ; 80e4: 64 69 73... dis
-    equb &8d, &20, &e0, &ff, &90, &36                                 ; 80f4: 8d 20 e0... . .
+    equb &a0                                                          ; 80dd: a0          .
 
+    jsr sub_c8557                                                     ; 80de: 20 57 85     W.
+    jsr print_inline_string                                           ; 80e1: 20 db 9b     ..
+; overlapping: stz l0069                                              ; 80e4: 64 69       di
+    equs "disc & hit a key"                                           ; 80e4: 64 69 73... dis
+    equb &8d                                                          ; 80f4: 8d          .
+
+    jsr osrdch                                                        ; 80f5: 20 e0 ff     ..            ; Read a character from the current input stream
+    bcc return_2                                                      ; 80f8: 90 36       .6
+; ***************************************************************************************
 ; &80fa referenced 2 times by &8125, &812e
-.c80fa
+.escape_pressed_during_input
     jsr acknowledge_escape                                            ; 80fa: 20 8b 80     ..
-    jsr c9736                                                         ; 80fd: 20 36 97     6.
+    jsr sub_c9736                                                     ; 80fd: 20 36 97     6.
     jsr c8319                                                         ; 8100: 20 19 83     ..
 ; &8103 referenced 7 times by &80d1, &8119, &8518, &85f6, &9733, &9bb0, &9d0f
 .c8103
-    jsr c9736                                                         ; 8103: 20 36 97     6.
+    jsr sub_c9736                                                     ; 8103: 20 36 97     6.
     ldx #&7c ; '|'                                                    ; 8106: a2 7c       .|
     jsr sub_c8c97                                                     ; 8108: 20 97 8c     ..
     ldx #&ff                                                          ; 810b: a2 ff       ..
@@ -547,45 +519,34 @@ oscli                   = &fff7
     ldx #&6f ; 'o'                                                    ; 810e: a2 6f       .o
     jsr sub_c8c97                                                     ; 8110: 20 97 8c     ..
     jsr sub_c854e                                                     ; 8113: 20 4e 85     N.
-    jsr c8131                                                         ; 8116: 20 31 81     1.
+    jsr sub_c8131                                                     ; 8116: 20 31 81     1.
     jmp c8103                                                         ; 8119: 4c 03 81    L..
 
-; &811c referenced 2 times by &8137, &869e
+; &811c referenced 2 times by &869e, &9532
 .sub_c811c
-    ldx #<(sub_c86ce)                                                 ; 811c: a2 ce       ..
-    ldy #>(sub_c86ce)                                                 ; 811e: a0 86       ..
+    ldx #<(osword_input_block)                                        ; 811c: a2 ce       ..
+    ldy #>(osword_input_block)                                        ; 811e: a0 86       ..
     lda #osword_read_line                                             ; 8120: a9 00       ..
     jsr osword                                                        ; 8122: 20 f1 ff     ..            ; Read line from input stream (exits with C=1 if ESCAPE pressed)
-    bcs c80fa                                                         ; 8125: b0 d3       ..
+    bcs escape_pressed_during_input                                   ; 8125: b0 d3       ..
     ldy #0                                                            ; 8127: a0 00       ..
     jmp c94b2                                                         ; 8129: 4c b2 94    L..
 
-; &812c referenced 8 times by &828b, &8970, &8b0e, &8bc3, &8cb5, &8f51, &9db7, &9dbf
+; &812c referenced 7 times by &828b, &8b0e, &8bc3, &8cb5, &8f51, &9db7, &9dbf
 .sub_c812c
     bit l00ff                                                         ; 812c: 24 ff       $.
-    bmi c80fa                                                         ; 812e: 30 ca       0.
+    bmi escape_pressed_during_input                                   ; 812e: 30 ca       0.
+; &8130 referenced 1 time by &80f8
+.return_2
     rts                                                               ; 8130: 60          `
 
-; &8131 referenced 2 times by &8116, &813a
-.c8131
-    jsr sub_c9bdb                                                     ; 8131: 20 db 9b     ..
-    equb &5f, &3d, &be                                                ; 8134: 5f 3d be    _=.
+; &8131 referenced 1 time by &8116
+.sub_c8131
+    jsr print_inline_string                                           ; 8131: 20 db 9b     ..
+    equb &5f, &3d, &be, &20, &1c, &81, &f0, &f5, &a2, &84, &a0,   4   ; 8134: 5f 3d be... _=.
+    equb &c9, &2a, &d0,   3, &4c, &f7, &ff, &20, &95, &92, &90, &35   ; 8140: c9 2a d0... .*.
+    equb &a9, &16, &85,   2, &a2, &ff                                 ; 814c: a9 16 85... ...
 
-    jsr sub_c811c                                                     ; 8137: 20 1c 81     ..
-    beq c8131                                                         ; 813a: f0 f5       ..
-    ldx #<(l0484)                                                     ; 813c: a2 84       ..
-    ldy #>(l0484)                                                     ; 813e: a0 04       ..
-    cmp #&2a ; '*'                                                    ; 8140: c9 2a       .*
-    bne c8147                                                         ; 8142: d0 03       ..
-    jmp oscli                                                         ; 8144: 4c f7 ff    L..
-
-; &8147 referenced 1 time by &8142
-.c8147
-    jsr c9295                                                         ; 8147: 20 95 92     ..
-    bcc c8181                                                         ; 814a: 90 35       .5
-    lda #&16                                                          ; 814c: a9 16       ..
-    sta l0002                                                         ; 814e: 85 02       ..
-    ldx #&ff                                                          ; 8150: a2 ff       ..
 ; &8152 referenced 1 time by &818e
 .c8152
     ldy #&10                                                          ; 8152: a0 10       ..
@@ -598,7 +559,7 @@ oscli                   = &fff7
     php                                                               ; 815c: 08          .
 ; &815d referenced 2 times by &8173, &817a
 .c815d
-    lda l0484,y                                                       ; 815d: b9 84 04    ...
+    lda input_buffer,y                                                ; 815d: b9 84 04    ...
     jsr c9295                                                         ; 8160: 20 95 92     ..
     bcc c8193                                                         ; 8163: 90 2e       ..
     iny                                                               ; 8165: c8          .
@@ -618,8 +579,6 @@ oscli                   = &fff7
 .c817d
     dec l0002                                                         ; 817d: c6 02       ..
     bne c818b                                                         ; 817f: d0 0a       ..
-; &8181 referenced 1 time by &814a
-.c8181
     brk                                                               ; 8181: 00          .
 
     equb 0                                                            ; 8182: 00          .
@@ -670,7 +629,7 @@ l81c1 = c81c0+1
     lda #0                                                            ; 81c0: a9 00       ..
 ; &81c1 referenced 1 time by &81bd
     adc l9944,x                                                       ; 81c2: 7d 44 99    }D.
-    sta l0008                                                         ; 81c5: 85 08       ..
+    sta current_mode                                                  ; 81c5: 85 08       ..
     lda l9945,x                                                       ; 81c7: bd 45 99    .E.
     sta l0009                                                         ; 81ca: 85 09       ..
     ldx l0010                                                         ; 81cc: a6 10       ..
@@ -687,16 +646,16 @@ l81c1 = c81c0+1
     jsr sub_c8844                                                     ; 81dc: 20 44 88     D.
 ; &81df referenced 2 times by &81d4, &81d9
 .c81df
-    lda l0484                                                         ; 81df: ad 84 04    ...
+    lda input_buffer                                                  ; 81df: ad 84 04    ...
     cmp #&0d                                                          ; 81e2: c9 0d       ..
-    jmp (l0008)                                                       ; 81e4: 6c 08 00    l..
+    jmp (current_mode)                                                ; 81e4: 6c 08 00    l..
 
     clc                                                               ; 81e7: 18          .
     beq c81aa                                                         ; 81e8: f0 c0       ..
     php                                                               ; 81ea: 08          .
     jsr sub_c83dc                                                     ; 81eb: 20 dc 83     ..
     jsr sub_c8483                                                     ; 81ee: 20 83 84     ..
-    lda top+1                                                         ; 81f1: a5 19       ..
+    lda l0019                                                         ; 81f1: a5 19       ..
     pha                                                               ; 81f3: 48          H
     jsr sub_c93a2                                                     ; 81f4: 20 a2 93     ..
     jsr sub_c8f60                                                     ; 81f7: 20 60 8f     `.
@@ -728,7 +687,7 @@ l81c1 = c81c0+1
     ldy #5                                                            ; 8217: a0 05       ..
 ; &8219 referenced 1 time by &821f
 .loop_c8219
-    lda return_2,y                                                    ; 8219: b9 9a 90    ...
+    lda return_3,y                                                    ; 8219: b9 9a 90    ...
     dey                                                               ; 821c: 88          .
     sta (l003a),y                                                     ; 821d: 91 3a       .:
     bne loop_c8219                                                    ; 821f: d0 f8       ..
@@ -752,14 +711,11 @@ l81c1 = c81c0+1
     ldx l005e                                                         ; 8241: a6 5e       .^
     ldy l005f                                                         ; 8243: a4 5f       ._
     jsr sub_c858f                                                     ; 8245: 20 8f 85     ..
-    jsr sub_c9bdb                                                     ; 8248: 20 db 9b     ..
+    jsr print_inline_string                                           ; 8248: 20 db 9b     ..
     rts                                                               ; 824b: 60          `
 
-    sta l8820                                                         ; 824c: 8d 20 88    . .
-    sta l0020                                                         ; 824f: 85 20       .
-    equb &db, &9b                                                     ; 8251: db 9b       ..
+    equb &8d, &20, &88, &85, &20, &db, &9b                            ; 824c: 8d 20 88... . .
     equs " unique`"                                                   ; 8253: 20 75 6e...  un
-; overlapping: rts                                                    ; 825a: 60          `
     equb &8d, &60                                                     ; 825b: 8d 60       .`
 
 ; &825d referenced 1 time by &8236
@@ -809,19 +765,22 @@ l81c1 = c81c0+1
     inx                                                               ; 82a7: e8          .
     cpx l0028                                                         ; 82a8: e4 28       .(
     bcc c822f                                                         ; 82aa: 90 83       ..
+; ***************************************************************************************
 ; &82ac referenced 2 times by &8306, &830a
-.c82ac
-    jsr sub_c9bdb                                                     ; 82ac: 20 db 9b     ..
+.display_memory_full
+    jsr print_inline_string                                           ; 82ac: 20 db 9b     ..
     equs "_Memory full"                                               ; 82af: 5f 4d 65... _Me
+    equb &8d                                                          ; 82bb: 8d          .
 
-    sta lf060                                                         ; 82bb: 8d 60 f0    .`.
-    plp                                                               ; 82be: 28          (
+    rts                                                               ; 82bc: 60          `
+
+    beq c82e7                                                         ; 82bd: f0 28       .(
     lda #0                                                            ; 82bf: a9 00       ..
     tax                                                               ; 82c1: aa          .              ; X=&00
-    sta l0008                                                         ; 82c2: 85 08       ..
+    sta current_mode                                                  ; 82c2: 85 08       ..
 ; &82c4 referenced 1 time by &82e5
 .c82c4
-    lda l0484,x                                                       ; 82c4: bd 84 04    ...
+    lda input_buffer,x                                                ; 82c4: bd 84 04    ...
     cmp #&21 ; '!'                                                    ; 82c7: c9 21       .!
     bcc c82f0                                                         ; 82c9: 90 25       .%
     cmp #&3a ; ':'                                                    ; 82cb: c9 3a       .:
@@ -829,149 +788,88 @@ l81c1 = c81c0+1
     sbc #&2f ; '/'                                                    ; 82cf: e9 2f       ./
     bcc c82e7                                                         ; 82d1: 90 14       ..
     sta l0016                                                         ; 82d3: 85 16       ..
-    lda l0008                                                         ; 82d5: a5 08       ..
-    asl l0008                                                         ; 82d7: 06 08       ..
+    lda current_mode                                                  ; 82d5: a5 08       ..
+    asl current_mode                                                  ; 82d7: 06 08       ..
     asl a                                                             ; 82d9: 0a          .
     asl a                                                             ; 82da: 0a          .
     asl a                                                             ; 82db: 0a          .
     clc                                                               ; 82dc: 18          .
-    adc l0008                                                         ; 82dd: 65 08       e.
+    adc current_mode                                                  ; 82dd: 65 08       e.
     clc                                                               ; 82df: 18          .
     adc l0016                                                         ; 82e0: 65 16       e.
-    sta l0008                                                         ; 82e2: 85 08       ..
+    sta current_mode                                                  ; 82e2: 85 08       ..
     inx                                                               ; 82e4: e8          .
     bne c82c4                                                         ; 82e5: d0 dd       ..
-; &82e7 referenced 2 times by &82cd, &82d1
+; &82e7 referenced 3 times by &82bd, &82cd, &82d1
 .c82e7
     jsr sub_c9bd0                                                     ; 82e7: 20 d0 9b     ..
-    adc l646f                                                         ; 82ea: 6d 6f 64    mod
-    adc l008d                                                         ; 82ed: 65 8d       e.
+; overlapping: adc l646f                                              ; 82ea: 6d 6f 64    mod
+    equs "mode"                                                       ; 82ea: 6d 6f 64... mod
+; overlapping: adc l008d                                              ; 82ed: 65 8d       e.
+    equb &8d                                                          ; 82ee: 8d          .
+
     rts                                                               ; 82ef: 60          `
 
 ; &82f0 referenced 1 time by &82c9
 .c82f0
     lda l008f                                                         ; 82f0: a5 8f       ..
-    bne c830c                                                         ; 82f2: d0 18       ..
+    bne change_mode                                                   ; 82f2: d0 18       ..
     lda l004b                                                         ; 82f4: a5 4b       .K
-    beq c830c                                                         ; 82f6: f0 14       ..
+    beq change_mode                                                   ; 82f6: f0 14       ..
     lda #osbyte_read_himem_for_mode                                   ; 82f8: a9 85       ..
-    ldx l0008                                                         ; 82fa: a6 08       ..             ; X=MODE number
+    ldx current_mode                                                  ; 82fa: a6 08       ..             ; X=MODE number
     jsr osbyte                                                        ; 82fc: 20 f4 ff     ..            ; Read top of user memory for a given screen mode X
     txa                                                               ; 82ff: 8a          .              ; X and Y contain the address (low, high)
     sec                                                               ; 8300: 38          8
     sbc l004a                                                         ; 8301: e5 4a       .J
     tya                                                               ; 8303: 98          .
     sbc l004b                                                         ; 8304: e5 4b       .K
-    bcc c82ac                                                         ; 8306: 90 a4       ..
+    bcc display_memory_full                                           ; 8306: 90 a4       ..
     cmp #7                                                            ; 8308: c9 07       ..
-    bcc c82ac                                                         ; 830a: 90 a0       ..
+    bcc display_memory_full                                           ; 830a: 90 a0       ..
+; ***************************************************************************************
 ; &830c referenced 2 times by &82f2, &82f6
-.c830c
+.change_mode
     lda #&16                                                          ; 830c: a9 16       ..
     jsr oswrch                                                        ; 830e: 20 ee ff     ..            ; Write character 22
-    lda l0008                                                         ; 8311: a5 08       ..
+    lda current_mode                                                  ; 8311: a5 08       ..
     jsr oswrch                                                        ; 8313: 20 ee ff     ..            ; Write character
 ; &8316 referenced 1 time by &8088
 .c8316
     jsr c8437                                                         ; 8316: 20 37 84     7.
-; &8319 referenced 5 times by &8100, &823e, &86b5, &9417, &943b
+; &8319 referenced 6 times by &8100, &823e, &86b5, &935e, &9417, &943b
 .c8319
     jsr sub_c8069                                                     ; 8319: 20 69 80     i.
     stx l005c                                                         ; 831c: 86 5c       .\
     sty l005d                                                         ; 831e: 84 5d       .]
     lda #&20 ; ' '                                                    ; 8320: a9 20       .
-    jsr c83ca                                                         ; 8322: 20 ca 83     ..
-    jsr sub_c9bdb                                                     ; 8325: 20 db 9b     ..
-; overlapping: asl l6956,x                                            ; 8328: 1e 56 69    .Vi
-    equb &1e                                                          ; 8328: 1e          .
-    equs "ViewSpell"                                                  ; 8329: 56 69 65... Vie
-; overlapping: adc l0077                                              ; 832b: 65 77       ew
-    equb &19, &0d, &19, &8d                                           ; 8332: 19 0d 19... ...
-
-    jsr sub_c8837                                                     ; 8336: 20 37 88     7.
-    bcs c8365                                                         ; 8339: b0 2a       .*
-    jsr sub_c9bdb                                                     ; 833b: 20 db 9b     ..
+    jsr sub_c83ca                                                     ; 8322: 20 ca 83     ..
+    jsr print_inline_string                                           ; 8325: 20 db 9b     ..
+    asl l6956,x                                                       ; 8328: 1e 56 69    .Vi
+    adc l0077                                                         ; 832b: 65 77       ew
+    equs "Spell"                                                      ; 832d: 53 70 65... Spe
+    equb &19, &0d, &19, &8d, &20, &37, &88, &b0, &2a, &20, &db, &9b   ; 8332: 19 0d 19... ...
     equs "Bytes free"                                                 ; 833e: 42 79 74... Byt
-
-    ldy #&a6                                                          ; 8348: a0 a6       ..
-    lsr a                                                             ; 834a: 4a          J
-    ldy l004b                                                         ; 834b: a4 4b       .K
-    bne c8353                                                         ; 834d: d0 04       ..
-    ldx l001f                                                         ; 834f: a6 1f       ..
-    ldy l0020                                                         ; 8351: a4 20       .
-; &8353 referenced 1 time by &834d
-.c8353
-    lda l0027                                                         ; 8353: a5 27       .'
-    clc                                                               ; 8355: 18          .
-    stx l0008                                                         ; 8356: 86 08       ..
-    sbc l0008                                                         ; 8358: e5 08       ..
-    tax                                                               ; 835a: aa          .
-    lda l0028                                                         ; 835b: a5 28       .(
-    sty l0008                                                         ; 835d: 84 08       ..
-    sbc l0008                                                         ; 835f: e5 08       ..
-    tay                                                               ; 8361: a8          .
-    jsr sub_c858f                                                     ; 8362: 20 8f 85     ..
-; &8365 referenced 1 time by &8339
-.c8365
-    jsr sub_c9bb3                                                     ; 8365: 20 b3 9b     ..
-    beq c8374                                                         ; 8368: f0 0a       ..
-    jsr sub_c9bdb                                                     ; 836a: 20 db 9b     ..
-    ora la9df,y                                                       ; 836d: 19 df a9    ...
-    eor l0020,x                                                       ; 8370: 55 20       U
-    equb &72, &85                                                     ; 8372: 72 85       r.
-
-; &8374 referenced 1 time by &8368
-.c8374
-    lda l004b                                                         ; 8374: a5 4b       .K
-    beq c8393                                                         ; 8376: f0 1b       ..
-    jsr sub_c9bdb                                                     ; 8378: 20 db 9b     ..
-; overlapping: ora l530d,y                                            ; 837b: 19 0d 53    ..S
-    equb &19, &0d                                                     ; 837b: 19 0d       ..
+    equb &a0, &a6, &4a, &a4, &4b, &d0,   4, &a6, &1f, &a4, &20, &a5   ; 8348: a0 a6 4a... ..J
+    equb &27, &18, &86,   8, &e5,   8, &aa, &a5, &28, &84,   8, &e5   ; 8354: 27 18 86... '..
+    equb   8, &a8, &20, &8f, &85, &20, &b3, &9b, &f0, &0a, &20, &db   ; 8360: 08 a8 20... ..
+    equb &9b, &19, &df, &a9                                           ; 836c: 9b 19 df... ...
+    equs "U r"                                                        ; 8370: 55 20 72    U r
+    equb &85, &a5, &4b, &f0, &1b, &20, &db, &9b, &19, &0d             ; 8373: 85 a5 4b... ..K
     equs "Source"                                                     ; 837d: 53 6f 75... Sou
-
-    ldy #&20 ; ' '                                                    ; 8383: a0 20       .
-    ror l008f                                                         ; 8385: 66 8f       f.
-    jsr sub_c8557                                                     ; 8387: 20 57 85     W.
-    jsr c844f                                                         ; 838a: 20 4f 84     O.
-    jsr sub_c8588                                                     ; 838d: 20 88 85     ..
-    jsr sub_c9c21                                                     ; 8390: 20 21 9c     !.
-; &8393 referenced 1 time by &8376
-.c8393
-    jsr sub_c9bdb                                                     ; 8393: 20 db 9b     ..
-; overlapping: ora l530d,y                                            ; 8396: 19 0d 53    ..S
-    equb &19, &0d                                                     ; 8396: 19 0d       ..
+    equb &a0, &20, &66, &8f, &20, &57, &85, &20, &4f, &84, &20, &88   ; 8383: a0 20 66... . f
+    equb &85, &20, &21, &9c, &20, &db, &9b, &19, &0d                  ; 838f: 85 20 21... . !
     equs "Screen mode"                                                ; 8398: 53 63 72... Scr
-    equb &a0                                                          ; 83a3: a0          .
+    equb &a0, &20, &63, &80, &8a,   9, &30, &20, &d8, &9b, &19, &0d   ; 83a3: a0 20 63... . c
+    equb &19, &8d, &20, &69, &80, &c4, &5d, &b0,   7, &a6, &5c, &a4   ; 83af: 19 8d 20... ..
+    equs "] g"                                                        ; 83bb: 5d 20 67    ] g
+    equb &84, &20, &63, &80, &a9, &67, &e0, 7, &d0, 2, &a9, &72       ; 83be: 84 20 63... . c
 
-    jsr sub_c8063                                                     ; 83a4: 20 63 80     c.
-    txa                                                               ; 83a7: 8a          .
-    ora #&30 ; '0'                                                    ; 83a8: 09 30       .0
-    jsr sub_c9bd8                                                     ; 83aa: 20 d8 9b     ..
-    ora l190d,y                                                       ; 83ad: 19 0d 19    ...
-    sta l6920                                                         ; 83b0: 8d 20 69    . i
-    equb &80, &c4                                                     ; 83b3: 80 c4       ..
-
-    eor l07b0,x                                                       ; 83b5: 5d b0 07    ]..
-    ldx l005c                                                         ; 83b8: a6 5c       .\
-    ldy l005d                                                         ; 83ba: a4 5d       .]
-    jsr sub_c8467                                                     ; 83bc: 20 67 84     g.
-    jsr sub_c8063                                                     ; 83bf: 20 63 80     c.
-    lda #&67 ; 'g'                                                    ; 83c2: a9 67       .g
-    cpx #7                                                            ; 83c4: e0 07       ..
-    bne c83ca                                                         ; 83c6: d0 02       ..
-    lda #&72 ; 'r'                                                    ; 83c8: a9 72       .r
-; &83ca referenced 2 times by &8322, &83c6
-.c83ca
+; &83ca referenced 1 time by &8322
+.sub_c83ca
     pha                                                               ; 83ca: 48          H
-    jsr sub_c9bdb                                                     ; 83cb: 20 db 9b     ..
-    equb &17, 0                                                       ; 83ce: 17 00       ..
-
-    txa                                                               ; 83d0: 8a          .
-    pla                                                               ; 83d1: 68          h
-    jsr sub_c9bd8                                                     ; 83d2: 20 d8 9b     ..
-    brk                                                               ; 83d5: 00          .
-
-    equb 0, 0, 0, 0, &80, &60                                         ; 83d6: 00 00 00... ...
+    jsr print_inline_string                                           ; 83cb: 20 db 9b     ..
+    equb &17, 0, &8a, &68, &20, &d8, &9b, 0, 0, 0, 0, 0, &80, &60     ; 83ce: 17 00 8a... ...
 
 ; &83dc referenced 2 times by &8085, &81eb
 .sub_c83dc
@@ -995,7 +893,7 @@ l81c1 = c81c0+1
 .c83f7
     jsr sub_c848d                                                     ; 83f7: 20 8d 84     ..
     jsr sub_c884e                                                     ; 83fa: 20 4e 88     N.
-    sta (top,x)                                                       ; 83fd: 81 18       ..
+    sta (l0018,x)                                                     ; 83fd: 81 18       ..
     sta l000a                                                         ; 83ff: 85 0a       ..
     sta l0400                                                         ; 8401: 8d 00 04    ...
     tya                                                               ; 8404: 98          .
@@ -1037,7 +935,7 @@ l81c1 = c81c0+1
     jsr osnewl                                                        ; 8449: 20 e7 ff     ..            ; Write newline (characters 10 and 13)
     jmp c849b                                                         ; 844c: 4c 9b 84    L..
 
-; &844f referenced 2 times by &838a, &9c09
+; &844f referenced 1 time by &9c09
 .c844f
     jsr sub_c847e                                                     ; 844f: 20 7e 84     ~.
     jsr sub_c8069                                                     ; 8452: 20 69 80     i.
@@ -1057,16 +955,14 @@ l81c1 = c81c0+1
 .c8465
     pla                                                               ; 8465: 68          h
     tax                                                               ; 8466: aa          .
-; &8467 referenced 1 time by &83bc
-.sub_c8467
     lda #&1f                                                          ; 8467: a9 1f       ..
     jsr oswrch                                                        ; 8469: 20 ee ff     ..            ; Write character 31
     txa                                                               ; 846c: 8a          .
     jsr oswrch                                                        ; 846d: 20 ee ff     ..            ; Write character
     tya                                                               ; 8470: 98          .
     jsr oswrch                                                        ; 8471: 20 ee ff     ..            ; Write character
-    ldx top                                                           ; 8474: a6 18       ..
-    ldy top+1                                                         ; 8476: a4 19       ..
+    ldx l0018                                                         ; 8474: a6 18       ..
+    ldy l0019                                                         ; 8476: a4 19       ..
     rts                                                               ; 8478: 60          `
 
 ; &8479 referenced 3 times by &83f0, &8483, &884b
@@ -1075,8 +971,8 @@ l81c1 = c81c0+1
     jsr osbyte                                                        ; 847b: 20 f4 ff     ..            ; Read top of operating system RAM address (OSHWM)
 ; &847e referenced 1 time by &844f
 .sub_c847e
-    stx top                                                           ; 847e: 86 18       ..             ; X and Y contain the address of OSHWM (low, high)
-    sty top+1                                                         ; 8480: 84 19       ..
+    stx l0018                                                         ; 847e: 86 18       ..             ; X and Y contain the address of OSHWM (low, high)
+    sty l0019                                                         ; 8480: 84 19       ..
     rts                                                               ; 8482: 60          `
 
 ; &8483 referenced 4 times by &81ee, &862f, &9b87, &9d14
@@ -1109,8 +1005,8 @@ l81c1 = c81c0+1
     dey                                                               ; 84a3: 88          .
     dey                                                               ; 84a4: 88          .
     dey                                                               ; 84a5: 88          .
-    sty adjusted_himem+1                                              ; 84a6: 84 26       .&
-    stx adjusted_himem                                                ; 84a8: 86 25       .%
+    sty himem+1                                                       ; 84a6: 84 26       .&
+    stx himem                                                         ; 84a8: 86 25       .%
     dey                                                               ; 84aa: 88          .
     dey                                                               ; 84ab: 88          .
     dey                                                               ; 84ac: 88          .
@@ -1121,7 +1017,7 @@ l81c1 = c81c0+1
 ; &84b2 referenced 1 time by &848a
 .sub_c84b2
     lda #0                                                            ; 84b2: a9 00       ..
-    sta top+1                                                         ; 84b4: 85 19       ..
+    sta l0019                                                         ; 84b4: 85 19       ..
     cpx l0023                                                         ; 84b6: e4 23       .#
     bne c84c3                                                         ; 84b8: d0 09       ..
     cpy l0024                                                         ; 84ba: c4 24       .$
@@ -1223,7 +1119,7 @@ l81c1 = c81c0+1
 ; &8554 referenced 1 time by &9504
 .sub_c8554
     jsr sub_c9c10                                                     ; 8554: 20 10 9c     ..
-; &8557 referenced 1 time by &8387
+; &8557 referenced 1 time by &80de
 .sub_c8557
     ldy #0                                                            ; 8557: a0 00       ..
     tya                                                               ; 8559: 98          .              ; A=&00
@@ -1234,7 +1130,7 @@ l81c1 = c81c0+1
     iny                                                               ; 855f: c8          .
     cmp #&0d                                                          ; 8560: c9 0d       ..
     bne loop_c855a                                                    ; 8562: d0 f6       ..
-; &8564 referenced 2 times by &845f, &8985
+; &8564 referenced 1 time by &845f
 .sub_c8564
     lda #&20 ; ' '                                                    ; 8564: a9 20       .
     bne c856a                                                         ; 8566: d0 02       ..             ; ALWAYS branch
@@ -1265,12 +1161,12 @@ l81c1 = c81c0+1
     bne loop_c857c                                                    ; 8585: d0 f5       ..
     rts                                                               ; 8587: 60          `
 
-; &8588 referenced 2 times by &838d, &868d
+; &8588 referenced 1 time by &868d
 .sub_c8588
     jsr sub_c9c10                                                     ; 8588: 20 10 9c     ..
     ldx l0060                                                         ; 858b: a6 60       .`
     ldy l0061                                                         ; 858d: a4 61       .a
-; &858f referenced 3 times by &8245, &8362, &9d28
+; &858f referenced 2 times by &8245, &9d28
 .sub_c858f
     lda #0                                                            ; 858f: a9 00       ..
     sta l000c                                                         ; 8591: 85 0c       ..
@@ -1279,9 +1175,9 @@ l81c1 = c81c0+1
 
 ; &8597 referenced 1 time by &85d3
 .c8597
-    sta l0008                                                         ; 8597: 85 08       ..
+    sta current_mode                                                  ; 8597: 85 08       ..
     inx                                                               ; 8599: e8          .
-    lda unknown_table_1,x                                             ; 859a: bd db 85    ...
+    lda l85db,x                                                       ; 859a: bd db 85    ...
     sta l0009                                                         ; 859d: 85 09       ..
     inx                                                               ; 859f: e8          .
     stx l0010                                                         ; 85a0: 86 10       ..
@@ -1294,13 +1190,13 @@ l81c1 = c81c0+1
     cpy l0009                                                         ; 85a8: c4 09       ..
     bcc c85bf                                                         ; 85aa: 90 13       ..
     bne c85b2                                                         ; 85ac: d0 04       ..
-    cpx l0008                                                         ; 85ae: e4 08       ..
+    cpx current_mode                                                  ; 85ae: e4 08       ..
     bcc c85bf                                                         ; 85b0: 90 0d       ..
 ; &85b2 referenced 1 time by &85ac
 .c85b2
     txa                                                               ; 85b2: 8a          .
     sec                                                               ; 85b3: 38          8
-    sbc l0008                                                         ; 85b4: e5 08       ..
+    sbc current_mode                                                  ; 85b4: e5 08       ..
     tax                                                               ; 85b6: aa          .
     tya                                                               ; 85b7: 98          .
     sbc l0009                                                         ; 85b8: e5 09       ..
@@ -1320,7 +1216,7 @@ l81c1 = c81c0+1
     txa                                                               ; 85cc: 8a          .
     pha                                                               ; 85cd: 48          H
     ldx l0010                                                         ; 85ce: a6 10       ..
-    lda unknown_table_1,x                                             ; 85d0: bd db 85    ...
+    lda l85db,x                                                       ; 85d0: bd db 85    ...
     bne c8597                                                         ; 85d3: d0 c2       ..
     pla                                                               ; 85d5: 68          h
 ; &85d6 referenced 1 time by &85c9
@@ -1329,11 +1225,23 @@ l81c1 = c81c0+1
     jmp oswrch                                                        ; 85d8: 4c ee ff    L..            ; Write character
 
 ; &85db referenced 2 times by &859a, &85d0
-.unknown_table_1
-    equb &10, &27, &e8, 3, &64, 0, &0a,   0,   0, &a2, &ff, &9a, &20  ; 85db: 10 27 e8... .'.
-    equb &10, &9c, &a0, 1, &d0, 4, &20, &e3, &ff, &c8, &b1, &fd, &d0  ; 85e8: 10 9c a0... ...
-    equb &f8                                                          ; 85f5: f8          .
+.l85db
+    equb &10, &27, &e8, 3, &64, 0, &0a, 0, 0                          ; 85db: 10 27 e8... .'.
 
+    ldx #&ff                                                          ; 85e4: a2 ff       ..
+    txs                                                               ; 85e6: 9a          .
+    jsr sub_c9c10                                                     ; 85e7: 20 10 9c     ..
+    ldy #1                                                            ; 85ea: a0 01       ..
+    bne c85f2                                                         ; 85ec: d0 04       ..             ; ALWAYS branch
+
+; &85ee referenced 1 time by &85f4
+.loop_c85ee
+    jsr osasci                                                        ; 85ee: 20 e3 ff     ..            ; Write character
+    iny                                                               ; 85f1: c8          .
+; &85f2 referenced 1 time by &85ec
+.c85f2
+    lda (l00fd),y                                                     ; 85f2: b1 fd       ..
+    bne loop_c85ee                                                    ; 85f4: d0 f8       ..
 ; &85f6 referenced 1 time by &862a
 .c85f6
     jmp c8103                                                         ; 85f6: 4c 03 81    L..
@@ -1350,13 +1258,13 @@ l81c1 = c81c0+1
     sty l004d                                                         ; 8600: 84 4d       .M
     tya                                                               ; 8602: 98          .
     sec                                                               ; 8603: 38          8
-    adc adjusted_himem                                                ; 8604: 65 25       e%
+    adc himem                                                         ; 8604: 65 25       e%
     sta l0070                                                         ; 8606: 85 70       .p
-    lda adjusted_himem+1                                              ; 8608: a5 26       .&
+    lda himem+1                                                       ; 8608: a5 26       .&
     adc #0                                                            ; 860a: 69 00       i.
     sta l0071                                                         ; 860c: 85 71       .q
     lda l005b                                                         ; 860e: a5 5b       .[
-    sta (adjusted_himem),y                                            ; 8610: 91 25       .%
+    sta (himem),y                                                     ; 8610: 91 25       .%
     lda #3                                                            ; 8612: a9 03       ..
     sta l0075                                                         ; 8614: 85 75       .u
     lda #&ff                                                          ; 8616: a9 ff       ..
@@ -1424,7 +1332,7 @@ l81c1 = c81c0+1
     jsr c9507                                                         ; 8693: 20 07 95     ..
 ; &8696 referenced 3 times by &864f, &8654, &86a6
 .c8696
-    jsr sub_c9bdb                                                     ; 8696: 20 db 9b     ..
+    jsr print_inline_string                                           ; 8696: 20 db 9b     ..
     equs "_U%?"                                                       ; 8699: 5f 55 25... _U%
     equb &a0                                                          ; 869d: a0          .
 
@@ -1438,7 +1346,7 @@ l81c1 = c81c0+1
 
 ; &86aa referenced 1 time by &868b
 .c86aa
-    jsr sub_c9bdb                                                     ; 86aa: 20 db 9b     ..
+    jsr print_inline_string                                           ; 86aa: 20 db 9b     ..
     equs "_All"                                                       ; 86ad: 5f 41 6c... _Al
     equb &e0                                                          ; 86b1: e0          .
 
@@ -1462,206 +1370,51 @@ l81c1 = c81c0+1
     bne c866a                                                         ; 86ca: d0 9e       ..
     beq c8684                                                         ; 86cc: f0 b6       ..             ; ALWAYS branch
 
-.sub_c86ce
-    sty >(l0484)                                                      ; 86ce: 84 04       ..             ; Buffer address for input (2 bytes)
-    equb &fa, &20, &ff, 8, 0                                          ; 86d0: fa 20 ff... . .            ; Maximum line length; Min. acceptable character value; Max. acceptable character value
+.osword_input_block
+    sty >(input_buffer)                                               ; 86ce: 84 04       ..             ; Buffer address for input (2 bytes)
+    plx                                                               ; 86d0: fa          .              ; Maximum line length
+.sub_c86d1
+osword_input_block_end = sub_c86d1+2
+    jsr l08ff                                                         ; 86d1: 20 ff 08     ..            ; Min. acceptable character value; Max. acceptable character value
+    brk                                                               ; 86d4: 00          .
 
-    ora (l0020,x)                                                     ; 86d5: 01 20       .
-    cmp #&5e ; '^'                                                    ; 86d7: c9 5e       .^
-    bne c86e2                                                         ; 86d9: d0 07       ..
-    lda l0484                                                         ; 86db: ad 84 04    ...
-    beq c86f5                                                         ; 86de: f0 15       ..
-    tya                                                               ; 86e0: 98          .
-    rts                                                               ; 86e1: 60          `
-
-; &86e2 referenced 1 time by &86d9
-.c86e2
-    and #&df                                                          ; 86e2: 29 df       ).
-    cmp #&44 ; 'D'                                                    ; 86e4: c9 44       .D
-    bne c86ec                                                         ; 86e6: d0 04       ..
-    lda #&20 ; ' '                                                    ; 86e8: a9 20       .
-    bne c872e                                                         ; 86ea: d0 42       .B             ; ALWAYS branch
-
-; &86ec referenced 1 time by &86e6
-.c86ec
-    cmp #&4e ; 'N'                                                    ; 86ec: c9 4e       .N
-    beq c872b                                                         ; 86ee: f0 3b       .;
-    cmp #&59 ; 'Y'                                                    ; 86f0: c9 59       .Y
-    clc                                                               ; 86f2: 18          .
-    beq c872b                                                         ; 86f3: f0 36       .6
-; &86f5 referenced 3 times by &86de, &8774, &8796
-.c86f5
-    txa                                                               ; 86f5: 8a          .
-    pha                                                               ; 86f6: 48          H
-    lda l0484,x                                                       ; 86f7: bd 84 04    ...
-    and #&5f ; '_'                                                    ; 86fa: 29 5f       )_
-    sta l0484,x                                                       ; 86fc: 9d 84 04    ...
-; &86ff referenced 1 time by &870a
-.loop_c86ff
-    ora #&20 ; ' '                                                    ; 86ff: 09 20       .
-    jsr oswrch                                                        ; 8701: 20 ee ff     ..            ; Write character
-    inx                                                               ; 8704: e8          .
-    lda l0484,x                                                       ; 8705: bd 84 04    ...
-    cmp #&5b ; '['                                                    ; 8708: c9 5b       .[
-    bcc loop_c86ff                                                    ; 870a: 90 f3       ..
-    jsr sub_c98d2                                                     ; 870c: 20 d2 98     ..
-    jsr sub_c9bdb                                                     ; 870f: 20 db 9b     ..
-    equb &3f, &a0, &a2, &d3, &a0, &86, &a9,   0, &85, &55, &20, &f1   ; 8712: 3f a0 a2... ?..
-    equb &ff, &b0, &47, &68, &aa, &a0,   0, &a5,   8, &c9, &0d, &d0   ; 871e: ff b0 47... ..G
-    equb &ac                                                          ; 872a: ac          .
-
-; &872b referenced 2 times by &86ee, &86f3
-.c872b
-    lda #0                                                            ; 872b: a9 00       ..
-    ror a                                                             ; 872d: 6a          j
-; &872e referenced 1 time by &86ea
-.c872e
-    ora l0484,x                                                       ; 872e: 1d 84 04    ...
-    sta l0484,x                                                       ; 8731: 9d 84 04    ...
-    rts                                                               ; 8734: 60          `
-
-; &8735 referenced 2 times by &879b, &87dc
-.sub_c8735
-    lda #&50 ; 'P'                                                    ; 8735: a9 50       .P
-; &8737 referenced 1 time by &87cb
-.sub_c8737
-    sta l0005                                                         ; 8737: 85 05       ..
-    ldx l0484                                                         ; 8739: ae 84 04    ...
-    beq c8764                                                         ; 873c: f0 26       .&
-    clc                                                               ; 873e: 18          .
-    bmi c8765                                                         ; 873f: 30 24       0$
-    cpx #&61 ; 'a'                                                    ; 8741: e0 61       .a
-    bcs c875a                                                         ; 8743: b0 15       ..
-    pha                                                               ; 8745: 48          H
-    lda l000f                                                         ; 8746: a5 0f       ..
-    pha                                                               ; 8748: 48          H
-    lda l000e                                                         ; 8749: a5 0e       ..
-    pha                                                               ; 874b: 48          H
-    jsr sub_c95cf                                                     ; 874c: 20 cf 95     ..
-    pla                                                               ; 874f: 68          h
-    sta l000e                                                         ; 8750: 85 0e       ..
-    pla                                                               ; 8752: 68          h
-    sta l000f                                                         ; 8753: 85 0f       ..
-    pla                                                               ; 8755: 68          h
-    bpl c875a                                                         ; 8756: 10 02       ..
-    bcc c8765                                                         ; 8758: 90 0b       ..
-; &875a referenced 2 times by &8743, &8756
-.c875a
-    ldy #0                                                            ; 875a: a0 00       ..
-    tya                                                               ; 875c: 98          .              ; A=&00
-    sta (l0052),y                                                     ; 875d: 91 52       .R
-    dec l005a                                                         ; 875f: c6 5a       .Z
-    jsr sub_c885e                                                     ; 8761: 20 5e 88     ^.
-; &8764 referenced 1 time by &873c
-.c8764
-    sec                                                               ; 8764: 38          8
-; &8765 referenced 2 times by &873f, &8758
-.c8765
-    lda #0                                                            ; 8765: a9 00       ..
-    rts                                                               ; 8767: 60          `
-
-    jsr acknowledge_escape                                            ; 8768: 20 8b 80     ..
-    pla                                                               ; 876b: 68          h
-    tax                                                               ; 876c: aa          .
-    pla                                                               ; 876d: 68          h
-    pla                                                               ; 876e: 68          h
-    jmp c87dc                                                         ; 876f: 4c dc 87    L..
-
-; &8772 referenced 2 times by &8777, &8799
-.c8772
-    ldx #0                                                            ; 8772: a2 00       ..
-    jsr c86f5                                                         ; 8774: 20 f5 86     ..
-    beq c8772                                                         ; 8777: f0 f9       ..
-; &8779 referenced 2 times by &87c7, &87d6
-.c8779
-    ldy #&ff                                                          ; 8779: a0 ff       ..
-; &877b referenced 1 time by &8784
-.loop_c877b
-    iny                                                               ; 877b: c8          .
-    lda (l000e),y                                                     ; 877c: b1 0e       ..
-    sta l04c4,y                                                       ; 877e: 99 c4 04    ...
-    jsr sub_c9d91                                                     ; 8781: 20 91 9d     ..
-    bcs loop_c877b                                                    ; 8784: b0 f5       ..
-    tya                                                               ; 8786: 98          .
-    tax                                                               ; 8787: aa          .
-    ldy l0032                                                         ; 8788: a4 32       .2
-    lda (l000e),y                                                     ; 878a: b1 0e       ..
-    sta l04c4,x                                                       ; 878c: 9d c4 04    ...
-    lda #0                                                            ; 878f: a9 00       ..
-    sta l04c5,x                                                       ; 8791: 9d c5 04    ...
-    ldx #&40 ; '@'                                                    ; 8794: a2 40       .@
-    jsr c86f5                                                         ; 8796: 20 f5 86     ..
-    beq c8772                                                         ; 8799: f0 d7       ..
-    jsr sub_c8735                                                     ; 879b: 20 35 87     5.
-    inc l005a                                                         ; 879e: e6 5a       .Z
-    ldy l0032                                                         ; 87a0: a4 32       .2
-    tax                                                               ; 87a2: aa          .
-    tya                                                               ; 87a3: 98          .
-    clc                                                               ; 87a4: 18          .
-    adc l000e                                                         ; 87a5: 65 0e       e.
-    sta l0052                                                         ; 87a7: 85 52       .R
-    lda l000f                                                         ; 87a9: a5 0f       ..
-    adc #0                                                            ; 87ab: 69 00       i.
-    sta l0053                                                         ; 87ad: 85 53       .S
-    bne c87b6                                                         ; 87af: d0 05       ..
-; &87b1 referenced 1 time by &87bd
-.loop_c87b1
-    ldy l0032                                                         ; 87b1: a4 32       .2
-    jsr sub_c8bc3                                                     ; 87b3: 20 c3 8b     ..
-; &87b6 referenced 2 times by &87af, &87f0
-.c87b6
-    jsr c8be2                                                         ; 87b6: 20 e2 8b     ..
-    sty l0032                                                         ; 87b9: 84 32       .2
-    beq c87d9                                                         ; 87bb: f0 1c       ..
-    bcs loop_c87b1                                                    ; 87bd: b0 f2       ..
-    jsr sub_c87f3                                                     ; 87bf: 20 f3 87     ..
-    lda l0484                                                         ; 87c2: ad 84 04    ...
-    cmp #&61 ; 'a'                                                    ; 87c5: c9 61       .a
-    bcs c8779                                                         ; 87c7: b0 b0       ..
-    lda #&d8                                                          ; 87c9: a9 d8       ..
-    jsr sub_c8737                                                     ; 87cb: 20 37 87     7.
-    bcc c87d3                                                         ; 87ce: 90 03       ..
-    sta l04c4                                                         ; 87d0: 8d c4 04    ...
-; &87d3 referenced 1 time by &87ce
-.c87d3
-    jsr sub_c87f3                                                     ; 87d3: 20 f3 87     ..
-    jmp c8779                                                         ; 87d6: 4c 79 87    Ly.
-
-; &87d9 referenced 1 time by &87bb
-.c87d9
-    jsr sub_c87f3                                                     ; 87d9: 20 f3 87     ..
-; &87dc referenced 1 time by &876f
-.c87dc
-    jsr sub_c8735                                                     ; 87dc: 20 35 87     5.
-    jmp c9736                                                         ; 87df: 4c 36 97    L6.
-
-    jsr sub_c8825                                                     ; 87e2: 20 25 88     %.
-    jsr sub_c94f0                                                     ; 87e5: 20 f0 94     ..
-    jsr sub_c8bb9                                                     ; 87e8: 20 b9 8b     ..
-    lda #&40 ; '@'                                                    ; 87eb: a9 40       .@
-    stx l04c4                                                         ; 87ed: 8e c4 04    ...
-    jmp c87b6                                                         ; 87f0: 4c b6 87    L..
-
-; &87f3 referenced 3 times by &87bf, &87d3, &87d9
-.sub_c87f3
-    ldy #&40 ; '@'                                                    ; 87f3: a0 40       .@
-    ldx #&35 ; '5'                                                    ; 87f5: a2 35       .5
-    jsr c93bf                                                         ; 87f7: 20 bf 93     ..
-    lda #0                                                            ; 87fa: a9 00       ..
-    sta l044e,x                                                       ; 87fc: 9d 4e 04    .N.
-    lda l044d,x                                                       ; 87ff: bd 4d 04    .M.
-    sta l0046                                                         ; 8802: 85 46       .F
-    rts                                                               ; 8804: 60          `
-
-    jsr sub_c9bdb                                                     ; 8805: 20 db 9b     ..
-; overlapping: lsr l6369                                              ; 8808: 4e 69 63    Nic
+    equb   1, &20, &c9, &5e, &d0,   7, &ad, &84,   4, &f0, &15, &98   ; 86d5: 01 20 c9... . .
+    equb &60, &29, &df, &c9, &44, &d0,   4, &a9, &20, &d0, &42, &c9   ; 86e1: 60 29 df... `).
+    equb &4e, &f0, &3b, &c9, &59, &18, &f0, &36, &8a, &48, &bd, &84   ; 86ed: 4e f0 3b... N.;
+    equb   4, &29, &5f, &9d, &84,   4,   9, &20, &20, &ee, &ff, &e8   ; 86f9: 04 29 5f... .)_
+    equb &bd, &84,   4, &c9, &5b, &90, &f3, &20, &d2, &98, &20, &db   ; 8705: bd 84 04... ...
+    equb &9b, &3f, &a0, &a2, &d3, &a0, &86, &a9,   0, &85, &55, &20   ; 8711: 9b 3f a0... .?.
+    equb &f1, &ff, &b0, &47, &68, &aa, &a0,   0, &a5,   8, &c9, &0d   ; 871d: f1 ff b0... ...
+    equb &d0, &ac, &a9,   0, &6a, &1d, &84,   4, &9d, &84,   4, &60   ; 8729: d0 ac a9... ...
+    equb &a9, &50, &85,   5, &ae, &84,   4, &f0, &26, &18, &30, &24   ; 8735: a9 50 85... .P.
+    equb &e0, &61, &b0, &15, &48, &a5, &0f, &48, &a5, &0e, &48, &20   ; 8741: e0 61 b0... .a.
+    equb &cf, &95, &68, &85, &0e, &68, &85, &0f, &68, &10,   2, &90   ; 874d: cf 95 68... ..h
+    equb &0b, &a0,   0, &98, &91, &52, &c6                            ; 8759: 0b a0 00... ...
+    equs "Z ^"                                                        ; 8760: 5a 20 5e    Z ^
+    equb &88, &38, &a9, 0, &60, &20, &8b, &80, &68, &aa               ; 8763: 88 38 a9... .8.
+    equs "hhL"                                                        ; 876d: 68 68 4c    hhL
+    equb &dc, &87, &a2,   0, &20, &f5, &86, &f0, &f9, &a0, &ff, &c8   ; 8770: dc 87 a2... ...
+    equb &b1, &0e, &99, &c4,   4, &20, &91, &9d, &b0, &f5, &98, &aa   ; 877c: b1 0e 99... ...
+    equb &a4, &32, &b1, &0e, &9d, &c4,   4, &a9,   0, &9d, &c5,   4   ; 8788: a4 32 b1... .2.
+    equb &a2, &40, &20, &f5, &86, &f0, &d7, &20, &35, &87, &e6, &5a   ; 8794: a2 40 20... .@
+    equb &a4, &32, &aa, &98, &18, &65, &0e, &85, &52, &a5, &0f, &69   ; 87a0: a4 32 aa... .2.
+    equb   0, &85, &53, &d0,   5, &a4, &32, &20, &c3, &8b, &20, &e2   ; 87ac: 00 85 53... ..S
+    equb &8b, &84, &32, &f0, &1c, &b0, &f2, &20, &f3, &87, &ad, &84   ; 87b8: 8b 84 32... ..2
+    equb   4, &c9, &61, &b0, &b0, &a9, &d8, &20, &37, &87, &90,   3   ; 87c4: 04 c9 61... ..a
+    equb &8d, &c4,   4, &20, &f3, &87, &4c, &79, &87, &20, &f3, &87   ; 87d0: 8d c4 04... ...
+    equb &20, &35, &87, &4c, &36, &97, &20, &25, &88, &20, &f0, &94   ; 87dc: 20 35 87...  5.
+    equb &20, &b9, &8b, &a9, &40, &8e, &c4,   4, &4c, &b6, &87, &a0   ; 87e8: 20 b9 8b...  ..
+    equb &40, &a2, &35, &20, &bf, &93, &a9,   0, &9d, &4e,   4, &bd   ; 87f4: 40 a2 35... @.5
+    equb &4d,   4, &85                                                ; 8800: 4d 04 85    M..
+    equs "F` "                                                        ; 8803: 46 60 20    F`
+    equb &db, &9b                                                     ; 8806: db 9b       ..
     equs "Nick Dea"                                                   ; 8808: 4e 69 63... Nic
     equb &ee, &60                                                     ; 8810: ee 60       .`
 
-; &8812 referenced 2 times by &825d, &8abe
+; &8812 referenced 1 time by &825d
 .sub_c8812
     ldx l0050                                                         ; 8812: a6 50       .P
-    beq return_3                                                      ; 8814: f0 0e       ..
+    beq return_4                                                      ; 8814: f0 0e       ..
     bmi c881d                                                         ; 8816: 30 05       0.
     dec l0050                                                         ; 8818: c6 50       .P
     jmp c8823                                                         ; 881a: 4c 23 88    L#.
@@ -1669,19 +1422,16 @@ l81c1 = c81c0+1
 ; &881d referenced 1 time by &8816
 .c881d
     cmp #&0d                                                          ; 881d: c9 0d       ..
-.sub_c881f
-l8820 = sub_c881f+1
-    bne return_3                                                      ; 881f: d0 03       ..
-; &8820 referenced 1 time by &824c
+    bne return_4                                                      ; 881f: d0 03       ..
     inc l0050                                                         ; 8821: e6 50       .P
 ; &8823 referenced 1 time by &881a
 .c8823
     tax                                                               ; 8823: aa          .
 ; &8824 referenced 2 times by &8814, &881f
-.return_3
+.return_4
     rts                                                               ; 8824: 60          `
 
-; &8825 referenced 3 times by &862c, &87e2, &887d
+; &8825 referenced 3 times by &862c, &887d, &9411
 .sub_c8825
     lda l004b                                                         ; 8825: a5 4b       .K
     bne c8841                                                         ; 8827: d0 18       ..
@@ -1689,26 +1439,23 @@ l8820 = sub_c881f+1
 .loop_c8829
     ldx #&fd                                                          ; 8829: a2 fd       ..
     txs                                                               ; 882b: 9a          .
-; &882c referenced 3 times by &883a, &88a0, &89d9
+; &882c referenced 2 times by &883a, &88a0
 .c882c
     lda #0                                                            ; 882c: a9 00       ..
     sta l004b                                                         ; 882e: 85 4b       .K
-    jsr sub_c9bdb                                                     ; 8830: 20 db 9b     ..
-; overlapping: lsr le06f                                              ; 8833: 4e 6f e0    No.
-    equs "No"                                                         ; 8833: 4e 6f       No
-    equb &e0                                                          ; 8835: e0          .
-
+    jsr print_inline_string                                           ; 8830: 20 db 9b     ..
+    lsr le06f                                                         ; 8833: 4e 6f e0    No.
 ; &8836 referenced 1 time by &883f
-.return_4
+.return_5
     rts                                                               ; 8836: 60          `
 
-; &8837 referenced 3 times by &81d6, &8336, &89cf
+; &8837 referenced 1 time by &81d6
 .sub_c8837
     jsr sub_c884b                                                     ; 8837: 20 4b 88     K.
     bne c882c                                                         ; 883a: d0 f0       ..
     clc                                                               ; 883c: 18          .
     lda l004b                                                         ; 883d: a5 4b       .K
-    beq return_4                                                      ; 883f: f0 f5       ..
+    beq return_5                                                      ; 883f: f0 f5       ..
 ; &8841 referenced 1 time by &8827
 .c8841
     jmp c9005                                                         ; 8841: 4c 05 90    L..
@@ -1727,16 +1474,16 @@ l8820 = sub_c881f+1
 .sub_c884e
     lda #&77 ; 'w'                                                    ; 884e: a9 77       .w
     cmp l000a                                                         ; 8850: c5 0a       ..
-    bne return_5                                                      ; 8852: d0 09       ..
+    bne return_6                                                      ; 8852: d0 09       ..
     cmp l0400                                                         ; 8854: cd 00 04    ...
-    bne return_5                                                      ; 8857: d0 04       ..
+    bne return_6                                                      ; 8857: d0 04       ..
     ldy #0                                                            ; 8859: a0 00       ..
-    cmp (top),y                                                       ; 885b: d1 18       ..
+    cmp (l0018),y                                                     ; 885b: d1 18       ..
 ; &885d referenced 2 times by &8852, &8857
-.return_5
+.return_6
     rts                                                               ; 885d: 60          `
 
-; &885e referenced 3 times by &8679, &8761, &8d25
+; &885e referenced 2 times by &8679, &8d25
 .sub_c885e
     lda l0060                                                         ; 885e: a5 60       .`
     bne c8864                                                         ; 8860: d0 02       ..
@@ -1749,21 +1496,19 @@ l8820 = sub_c881f+1
 ; &8867 referenced 1 time by &827f
 .sub_c8867
     ldx l004d                                                         ; 8867: a6 4d       .M
-; &8869 referenced 1 time by &8a4a
-.sub_c8869
     lda l0483,x                                                       ; 8869: bd 83 04    ...
     clc                                                               ; 886c: 18          .
     sbc #&26 ; '&'                                                    ; 886d: e9 26       .&
     beq c8875                                                         ; 886f: f0 04       ..
     sbc #6                                                            ; 8871: e9 06       ..
-    bne return_6                                                      ; 8873: d0 07       ..
+    bne return_7                                                      ; 8873: d0 07       ..
 ; &8875 referenced 1 time by &886f
 .c8875
     sta l0483,x                                                       ; 8875: 9d 83 04    ...
     dec l004d                                                         ; 8878: c6 4d       .M
     lda #0                                                            ; 887a: a9 00       ..
 ; &887c referenced 1 time by &8873
-.return_6
+.return_7
     rts                                                               ; 887c: 60          `
 
     jsr sub_c8825                                                     ; 887d: 20 25 88     %.
@@ -1773,7 +1518,7 @@ l8820 = sub_c881f+1
     jsr sub_c8ca2                                                     ; 8888: 20 a2 8c     ..
     lda #&40 ; '@'                                                    ; 888b: a9 40       .@
     sta l004c                                                         ; 888d: 85 4c       .L
-    jsr sub_c9bdb                                                     ; 888f: 20 db 9b     ..
+    jsr print_inline_string                                           ; 888f: 20 db 9b     ..
     equs "Savin"                                                      ; 8892: 53 61 76... Sav
     equb &e7                                                          ; 8897: e7          .
 
@@ -1783,10 +1528,8 @@ l8820 = sub_c881f+1
     sta l003f                                                         ; 889e: 85 3f       .?
     beq c882c                                                         ; 88a0: f0 8a       ..
     jsr sub_c8ba9                                                     ; 88a2: 20 a9 8b     ..
-; &88a5 referenced 1 time by &89c4
-.c88a5
     lda l004c                                                         ; 88a5: a5 4c       .L
-    beq return_7                                                      ; 88a7: f0 43       .C
+    beq return_8                                                      ; 88a7: f0 43       .C
 ; &88a9 referenced 1 time by &8b20
 .sub_c88a9
     lda l007d                                                         ; 88a9: a5 7d       .}
@@ -1820,7 +1563,7 @@ l8820 = sub_c881f+1
     sta l007e                                                         ; 88d9: 85 7e       .~
     pla                                                               ; 88db: 68          h
     sta l007d                                                         ; 88dc: 85 7d       .}
-; &88de referenced 2 times by &8882, &89e7
+; &88de referenced 1 time by &8882
 .sub_c88de
     ldx l004a                                                         ; 88de: a6 4a       .J
     ldy l004b                                                         ; 88e0: a4 4b       .K
@@ -1829,7 +1572,7 @@ l8820 = sub_c881f+1
     sty l0039                                                         ; 88e7: 84 39       .9
     sty l0528                                                         ; 88e9: 8c 28 05    .(.
 ; &88ec referenced 2 times by &88a7, &88ff
-.return_7
+.return_8
     rts                                                               ; 88ec: 60          `
 
 ; &88ed referenced 1 time by &88b4
@@ -1842,7 +1585,7 @@ l8820 = sub_c881f+1
     sbc l004b                                                         ; 88f7: e5 4b       .K
     sta l052c                                                         ; 88f9: 8d 2c 05    .,.
     ora l052b                                                         ; 88fc: 0d 2b 05    .+.
-    beq return_7                                                      ; 88ff: f0 eb       ..
+    beq return_8                                                      ; 88ff: f0 eb       ..
     jsr sub_c94df                                                     ; 8901: 20 df 94     ..
     lda #&c0                                                          ; 8904: a9 c0       ..
     jsr sub_c9d02                                                     ; 8906: 20 02 9d     ..
@@ -1864,11 +1607,7 @@ l8820 = sub_c881f+1
     jsr osfind                                                        ; 892c: 20 ce ff     ..            ; Close one or all files
     jmp c88d8                                                         ; 892f: 4c d8 88    L..
 
-; &8932 referenced 1 time by &89ee
-.sub_c8932
     jsr sub_c8f66                                                     ; 8932: 20 66 8f     f.
-; &8935 referenced 1 time by &897e
-.sub_c8935
     jsr sub_c9d00                                                     ; 8935: 20 00 9d     ..
     sta l006f                                                         ; 8938: 85 6f       .o
     jsr sub_c8b72                                                     ; 893a: 20 72 8b     r.
@@ -1877,7 +1616,7 @@ l8820 = sub_c881f+1
     bit l004c                                                         ; 8943: 24 4c       $L
     bpl c8954                                                         ; 8945: 10 0d       ..
     jsr sub_c8ca2                                                     ; 8947: 20 a2 8c     ..
-    jsr sub_c9bdb                                                     ; 894a: 20 db 9b     ..
+    jsr print_inline_string                                           ; 894a: 20 db 9b     ..
 ; overlapping: eor l7261                                              ; 894d: 4d 61 72    Mar
     equs "Markin"                                                     ; 894d: 4d 61 72... Mar
     equb &e7                                                          ; 8953: e7          .
@@ -1898,243 +1637,45 @@ l8820 = sub_c881f+1
     ldy #0                                                            ; 8967: a0 00       ..
     rts                                                               ; 8969: 60          `
 
-; &896a referenced 2 times by &8978, &89d2
-.sub_c896a
-    jsr sub_c93a2                                                     ; 896a: 20 a2 93     ..
-    ldy #0                                                            ; 896d: a0 00       ..
-    rts                                                               ; 896f: 60          `
-
-; &8970 referenced 3 times by &8990, &89a9, &89af
-.sub_c8970
-    jsr sub_c812c                                                     ; 8970: 20 2c 81     ,.
-    lda (l0042),y                                                     ; 8973: b1 42       .B
-    jmp c8f85                                                         ; 8975: 4c 85 8f    L..
-
-    jsr sub_c896a                                                     ; 8978: 20 6a 89     j.
-    jsr sub_c8f60                                                     ; 897b: 20 60 8f     `.
-    jsr sub_c8935                                                     ; 897e: 20 35 89     5.
-    beq c899e                                                         ; 8981: f0 1b       ..
-; &8983 referenced 2 times by &8995, &89a0
-.c8983
-    ldx #3                                                            ; 8983: a2 03       ..
-; &8985 referenced 1 time by &8989
-.loop_c8985
-    jsr sub_c8564                                                     ; 8985: 20 64 85     d.
-    dex                                                               ; 8988: ca          .
-    bne loop_c8985                                                    ; 8989: d0 fa       ..
-    beq c8990                                                         ; 898b: f0 03       ..             ; ALWAYS branch
-
-; &898d referenced 1 time by &89c2
-.c898d
-    jsr osasci                                                        ; 898d: 20 e3 ff     ..            ; Write character
-; &8990 referenced 1 time by &898b
-.c8990
-    jsr sub_c8970                                                     ; 8990: 20 70 89     p.
-    cmp #&0b                                                          ; 8993: c9 0b       ..
-    beq c8983                                                         ; 8995: f0 ec       ..
-    cmp #&0d                                                          ; 8997: c9 0d       ..
-    bne c89b7                                                         ; 8999: d0 1c       ..
-    jsr osasci                                                        ; 899b: 20 e3 ff     ..            ; Write character
-; &899e referenced 1 time by &8981
-.c899e
-    lda (l0042),y                                                     ; 899e: b1 42       .B
-    bpl c8983                                                         ; 89a0: 10 e1       ..
-    cmp #&ff                                                          ; 89a2: c9 ff       ..
-    beq c89c4                                                         ; 89a4: f0 1e       ..
-    jsr c8f85                                                         ; 89a6: 20 85 8f     ..
-    jsr sub_c8970                                                     ; 89a9: 20 70 89     p.
-    jsr osasci                                                        ; 89ac: 20 e3 ff     ..            ; Write character
-    jsr sub_c8970                                                     ; 89af: 20 70 89     p.
-    jsr osasci                                                        ; 89b2: 20 e3 ff     ..            ; Write character
-    lda #&20 ; ' '                                                    ; 89b5: a9 20       .
-; &89b7 referenced 1 time by &8999
-.c89b7
-    jsr sub_c9f71                                                     ; 89b7: 20 71 9f     q.
-    cmp #&20 ; ' '                                                    ; 89ba: c9 20       .
-    bcs c89c0                                                         ; 89bc: b0 02       ..
-    lda #&20 ; ' '                                                    ; 89be: a9 20       .
-; &89c0 referenced 1 time by &89bc
-.c89c0
-    cmp #&ff                                                          ; 89c0: c9 ff       ..
-    bne c898d                                                         ; 89c2: d0 c9       ..
-; &89c4 referenced 2 times by &89a4, &89fe
-.c89c4
-    jmp c88a5                                                         ; 89c4: 4c a5 88    L..
-
-    lda #&fe                                                          ; 89c7: a9 fe       ..
-    bne c89cd                                                         ; 89c9: d0 02       ..             ; ALWAYS branch
-
-    lda #&ff                                                          ; 89cb: a9 ff       ..
-; &89cd referenced 1 time by &89c9
-.c89cd
-    sta l004c                                                         ; 89cd: 85 4c       .L
-    jsr sub_c8837                                                     ; 89cf: 20 37 88     7.
-    jsr sub_c896a                                                     ; 89d2: 20 6a 89     j.
-    lda #&ff                                                          ; 89d5: a9 ff       ..
-    bne c89e7                                                         ; 89d7: d0 0e       ..             ; ALWAYS branch
-
-; &89d9 referenced 1 time by &89ec
-.loop_c89d9
-    jmp c882c                                                         ; 89d9: 4c 2c 88    L,.
-
-    equb &c9, &0e                                                     ; 89dc: c9 0e       ..
+    equb &20, &a2, &93, &a0, 0                                        ; 896a: 20 a2 93...  ..
+    equs "` ,"                                                        ; 896f: 60 20 2c    ` ,
+    equb &81, &b1, &42, &4c, &85, &8f, &20, &6a, &89, &20, &60, &8f   ; 8972: 81 b1 42... ..B
+    equb &20, &35, &89, &f0, &1b, &a2,   3, &20, &64, &85, &ca, &d0   ; 897e: 20 35 89...  5.
+    equb &fa, &f0,   3, &20, &e3, &ff, &20, &70, &89, &c9, &0b, &f0   ; 898a: fa f0 03... ...
+    equb &ec, &c9, &0d, &d0, &1c, &20, &e3, &ff, &b1, &42, &10, &e1   ; 8996: ec c9 0d... ...
+    equb &c9, &ff, &f0, &1e, &20, &85, &8f, &20, &70, &89, &20, &e3   ; 89a2: c9 ff f0... ...
+    equb &ff, &20, &70, &89, &20, &e3, &ff, &a9                       ; 89ae: ff 20 70... . p
+    equs "  q"                                                        ; 89b6: 20 20 71      q
+    equb &9f, &c9, &20, &b0,   2, &a9, &20, &c9, &ff, &d0, &c9, &4c   ; 89b9: 9f c9 20... ..
+    equb &a5, &88, &a9, &fe, &d0,   2, &a9, &ff, &85                  ; 89c5: a5 88 a9... ...
+    equs "L 7"                                                        ; 89ce: 4c 20 37    L 7
+    equb &88, &20, &6a, &89, &a9, &ff, &d0, &0e, &4c, &2c, &88, &c9   ; 89d1: 88 20 6a... . j
+    equb &0e                                                          ; 89dd: 0e          .
     equs "fT 7"                                                       ; 89de: 66 54 20... fT
-    equb &88, &a9, 0, &85, 7                                          ; 89e2: 88 a9 00... ...
+    equb &88, &a9,   0, &85,   7, &20, &de, &88, &a5, &4b, &f0, &eb   ; 89e2: 88 a9 00... ...
+    equb &20, &32, &89, &f0,   6, &20, &29, &8b, &20, &85, &8f, &20   ; 89ee: 20 32 89...  2.
+    equb &b6, &8a, &c9, &ff, &f0, &c4, &20, &95, &92, &90, &ee, &a2   ; 89fa: b6 8a c9... ...
+    equb   0, &9d, &c9,   5, &20, &7c, &92, &24, &54, &10, &1f, &5d   ; 8a06: 00 9d c9... ...
+    equb &84,   4, &f0, &1d, &49, &20, &f0, &19, &20, &62, &92, &e8   ; 8a12: 84 04 f0... ...
+    equb &9d, &c9,   5, &b0, &f7, &48, &86, &1b, &20, &4d, &8b, &20   ; 8a1e: 9d c9 05... ...
+    equb &5f, &8b, &68, &4c, &fc, &89, &9d, &84,   4, &e8, &20, &62   ; 8a2a: 5f 8b 68... _.h
+    equb &92, &b0, &ce, &86, &1b, &24, &54, &10,   9, &bd, &84,   4   ; 8a36: 92 b0 ce... ...
+    equb &c9, &0d, &84, &59, &b0, &1d, &86                            ; 8a42: c9 0d 84... ...
+    equs "M i"                                                        ; 8a49: 4d 20 69    M i
+    equb &88, &84, &59, &a9,   0, &9d, &84,   4, &20, &14, &98, &a9   ; 8a4c: 88 84 59... ..Y
+    equb   2, &85, &3e, &a5, &20, &85, &3f, &20, &e3, &8f, &20, &31   ; 8a58: 02 85 3e... ..>
+    equb &92, &d0, &42, &a5,   7,   5, &4c, &d0, &24, &a9, &3f, &20   ; 8a64: 92 d0 42... ..B
+    equb &1a, &8f, &a9,   0, &85, &50, &a5, &59, &18, &e9, &21, &b0   ; 8a70: 1a 8f a9... ...
+    equb   2, &c6, &43, &a8, &20, &85, &8f, &b1, &42, &20, &95, &92   ; 8a7c: 02 c6 43... ..C
+    equb &b0, &f6, &a2, &7f, &86,   7, &4c, &f3, &89, &ad, &46,   5   ; 8a88: b0 f6 a2... ...
+    equb &18, &65, &1b, &20, &4f, &8b, &20, &96, &9f, &20, &5f, &8b   ; 8a94: 18 65 1b... .e.
+    equb &20, &9a, &9f, &a2, &20, &86,   7, &d0,   6, &20, &4d, &8b   ; 8aa0: 20 9a 9f...  ..
+    equb &20, &5f, &8b, &a4, &59, &b1, &42, &4c, &fc, &89, &86, &16   ; 8aac: 20 5f 8b...  _.
+    equb &b1, &42, &c9, &ff, &f0, &0a, &20, &12, &88, &d0,   8, &20   ; 8ab8: b1 42 c9... .B.
+    equb &f5, &8b, &d0,   3, &a6, &16, &60, &b1, &42, &20, &da, &8a   ; 8ac4: f5 8b d0... ...
+    equb &a9,   0, &91, &42, &20, &85, &8f, &4c, &b8, &8a             ; 8ad0: a9 00 91... ...
+    equs "$LPJ"                                                       ; 8ada: 24 4c 50... $LP
 
-; &89e7 referenced 1 time by &89d7
-.c89e7
-    jsr sub_c88de                                                     ; 89e7: 20 de 88     ..
-    lda l004b                                                         ; 89ea: a5 4b       .K
-    beq loop_c89d9                                                    ; 89ec: f0 eb       ..
-    jsr sub_c8932                                                     ; 89ee: 20 32 89     2.
-    beq c89f9                                                         ; 89f1: f0 06       ..
-; &89f3 referenced 2 times by &8a03, &8a8e
-.c89f3
-    jsr sub_c8b29                                                     ; 89f3: 20 29 8b     ).
-    jsr c8f85                                                         ; 89f6: 20 85 8f     ..
-; &89f9 referenced 1 time by &89f1
-.c89f9
-    jsr sub_c8ab6                                                     ; 89f9: 20 b6 8a     ..
-; &89fc referenced 2 times by &8a2d, &8ab3
-.c89fc
-    cmp #&ff                                                          ; 89fc: c9 ff       ..
-    beq c89c4                                                         ; 89fe: f0 c4       ..
-    jsr c9295                                                         ; 8a00: 20 95 92     ..
-    bcc c89f3                                                         ; 8a03: 90 ee       ..
-    ldx #0                                                            ; 8a05: a2 00       ..
-; &8a07 referenced 1 time by &8a37
-.c8a07
-    sta l05c9,x                                                       ; 8a07: 9d c9 05    ...
-    jsr sub_c927c                                                     ; 8a0a: 20 7c 92     |.
-    bit l0054                                                         ; 8a0d: 24 54       $T
-    bpl c8a30                                                         ; 8a0f: 10 1f       ..
-    eor l0484,x                                                       ; 8a11: 5d 84 04    ]..
-    beq c8a33                                                         ; 8a14: f0 1d       ..
-    eor #&20 ; ' '                                                    ; 8a16: 49 20       I
-    beq c8a33                                                         ; 8a18: f0 19       ..
-; &8a1a referenced 1 time by &8a21
-.loop_c8a1a
-    jsr sub_c9262                                                     ; 8a1a: 20 62 92     b.
-    inx                                                               ; 8a1d: e8          .
-    sta l05c9,x                                                       ; 8a1e: 9d c9 05    ...
-    bcs loop_c8a1a                                                    ; 8a21: b0 f7       ..
-    pha                                                               ; 8a23: 48          H
-    stx l001b                                                         ; 8a24: 86 1b       ..
-    jsr sub_c8b4d                                                     ; 8a26: 20 4d 8b     M.
-    jsr sub_c8b5f                                                     ; 8a29: 20 5f 8b     _.
-    pla                                                               ; 8a2c: 68          h
-    jmp c89fc                                                         ; 8a2d: 4c fc 89    L..
-
-; &8a30 referenced 1 time by &8a0f
-.c8a30
-    sta l0484,x                                                       ; 8a30: 9d 84 04    ...
-; &8a33 referenced 2 times by &8a14, &8a18
-.c8a33
-    inx                                                               ; 8a33: e8          .
-    jsr sub_c9262                                                     ; 8a34: 20 62 92     b.
-    bcs c8a07                                                         ; 8a37: b0 ce       ..
-    stx l001b                                                         ; 8a39: 86 1b       ..
-    bit l0054                                                         ; 8a3b: 24 54       $T
-    bpl c8a48                                                         ; 8a3d: 10 09       ..
-    lda l0484,x                                                       ; 8a3f: bd 84 04    ...
-    cmp #&0d                                                          ; 8a42: c9 0d       ..
-    sty l0059                                                         ; 8a44: 84 59       .Y
-    bcs c8a65                                                         ; 8a46: b0 1d       ..
-; &8a48 referenced 1 time by &8a3d
-.c8a48
-    stx l004d                                                         ; 8a48: 86 4d       .M
-    jsr sub_c8869                                                     ; 8a4a: 20 69 88     i.
-    sty l0059                                                         ; 8a4d: 84 59       .Y
-    lda #0                                                            ; 8a4f: a9 00       ..
-    sta l0484,x                                                       ; 8a51: 9d 84 04    ...
-    jsr sub_c9814                                                     ; 8a54: 20 14 98     ..
-    lda #2                                                            ; 8a57: a9 02       ..
-    sta l003e                                                         ; 8a59: 85 3e       .>
-    lda l0020                                                         ; 8a5b: a5 20       .
-    sta l003f                                                         ; 8a5d: 85 3f       .?
-    jsr c8fe3                                                         ; 8a5f: 20 e3 8f     ..
-    jsr sub_c9231                                                     ; 8a62: 20 31 92     1.
-; &8a65 referenced 1 time by &8a46
-.c8a65
-    bne c8aa9                                                         ; 8a65: d0 42       .B
-    lda l0007                                                         ; 8a67: a5 07       ..
-    ora l004c                                                         ; 8a69: 05 4c       .L
-    bne c8a91                                                         ; 8a6b: d0 24       .$
-    lda #&3f ; '?'                                                    ; 8a6d: a9 3f       .?
-    jsr c8f1a                                                         ; 8a6f: 20 1a 8f     ..
-    lda #0                                                            ; 8a72: a9 00       ..
-    sta l0050                                                         ; 8a74: 85 50       .P
-    lda l0059                                                         ; 8a76: a5 59       .Y
-    clc                                                               ; 8a78: 18          .
-    sbc #&21 ; '!'                                                    ; 8a79: e9 21       .!
-    bcs c8a7f                                                         ; 8a7b: b0 02       ..
-    dec l0043                                                         ; 8a7d: c6 43       .C
-; &8a7f referenced 1 time by &8a7b
-.c8a7f
-    tay                                                               ; 8a7f: a8          .
-; &8a80 referenced 1 time by &8a88
-.loop_c8a80
-    jsr c8f85                                                         ; 8a80: 20 85 8f     ..
-    lda (l0042),y                                                     ; 8a83: b1 42       .B
-    jsr c9295                                                         ; 8a85: 20 95 92     ..
-    bcs loop_c8a80                                                    ; 8a88: b0 f6       ..
-    ldx #&7f                                                          ; 8a8a: a2 7f       ..
-    stx l0007                                                         ; 8a8c: 86 07       ..
-    jmp c89f3                                                         ; 8a8e: 4c f3 89    L..
-
-; &8a91 referenced 1 time by &8a6b
-.c8a91
-    lda l0546                                                         ; 8a91: ad 46 05    .F.
-    clc                                                               ; 8a94: 18          .
-    adc l001b                                                         ; 8a95: 65 1b       e.
-    jsr sub_c8b4f                                                     ; 8a97: 20 4f 8b     O.
-    jsr sub_c9f96                                                     ; 8a9a: 20 96 9f     ..
-    jsr sub_c8b5f                                                     ; 8a9d: 20 5f 8b     _.
-    jsr sub_c9f9a                                                     ; 8aa0: 20 9a 9f     ..
-    ldx #&20 ; ' '                                                    ; 8aa3: a2 20       .
-    stx l0007                                                         ; 8aa5: 86 07       ..
-    bne c8aaf                                                         ; 8aa7: d0 06       ..             ; ALWAYS branch
-
-; &8aa9 referenced 1 time by &8a65
-.c8aa9
-    jsr sub_c8b4d                                                     ; 8aa9: 20 4d 8b     M.
-    jsr sub_c8b5f                                                     ; 8aac: 20 5f 8b     _.
-; &8aaf referenced 1 time by &8aa7
-.c8aaf
-    ldy l0059                                                         ; 8aaf: a4 59       .Y
-    lda (l0042),y                                                     ; 8ab1: b1 42       .B
-    jmp c89fc                                                         ; 8ab3: 4c fc 89    L..
-
-; &8ab6 referenced 2 times by &89f9, &9265
-.sub_c8ab6
-    stx l0016                                                         ; 8ab6: 86 16       ..
-; &8ab8 referenced 1 time by &8ad7
-.loop_c8ab8
-    lda (l0042),y                                                     ; 8ab8: b1 42       .B
-    cmp #&ff                                                          ; 8aba: c9 ff       ..
-    beq c8ac8                                                         ; 8abc: f0 0a       ..
-    jsr sub_c8812                                                     ; 8abe: 20 12 88     ..
-    bne c8acb                                                         ; 8ac1: d0 08       ..
-    jsr sub_c8bf5                                                     ; 8ac3: 20 f5 8b     ..
-    bne c8acb                                                         ; 8ac6: d0 03       ..
-; &8ac8 referenced 1 time by &8abc
-.c8ac8
-    ldx l0016                                                         ; 8ac8: a6 16       ..
-    rts                                                               ; 8aca: 60          `
-
-; &8acb referenced 2 times by &8ac1, &8ac6
-.c8acb
-    lda (l0042),y                                                     ; 8acb: b1 42       .B
-    jsr sub_c8ada                                                     ; 8acd: 20 da 8a     ..
-    lda #0                                                            ; 8ad0: a9 00       ..
-    sta (l0042),y                                                     ; 8ad2: 91 42       .B
-    jsr c8f85                                                         ; 8ad4: 20 85 8f     ..
-    jmp loop_c8ab8                                                    ; 8ad7: 4c b8 8a    L..
-
-; &8ada referenced 1 time by &8acd
-.sub_c8ada
-    bit l004c                                                         ; 8ada: 24 4c       $L
-    bvc return_8                                                      ; 8adc: 50 4a       PJ
 ; &8ade referenced 1 time by &8f0f
 .c8ade
     bpl c8aea                                                         ; 8ade: 10 0a       ..
@@ -2186,11 +1727,9 @@ l8820 = sub_c881f+1
     ldy l0014                                                         ; 8b23: a4 14       ..
     ldx l0003                                                         ; 8b25: a6 03       ..
     pla                                                               ; 8b27: 68          h
-; &8b28 referenced 1 time by &8adc
-.return_8
     rts                                                               ; 8b28: 60          `
 
-; &8b29 referenced 2 times by &89f3, &8b6c
+; &8b29 referenced 1 time by &8b6c
 .sub_c8b29
     bit l004c                                                         ; 8b29: 24 4c       $L
     bmi c8ae0                                                         ; 8b2b: 30 b3       0.
@@ -2215,11 +1754,7 @@ l8820 = sub_c881f+1
 .return_9
     rts                                                               ; 8b4c: 60          `
 
-; &8b4d referenced 2 times by &8a26, &8aa9
-.sub_c8b4d
     lda l001b                                                         ; 8b4d: a5 1b       ..
-; &8b4f referenced 1 time by &8a97
-.sub_c8b4f
     bit l004c                                                         ; 8b4f: 24 4c       $L
     bpl return_9                                                      ; 8b51: 10 f9       ..
     clc                                                               ; 8b53: 18          .
@@ -2229,8 +1764,6 @@ l8820 = sub_c881f+1
     lda #&0d                                                          ; 8b5a: a9 0d       ..
     jmp c8ae0                                                         ; 8b5c: 4c e0 8a    L..
 
-; &8b5f referenced 3 times by &8a29, &8a9d, &8aac
-.sub_c8b5f
     ldx l001b                                                         ; 8b5f: a6 1b       ..
     lda #0                                                            ; 8b61: a9 00       ..
     sta l05c9,x                                                       ; 8b63: 9d c9 05    ...
@@ -2270,7 +1803,7 @@ l8820 = sub_c881f+1
 .loop_c8b94
     jsr sub_c98d2                                                     ; 8b94: 20 d2 98     ..
     inx                                                               ; 8b97: e8          .
-    lda l0484,x                                                       ; 8b98: bd 84 04    ...
+    lda input_buffer,x                                                ; 8b98: bd 84 04    ...
     bne loop_c8b94                                                    ; 8b9b: d0 f7       ..
     lda (l000e),y                                                     ; 8b9d: b1 0e       ..
     jsr sub_c98d2                                                     ; 8b9f: 20 d2 98     ..
@@ -2289,14 +1822,14 @@ l8820 = sub_c881f+1
     jsr sub_c8bc3                                                     ; 8bb3: 20 c3 8b     ..
     jmp c8bac                                                         ; 8bb6: 4c ac 8b    L..
 
-; &8bb9 referenced 2 times by &87e8, &8ba9
+; &8bb9 referenced 1 time by &8ba9
 .sub_c8bb9
     lda #3                                                            ; 8bb9: a9 03       ..
     sta l000e                                                         ; 8bbb: 85 0e       ..
     lda l0020                                                         ; 8bbd: a5 20       .
     sta l000f                                                         ; 8bbf: 85 0f       ..
     bne c8bcc                                                         ; 8bc1: d0 09       ..
-; &8bc3 referenced 2 times by &87b3, &8bb3
+; &8bc3 referenced 1 time by &8bb3
 .sub_c8bc3
     jsr sub_c812c                                                     ; 8bc3: 20 2c 81     ,.
     tya                                                               ; 8bc6: 98          .
@@ -2309,19 +1842,19 @@ l8820 = sub_c881f+1
 ; &8bd0 referenced 1 time by &8bd9
 .loop_c8bd0
     lda (l000e),y                                                     ; 8bd0: b1 0e       ..
-    sta l0484,y                                                       ; 8bd2: 99 84 04    ...
+    sta input_buffer,y                                                ; 8bd2: 99 84 04    ...
     iny                                                               ; 8bd5: c8          .
     jsr sub_c9d91                                                     ; 8bd6: 20 91 9d     ..
     bcs loop_c8bd0                                                    ; 8bd9: b0 f5       ..
     txa                                                               ; 8bdb: 8a          .
     dey                                                               ; 8bdc: 88          .
-    sta l0484,y                                                       ; 8bdd: 99 84 04    ...
+    sta input_buffer,y                                                ; 8bdd: 99 84 04    ...
     dey                                                               ; 8be0: 88          .
 ; &8be1 referenced 1 time by &8baf
 .return_10
     rts                                                               ; 8be1: 60          `
 
-; &8be2 referenced 3 times by &87b6, &8bac, &8bf0
+; &8be2 referenced 2 times by &8bac, &8bf0
 .c8be2
     iny                                                               ; 8be2: c8          .
     lda (l000e),y                                                     ; 8be3: b1 0e       ..
@@ -2337,7 +1870,7 @@ l8820 = sub_c881f+1
 .return_11
     rts                                                               ; 8bf4: 60          `
 
-; &8bf5 referenced 2 times by &8262, &8ac3
+; &8bf5 referenced 1 time by &8262
 .sub_c8bf5
     cmp #&80                                                          ; 8bf5: c9 80       ..
     bne c8bfe                                                         ; 8bf7: d0 05       ..
@@ -2383,7 +1916,7 @@ l8820 = sub_c881f+1
     lda (l0056),y                                                     ; 8c23: b1 56       .V
     cmp #&ff                                                          ; 8c25: c9 ff       ..
     beq return_12                                                     ; 8c27: f0 2a       .*
-    sta l0484,x                                                       ; 8c29: 9d 84 04    ...
+    sta input_buffer,x                                                ; 8c29: 9d 84 04    ...
     cmp #&5b ; '['                                                    ; 8c2c: c9 5b       .[
     bcc loop_c8c21                                                    ; 8c2e: 90 f1       ..
     lda #0                                                            ; 8c30: a9 00       ..
@@ -2403,7 +1936,7 @@ l8820 = sub_c881f+1
     beq c8c3c                                                         ; 8c49: f0 f1       ..
     sta l0046                                                         ; 8c4b: 85 46       .F
     ldx l0058                                                         ; 8c4d: a6 58       .X
-    sta l0484,x                                                       ; 8c4f: 9d 84 04    ...
+    sta input_buffer,x                                                ; 8c4f: 9d 84 04    ...
     tax                                                               ; 8c52: aa          .
 ; &8c53 referenced 1 time by &8c27
 .return_12
@@ -2435,7 +1968,7 @@ l8820 = sub_c881f+1
 .return_13
     rts                                                               ; 8c78: 60          `
 
-; &8c79 referenced 1 time by &8635
+; &8c79 referenced 2 times by &8635, &9573
 .sub_c8c79
     bit l0031                                                         ; 8c79: 24 31       $1
     bmi c8c80                                                         ; 8c7b: 30 03       0.
@@ -2604,7 +2137,7 @@ l8820 = sub_c881f+1
     ldy #0                                                            ; 8d5a: a0 00       ..
 ; &8d5c referenced 1 time by &8d67
 .loop_c8d5c
-    lda l0484,y                                                       ; 8d5c: b9 84 04    ...
+    lda input_buffer,y                                                ; 8d5c: b9 84 04    ...
     cmp l0526,y                                                       ; 8d5f: d9 26 05    .&.
     bne c8da6                                                         ; 8d62: d0 42       .B
     iny                                                               ; 8d64: c8          .
@@ -2619,7 +2152,7 @@ l8820 = sub_c881f+1
     lda #1                                                            ; 8d6b: a9 01       ..
     sta l000c                                                         ; 8d6d: 85 0c       ..
     sty l000e                                                         ; 8d6f: 84 0e       ..
-    lda l0484                                                         ; 8d71: ad 84 04    ...
+    lda input_buffer                                                  ; 8d71: ad 84 04    ...
     sta l0526                                                         ; 8d74: 8d 26 05    .&.
     bcs c8d8e                                                         ; 8d77: b0 15       ..
 ; &8d79 referenced 1 time by &8d9b
@@ -2629,7 +2162,7 @@ l8820 = sub_c881f+1
     ldy l000c                                                         ; 8d7d: a4 0c       ..
 ; &8d7f referenced 1 time by &8d69
 .c8d7f
-    lda l0484,y                                                       ; 8d7f: b9 84 04    ...
+    lda input_buffer,y                                                ; 8d7f: b9 84 04    ...
     sta l0526,y                                                       ; 8d82: 99 26 05    .&.
     jsr sub_c92d1                                                     ; 8d85: 20 d1 92     ..
     inc l000c                                                         ; 8d88: e6 0c       ..
@@ -2674,7 +2207,7 @@ l8820 = sub_c881f+1
 
 ; &8dba referenced 2 times by &8656, &8c83
 .sub_c8dba
-    jsr sub_c9bdb                                                     ; 8dba: 20 db 9b     ..
+    jsr print_inline_string                                           ; 8dba: 20 db 9b     ..
     equs "_Checking"                                                  ; 8dbd: 5f 43 68... _Ch
     equb &a0                                                          ; 8dc6: a0          .
 
@@ -2763,13 +2296,13 @@ l8820 = sub_c881f+1
     iny                                                               ; 8e47: c8          .
     sbc (l0021),y                                                     ; 8e48: f1 21       .!
     bcs c8e77                                                         ; 8e4a: b0 2b       .+
-    lda adjusted_himem                                                ; 8e4c: a5 25       .%
-    sta l0008                                                         ; 8e4e: 85 08       ..
-    lda adjusted_himem+1                                              ; 8e50: a5 26       .&
+    lda himem                                                         ; 8e4c: a5 25       .%
+    sta current_mode                                                  ; 8e4e: 85 08       ..
+    lda himem+1                                                       ; 8e50: a5 26       .&
     adc #3                                                            ; 8e52: 69 03       i.
     sta l0009                                                         ; 8e54: 85 09       ..
     ldy #&ff                                                          ; 8e56: a0 ff       ..
-    lda (l0008),y                                                     ; 8e58: b1 08       ..
+    lda (current_mode),y                                              ; 8e58: b1 08       ..
     cmp #&5b ; '['                                                    ; 8e5a: c9 5b       .[
     bcs c8e61                                                         ; 8e5c: b0 03       ..
     jsr sub_c8eca                                                     ; 8e5e: 20 ca 8e     ..
@@ -2779,22 +2312,22 @@ l8820 = sub_c881f+1
     iny                                                               ; 8e64: c8          .
     tya                                                               ; 8e65: 98          .
     clc                                                               ; 8e66: 18          .
-    adc l0008                                                         ; 8e67: 65 08       e.
+    adc current_mode                                                  ; 8e67: 65 08       e.
     sta l000c                                                         ; 8e69: 85 0c       ..
     lda l0009                                                         ; 8e6b: a5 09       ..
     adc #0                                                            ; 8e6d: 69 00       i.
     sta l000d                                                         ; 8e6f: 85 0d       ..
-    ldx adjusted_himem+1                                              ; 8e71: a6 26       .&
+    ldx himem+1                                                       ; 8e71: a6 26       .&
     lda #&ff                                                          ; 8e73: a9 ff       ..
     bne c8e8c                                                         ; 8e75: d0 15       ..             ; ALWAYS branch
 
 ; &8e77 referenced 1 time by &8e4a
 .c8e77
-    lda adjusted_himem                                                ; 8e77: a5 25       .%
+    lda himem                                                         ; 8e77: a5 25       .%
     sec                                                               ; 8e79: 38          8
     sbc l000c                                                         ; 8e7a: e5 0c       ..
     sta l000c                                                         ; 8e7c: 85 0c       ..
-    lda adjusted_himem+1                                              ; 8e7e: a5 26       .&
+    lda himem+1                                                       ; 8e7e: a5 26       .&
     tax                                                               ; 8e80: aa          .
     sbc l000d                                                         ; 8e81: e5 0d       ..
     clc                                                               ; 8e83: 18          .
@@ -2822,9 +2355,9 @@ l8820 = sub_c881f+1
 ; &8ea2 referenced 1 time by &8d3e
 .c8ea2
     ldy #0                                                            ; 8ea2: a0 00       ..
-    lda adjusted_himem                                                ; 8ea4: a5 25       .%
+    lda himem                                                         ; 8ea4: a5 25       .%
     sta l003e                                                         ; 8ea6: 85 3e       .>
-    lda adjusted_himem+1                                              ; 8ea8: a5 26       .&
+    lda himem+1                                                       ; 8ea8: a5 26       .&
     sta l003f                                                         ; 8eaa: 85 3f       .?
     rts                                                               ; 8eac: 60          `
 
@@ -2847,7 +2380,7 @@ l8820 = sub_c881f+1
     dey                                                               ; 8ebf: 88          .
 ; &8ec0 referenced 1 time by &8e61
 .sub_c8ec0
-    lda (l0008),y                                                     ; 8ec0: b1 08       ..
+    lda (current_mode),y                                              ; 8ec0: b1 08       ..
     cmp #&5b ; '['                                                    ; 8ec2: c9 5b       .[
     bcs loop_c8ebc                                                    ; 8ec4: b0 f6       ..
 ; &8ec6 referenced 1 time by &8ece
@@ -2856,7 +2389,7 @@ l8820 = sub_c881f+1
     dey                                                               ; 8ec9: 88          .
 ; &8eca referenced 1 time by &8e5e
 .sub_c8eca
-    lda (l0008),y                                                     ; 8eca: b1 08       ..
+    lda (current_mode),y                                              ; 8eca: b1 08       ..
     cmp #&5b ; '['                                                    ; 8ecc: c9 5b       .[
     bcc loop_c8ec6                                                    ; 8ece: 90 f6       ..
     rts                                                               ; 8ed0: 60          `
@@ -2914,10 +2447,10 @@ l8820 = sub_c881f+1
     bne loop_c8efe                                                    ; 8f04: d0 f8       ..
     jmp c805d                                                         ; 8f06: 4c 5d 80    L].
 
-; &8f09 referenced 4 times by &8b48, &8eeb, &9f68, &9f6e
+; &8f09 referenced 5 times by &8b48, &8eeb, &9370, &9f68, &9f6e
 .c8f09
     lda #&0d                                                          ; 8f09: a9 0d       ..
-; &8f0b referenced 2 times by &98dd, &9f9f
+; &8f0b referenced 3 times by &9368, &98dd, &9f9f
 .c8f0b
     bit l004c                                                         ; 8f0b: 24 4c       $L
     bvc c8f12                                                         ; 8f0d: 50 03       P.
@@ -2929,7 +2462,7 @@ l8820 = sub_c881f+1
     beq c8f1a                                                         ; 8f14: f0 04       ..
     cmp #&1c                                                          ; 8f16: c9 1c       ..
     bcc return_16                                                     ; 8f18: 90 36       .6
-; &8f1a referenced 5 times by &8a6f, &8b39, &8f00, &8f14, &9c1a
+; &8f1a referenced 4 times by &8b39, &8f00, &8f14, &9c1a
 .c8f1a
     inc l0055                                                         ; 8f1a: e6 55       .U
     pha                                                               ; 8f1c: 48          H
@@ -2982,7 +2515,7 @@ l8820 = sub_c881f+1
     lda #osgbpb_read_bytes_from_current_position                      ; 8f5b: a9 04       ..
     jmp osgbpb                                                        ; 8f5d: 4c d1 ff    L..            ; read bytes from current position in file (A=4)
 
-; &8f60 referenced 3 times by &81f7, &88af, &897b
+; &8f60 referenced 2 times by &81f7, &88af
 .sub_c8f60
     ldx #&c4                                                          ; 8f60: a2 c4       ..
     ldy #4                                                            ; 8f62: a0 04       ..
@@ -3016,13 +2549,12 @@ l8820 = sub_c881f+1
     ldy #4                                                            ; 8f81: a0 04       ..
     bne c8f6a                                                         ; 8f83: d0 e5       ..             ; ALWAYS branch
 
-; &8f85 referenced 6 times by &8975, &89a6, &89f6, &8a80, &8ad4, &9262
-.c8f85
-    iny                                                               ; 8f85: c8          .
-    bne return_17                                                     ; 8f86: d0 5a       .Z
+    iny                                                               ; 8f85: c8          .              ; Y=&05
+    bne return_17                                                     ; 8f86: d0 5a       .Z             ; ALWAYS branch
+
     inc l0043                                                         ; 8f88: e6 43       .C
     pha                                                               ; 8f8a: 48          H
-    lda adjusted_himem+1                                              ; 8f8b: a5 26       .&
+    lda himem+1                                                       ; 8f8b: a5 26       .&
     sta l0009                                                         ; 8f8d: 85 09       ..
     clc                                                               ; 8f8f: 18          .
     adc #4                                                            ; 8f90: 69 04       i.
@@ -3039,12 +2571,12 @@ l8820 = sub_c881f+1
     bne c8fbc                                                         ; 8fa2: d0 18       ..
     dec l0043                                                         ; 8fa4: c6 43       .C
     sty l0059                                                         ; 8fa6: 84 59       .Y
-    sty l0008                                                         ; 8fa8: 84 08       ..
+    sty current_mode                                                  ; 8fa8: 84 08       ..
     dey                                                               ; 8faa: 88          .
 ; &8fab referenced 1 time by &8fb0
 .loop_c8fab
     lda (l0042),y                                                     ; 8fab: b1 42       .B
-    sta (l0008),y                                                     ; 8fad: 91 08       ..
+    sta (current_mode),y                                              ; 8fad: 91 08       ..
     dey                                                               ; 8faf: 88          .
     bne loop_c8fab                                                    ; 8fb0: d0 f9       ..
     txa                                                               ; 8fb2: 8a          .
@@ -3064,7 +2596,7 @@ l8820 = sub_c881f+1
     pha                                                               ; 8fbf: 48          H
     lda l008f                                                         ; 8fc0: a5 8f       ..
     asl a                                                             ; 8fc2: 0a          .
-    ldy adjusted_himem+1                                              ; 8fc3: a4 26       .&
+    ldy himem+1                                                       ; 8fc3: a4 26       .&
     ldx #3                                                            ; 8fc5: a2 03       ..
     and l004c                                                         ; 8fc7: 25 4c       %L
     bcs c8fd1                                                         ; 8fc9: b0 06       ..
@@ -3087,11 +2619,11 @@ l8820 = sub_c881f+1
 .return_17
     rts                                                               ; 8fe2: 60          `
 
-; &8fe3 referenced 2 times by &8a5f, &9003
+; &8fe3 referenced 1 time by &9003
 .c8fe3
     ldy #&7f                                                          ; 8fe3: a0 7f       ..
     jsr sub_c9a13                                                     ; 8fe5: 20 13 9a     ..
-    stx l0008                                                         ; 8fe8: 86 08       ..
+    stx current_mode                                                  ; 8fe8: 86 08       ..
     cmp l004b                                                         ; 8fea: c5 4b       .K
     bcc c8ff7                                                         ; 8fec: 90 09       ..
     beq c8ff1                                                         ; 8fee: f0 01       ..
@@ -3099,7 +2631,7 @@ l8820 = sub_c881f+1
 
 ; &8ff1 referenced 1 time by &8fee
 .c8ff1
-    lda l0008                                                         ; 8ff1: a5 08       ..
+    lda current_mode                                                  ; 8ff1: a5 08       ..
     cmp l004a                                                         ; 8ff3: c5 4a       .J
     bcs return_17                                                     ; 8ff5: b0 eb       ..
 ; &8ff7 referenced 1 time by &8fec
@@ -3218,16 +2750,16 @@ l8820 = sub_c881f+1
 ; &9086 referenced 1 time by &827a
 .sub_c9086
     jsr sub_c927c                                                     ; 9086: 20 7c 92     |.
-    sta l0484,y                                                       ; 9089: 99 84 04    ...
+    sta input_buffer,y                                                ; 9089: 99 84 04    ...
     iny                                                               ; 908c: c8          .
     jsr sub_c9290                                                     ; 908d: 20 90 92     ..
-    bcs return_2                                                      ; 9090: b0 08       ..
+    bcs return_3                                                      ; 9090: b0 08       ..
     dey                                                               ; 9092: 88          .
     sty l004d                                                         ; 9093: 84 4d       .M
     lda #0                                                            ; 9095: a9 00       ..
-    sta l0484,y                                                       ; 9097: 99 84 04    ...
+    sta input_buffer,y                                                ; 9097: 99 84 04    ...
 ; &909a referenced 2 times by &8219, &9090
-.return_2
+.return_3
     rts                                                               ; 909a: 60          `
 
     equb 0, 1, &ef, &ff, &ef                                          ; 909b: 00 01 ef... ...
@@ -3239,7 +2771,7 @@ l8820 = sub_c881f+1
     sta l005b                                                         ; 90a5: 85 5b       .[
     sta l0081                                                         ; 90a7: 85 81       ..
     sta l0082                                                         ; 90a9: 85 82       ..
-    jsr sub_c9bdb                                                     ; 90ab: 20 db 9b     ..
+    jsr print_inline_string                                           ; 90ab: 20 db 9b     ..
 ; overlapping: jmp l616f                                              ; 90ae: 4c 6f 61    Loa
     equs "Loadin"                                                     ; 90ae: 4c 6f 61... Loa
     equb &e7                                                          ; 90b4: e7          .
@@ -3247,7 +2779,7 @@ l8820 = sub_c881f+1
     lda l0089                                                         ; 90b5: a5 89       ..
     ora l008a                                                         ; 90b7: 05 8a       ..
     bne c90ea                                                         ; 90b9: d0 2f       ./
-    lda adjusted_himem+1                                              ; 90bb: a5 26       .&
+    lda himem+1                                                       ; 90bb: a5 26       .&
     sec                                                               ; 90bd: 38          8
     sbc l003d                                                         ; 90be: e5 3d       .=
     adc #2                                                            ; 90c0: 69 02       i.
@@ -3285,15 +2817,15 @@ l8820 = sub_c881f+1
     jsr sub_c8f51                                                     ; 90f6: 20 51 8f     Q.
     bcs c9111                                                         ; 90f9: b0 16       ..
     lda #&ff                                                          ; 90fb: a9 ff       ..
-    sta l0008                                                         ; 90fd: 85 08       ..
-    lda adjusted_himem+1                                              ; 90ff: a5 26       .&
+    sta current_mode                                                  ; 90fd: 85 08       ..
+    lda himem+1                                                       ; 90ff: a5 26       .&
     adc #3                                                            ; 9101: 69 03       i.
     sta l0009                                                         ; 9103: 85 09       ..
     ldy #0                                                            ; 9105: a0 00       ..
-    lda (l0008),y                                                     ; 9107: b1 08       ..
+    lda (current_mode),y                                              ; 9107: b1 08       ..
     sta l005b                                                         ; 9109: 85 5b       .[
     lda #&fe                                                          ; 910b: a9 fe       ..
-    sta (l0008),y                                                     ; 910d: 91 08       ..
+    sta (current_mode),y                                              ; 910d: 91 08       ..
     bne c912a                                                         ; 910f: d0 19       ..             ; ALWAYS branch
 
 ; &9111 referenced 1 time by &90f9
@@ -3305,7 +2837,7 @@ l8820 = sub_c881f+1
     sec                                                               ; 9118: 38          8
     sbc l0074                                                         ; 9119: e5 74       .t
     sta l0074                                                         ; 911b: 85 74       .t
-    lda adjusted_himem+1                                              ; 911d: a5 26       .&
+    lda himem+1                                                       ; 911d: a5 26       .&
     sbc l0075                                                         ; 911f: e5 75       .u
     clc                                                               ; 9121: 18          .
     adc #4                                                            ; 9122: 69 04       i.
@@ -3316,7 +2848,7 @@ l8820 = sub_c881f+1
 .c912a
     lda #4                                                            ; 912a: a9 04       ..
     sta l0075                                                         ; 912c: 85 75       .u
-    lda adjusted_himem+1                                              ; 912e: a5 26       .&
+    lda himem+1                                                       ; 912e: a5 26       .&
     sta l0036                                                         ; 9130: 85 36       .6
     sta l0071                                                         ; 9132: 85 71       .q
     lda #0                                                            ; 9134: a9 00       ..
@@ -3331,10 +2863,10 @@ l8820 = sub_c881f+1
 .c9141
     lda #0                                                            ; 9141: a9 00       ..
     ldy l004d                                                         ; 9143: a4 4d       .M
-    sta (adjusted_himem),y                                            ; 9145: 91 25       .%
+    sta (himem),y                                                     ; 9145: 91 25       .%
     iny                                                               ; 9147: c8          .
     lda #&fd                                                          ; 9148: a9 fd       ..
-    sta (adjusted_himem),y                                            ; 914a: 91 25       .%
+    sta (himem),y                                                     ; 914a: 91 25       .%
     bne c912a                                                         ; 914c: d0 dc       ..             ; ALWAYS branch
 
 ; &914e referenced 1 time by &829c
@@ -3488,7 +3020,7 @@ l8820 = sub_c881f+1
     sty l003d                                                         ; 9221: 84 3d       .=
     rts                                                               ; 9223: 60          `
 
-; &9224 referenced 3 times by &866d, &9231, &95dd
+; &9224 referenced 2 times by &866d, &95dd
 .sub_c9224
     ldy #&ff                                                          ; 9224: a0 ff       ..
 ; &9226 referenced 1 time by &922e
@@ -3497,14 +3029,12 @@ l8820 = sub_c881f+1
     jsr sub_c92a8                                                     ; 9229: 20 a8 92     ..
     beq return_19                                                     ; 922c: f0 02       ..
     bcs loop_c9226                                                    ; 922e: b0 f6       ..
-; &9230 referenced 2 times by &922c, &9234
+; &9230 referenced 1 time by &922c
 .return_19
     rts                                                               ; 9230: 60          `
 
-; &9231 referenced 1 time by &8a62
-.sub_c9231
-    jsr sub_c9224                                                     ; 9231: 20 24 92     $.
-    bne return_19                                                     ; 9234: d0 fa       ..
+    equb &20, &24, &92, &d0, &fa                                      ; 9231: 20 24 92...  $.
+
 ; &9236 referenced 3 times by &8672, &8d09, &9249
 .sub_c9236
     ldy l000e                                                         ; 9236: a4 0e       ..
@@ -3529,7 +3059,7 @@ l8820 = sub_c881f+1
     beq return_20                                                     ; 924c: f0 fa       ..
     sty l000e                                                         ; 924e: 84 0e       ..
     lda l0046                                                         ; 9250: a5 46       .F
-    sta l0484                                                         ; 9252: 8d 84 04    ...
+    sta input_buffer                                                  ; 9252: 8d 84 04    ...
     ldy #0                                                            ; 9255: a0 00       ..
     sty l0485                                                         ; 9257: 8c 85 04    ...
     iny                                                               ; 925a: c8          .              ; Y=&01
@@ -3538,10 +3068,8 @@ l8820 = sub_c881f+1
     lda #1                                                            ; 925f: a9 01       ..
     rts                                                               ; 9261: 60          `
 
-; &9262 referenced 2 times by &8a1a, &8a34
-.sub_c9262
-    jsr c8f85                                                         ; 9262: 20 85 8f     ..
-    jsr sub_c8ab6                                                     ; 9265: 20 b6 8a     ..
+    equb &20, &85, &8f, &20, &b6, &8a                                 ; 9262: 20 85 8f...  ..
+
 ; &9268 referenced 2 times by &9288, &9290
 .sub_c9268
     cmp #&2d ; '-'                                                    ; 9268: c9 2d       .-
@@ -3562,7 +3090,7 @@ l8820 = sub_c881f+1
     sec                                                               ; 927a: 38          8
     rts                                                               ; 927b: 60          `
 
-; &927c referenced 4 times by &8a0a, &9086, &9caf, &9cbf
+; &927c referenced 3 times by &9086, &9caf, &9cbf
 .sub_c927c
     jsr c9295                                                         ; 927c: 20 95 92     ..
     bcc return_22                                                     ; 927f: 90 02       ..
@@ -3584,7 +3112,7 @@ l8820 = sub_c881f+1
 .sub_c9290
     jsr sub_c9268                                                     ; 9290: 20 68 92     h.
     bcs return_21                                                     ; 9293: b0 e4       ..
-; &9295 referenced 7 times by &8147, &8160, &8267, &8a00, &8a85, &923e, &927c
+; &9295 referenced 4 times by &8160, &8267, &923e, &927c
 .c9295
     pha                                                               ; 9295: 48          H
     and #&df                                                          ; 9296: 29 df       ).
@@ -3610,7 +3138,7 @@ l8820 = sub_c881f+1
     jsr c99eb                                                         ; 92a5: 20 eb 99     ..
 ; &92a8 referenced 2 times by &9229, &9a25
 .sub_c92a8
-    sty l0008                                                         ; 92a8: 84 08       ..
+    sty current_mode                                                  ; 92a8: 84 08       ..
     stx l0012                                                         ; 92aa: 86 12       ..
     dey                                                               ; 92ac: 88          .
     ldx #0                                                            ; 92ad: a2 00       ..
@@ -3620,7 +3148,7 @@ l8820 = sub_c881f+1
     lda (l003e),y                                                     ; 92b0: b1 3e       .>
     jsr sub_c92d1                                                     ; 92b2: 20 d1 92     ..
     sta l000c                                                         ; 92b5: 85 0c       ..
-    lda l0484,x                                                       ; 92b7: bd 84 04    ...
+    lda input_buffer,x                                                ; 92b7: bd 84 04    ...
     inx                                                               ; 92ba: e8          .
     jsr sub_c92d1                                                     ; 92bb: 20 d1 92     ..
     cmp l000c                                                         ; 92be: c5 0c       ..
@@ -3632,7 +3160,7 @@ l8820 = sub_c881f+1
     php                                                               ; 92c6: 08          .
     sty l000e                                                         ; 92c7: 84 0e       ..
     stx l000c                                                         ; 92c9: 86 0c       ..
-    ldy l0008                                                         ; 92cb: a4 08       ..
+    ldy current_mode                                                  ; 92cb: a4 08       ..
     ldx l0012                                                         ; 92cd: a6 12       ..
     plp                                                               ; 92cf: 28          (
     rts                                                               ; 92d0: 60          `
@@ -3652,7 +3180,7 @@ l8820 = sub_c881f+1
     pha                                                               ; 92de: 48          H
     ldy #1                                                            ; 92df: a0 01       ..
     jsr c94b2                                                         ; 92e1: 20 b2 94     ..
-    stx top                                                           ; 92e4: 86 18       ..
+    stx l0018                                                         ; 92e4: 86 18       ..
     pla                                                               ; 92e6: 68          h
     and #&df                                                          ; 92e7: 29 df       ).
     cmp #&55 ; 'U'                                                    ; 92e9: c9 55       .U
@@ -3674,9 +3202,8 @@ l8820 = sub_c881f+1
     cmp #&54 ; 'T'                                                    ; 92fd: c9 54       .T
     beq c930c                                                         ; 92ff: f0 0b       ..
     jsr sub_c9bd0                                                     ; 9301: 20 d0 9b     ..
-    jmp (l7465)                                                       ; 9304: 6c 65 74    let
-
-    equs "ter"                                                        ; 9307: 74 65 72    ter
+; overlapping: jmp (l7465)                                            ; 9304: 6c 65 74    let
+    equs "letter"                                                     ; 9304: 6c 65 74... let
     equb &8d, &60                                                     ; 930a: 8d 60       .`
 
 ; &930c referenced 1 time by &92ff
@@ -3686,7 +3213,7 @@ l8820 = sub_c881f+1
 ; &9310 referenced 2 times by &92f1, &92fb
 .c9310
     pha                                                               ; 9310: 48          H
-    ldx top                                                           ; 9311: a6 18       ..
+    ldx l0018                                                         ; 9311: a6 18       ..
     beq c9323                                                         ; 9313: f0 0e       ..
     cpx #&0e                                                          ; 9315: e0 0e       ..
     bcs c9373                                                         ; 9317: b0 5a       .Z
@@ -3705,19 +3232,45 @@ l8820 = sub_c881f+1
     sta l040e,x                                                       ; 9326: 9d 0e 04    ...
 ; &9329 referenced 1 time by &92dc
 .c9329
-    jsr sub_c9bdb                                                     ; 9329: 20 db 9b     ..
-    eor l6129                                                         ; 932c: 4d 29 61    M)a
-    equs "ster"                                                       ; 932f: 73 74 65... ste
-    equb &a0, &ac, &29, 4, &a2                                        ; 9333: a0 ac 29... ..)
-    equs ") a"                                                        ; 9338: 29 20 61    ) a
-    equb &93, &20, &db, &9b                                           ; 933b: 93 20 db... . .
+    jsr print_inline_string                                           ; 9329: 20 db 9b     ..
+; overlapping: eor l6129                                              ; 932c: 4d 29 61    M)a
+    equs "M)aster"                                                    ; 932c: 4d 29 61... M)a
+    equb &a0                                                          ; 9333: a0          .
+
+    ldy l0429                                                         ; 9334: ac 29 04    .).
+    ldx #&29 ; ')'                                                    ; 9337: a2 29       .)
+    jsr sub_c9361                                                     ; 9339: 20 61 93     a.
+    jsr print_inline_string                                           ; 933c: 20 db 9b     ..
+; overlapping: eor l0029,x                                            ; 933f: 55 29       U)
     equs "U)ser"                                                      ; 933f: 55 29 73... U)s
-    equb &a0, &ac, &0e, 4, &a2, &0e, &20, &61, &93, &20, &db, &9b     ; 9344: a0 ac 0e... ...
+    equb &a0                                                          ; 9344: a0          .
+
+    ldy l040e                                                         ; 9345: ac 0e 04    ...
+    ldx #&0e                                                          ; 9348: a2 0e       ..
+    jsr sub_c9361                                                     ; 934a: 20 61 93     a.
+    jsr print_inline_string                                           ; 934d: 20 db 9b     ..
     equs "T)ext"                                                      ; 9350: 54 29 65... T)e
-    equb &a0, &ac, &41, 4, &a2                                        ; 9355: a0 ac 41... ..A
-    equs "A a"                                                        ; 935a: 41 20 61    A a
-    equb &93, &4c, &19, &83, &86, &18, &d0, 7, &b9, &0e, 4, &20, &0b  ; 935d: 93 4c 19... .L.
-    equb &8f, &c8, &c4, &18, &d0, &f5, &4c, 9, &8f                    ; 936a: 8f c8 c4... ...
+    equb &a0                                                          ; 9355: a0          .
+
+    ldy l0441                                                         ; 9356: ac 41 04    .A.
+    ldx #&41 ; 'A'                                                    ; 9359: a2 41       .A
+    jsr sub_c9361                                                     ; 935b: 20 61 93     a.
+    jmp c8319                                                         ; 935e: 4c 19 83    L..
+
+; &9361 referenced 3 times by &9339, &934a, &935b
+.sub_c9361
+    stx l0018                                                         ; 9361: 86 18       ..
+    bne c936c                                                         ; 9363: d0 07       ..
+; &9365 referenced 1 time by &936e
+.loop_c9365
+    lda l040e,y                                                       ; 9365: b9 0e 04    ...
+    jsr c8f0b                                                         ; 9368: 20 0b 8f     ..
+    iny                                                               ; 936b: c8          .
+; &936c referenced 1 time by &9363
+.c936c
+    cpy l0018                                                         ; 936c: c4 18       ..
+    bne loop_c9365                                                    ; 936e: d0 f5       ..
+    jmp c8f09                                                         ; 9370: 4c 09 8f    L..
 
 ; &9373 referenced 3 times by &9317, &9395, &93c1
 .c9373
@@ -3742,7 +3295,7 @@ l8820 = sub_c881f+1
     iny                                                               ; 938f: c8          .
 ; &9390 referenced 2 times by &9382, &9401
 .c9390
-    lda l0484,x                                                       ; 9390: bd 84 04    ...
+    lda input_buffer,x                                                ; 9390: bd 84 04    ...
     cpy #&0d                                                          ; 9393: c0 0d       ..
     bcs c9373                                                         ; 9395: b0 dc       ..
     sta l041c,y                                                       ; 9397: 99 1c 04    ...
@@ -3753,7 +3306,7 @@ l8820 = sub_c881f+1
     clc                                                               ; 93a0: 18          .
     rts                                                               ; 93a1: 60          `
 
-; &93a2 referenced 3 times by &81f4, &8885, &896a
+; &93a2 referenced 2 times by &81f4, &8885
 .sub_c93a2
     ldx #&75 ; 'u'                                                    ; 93a2: a2 75       .u
     bne c93a8                                                         ; 93a4: d0 02       ..             ; ALWAYS branch
@@ -3778,16 +3331,16 @@ l8820 = sub_c881f+1
 ; &93bd referenced 1 time by &93b1
 .c93bd
     ldy #0                                                            ; 93bd: a0 00       ..
-; &93bf referenced 2 times by &87f7, &93cd
-.c93bf
+; &93bf referenced 1 time by &93cd
+.loop_c93bf
     cpy #&1b                                                          ; 93bf: c0 1b       ..
     beq c9373                                                         ; 93c1: f0 b0       ..
-    lda l0484,y                                                       ; 93c3: b9 84 04    ...
+    lda input_buffer,y                                                ; 93c3: b9 84 04    ...
     sta l044f,x                                                       ; 93c6: 9d 4f 04    .O.
     iny                                                               ; 93c9: c8          .
     inx                                                               ; 93ca: e8          .
     cmp #&21 ; '!'                                                    ; 93cb: c9 21       .!
-    bcs c93bf                                                         ; 93cd: b0 f0       ..
+    bcs loop_c93bf                                                    ; 93cd: b0 f0       ..
     lda #&0d                                                          ; 93cf: a9 0d       ..
     sta l044e,x                                                       ; 93d1: 9d 4e 04    .N.
     rts                                                               ; 93d4: 60          `
@@ -3821,11 +3374,14 @@ l8820 = sub_c881f+1
     cmp #&57 ; 'W'                                                    ; 93ff: c9 57       .W
     beq c9390                                                         ; 9401: f0 8d       ..
     jsr sub_c9bd0                                                     ; 9403: 20 d0 9b     ..
+; overlapping: stz l0069                                              ; 9406: 64 69       di
     equs "directory"                                                  ; 9406: 64 69 72... dir
+; overlapping: adc (l0065)                                            ; 9408: 72 65       re
     equb &8d                                                          ; 940f: 8d          .
-    equs "` %"                                                        ; 9410: 60 20 25    ` %
-    equb &88                                                          ; 9413: 88          .
 
+    rts                                                               ; 9410: 60          `
+
+    jsr sub_c8825                                                     ; 9411: 20 25 88     %.
     jsr sub_c93a6                                                     ; 9414: 20 a6 93     ..
     jmp c8319                                                         ; 9417: 4c 19 83    L..
 
@@ -3834,7 +3390,7 @@ l8820 = sub_c881f+1
     inx                                                               ; 941a: e8          .
 ; &941b referenced 1 time by &93dd
 .sub_c941b
-    lda l0484,x                                                       ; 941b: bd 84 04    ...
+    lda input_buffer,x                                                ; 941b: bd 84 04    ...
     cmp #&0d                                                          ; 941e: c9 0d       ..
     beq return_24                                                     ; 9420: f0 05       ..
     cmp #&2e ; '.'                                                    ; 9422: c9 2e       ..
@@ -3859,7 +3415,7 @@ l8820 = sub_c881f+1
     jmp c8319                                                         ; 943b: 4c 19 83    L..
 
 ; &943e referenced 1 time by &9c8c
-.unknown_table_2
+.l943e
     equb   1,   0,   0,   3,   0,   0, &ff,   0,   5,   0,   0,   1   ; 943e: 01 00 00... ...
     equb &ef, &ff, &ef, &20, &ab, &9b, &20, &6f, &8f, &a9, &80, &20   ; 944a: ef ff ef... ...
     equb &ce, &ff, &85, &62, &a0,   0, &a5, &25, &85, &5c, &a5, &26   ; 9456: ce ff 85... ...
@@ -3877,7 +3433,7 @@ l8820 = sub_c881f+1
     iny                                                               ; 94b1: c8          .
 ; &94b2 referenced 3 times by &8129, &819f, &92e1
 .c94b2
-    lda l0484,y                                                       ; 94b2: b9 84 04    ...
+    lda input_buffer,y                                                ; 94b2: b9 84 04    ...
     cmp #&20 ; ' '                                                    ; 94b5: c9 20       .
     beq loop_c94b1                                                    ; 94b7: f0 f8       ..
     ldx #&ff                                                          ; 94b9: a2 ff       ..
@@ -3886,20 +3442,20 @@ l8820 = sub_c881f+1
 .loop_c94bc
     inx                                                               ; 94bc: e8          .
     iny                                                               ; 94bd: c8          .
-    lda l0484,y                                                       ; 94be: b9 84 04    ...
-    sta l0484,x                                                       ; 94c1: 9d 84 04    ...
+    lda input_buffer,y                                                ; 94be: b9 84 04    ...
+    sta input_buffer,x                                                ; 94c1: 9d 84 04    ...
     cmp #&0d                                                          ; 94c4: c9 0d       ..
     bne loop_c94bc                                                    ; 94c6: d0 f4       ..
 ; &94c8 referenced 1 time by &94ce
 .loop_c94c8
     dex                                                               ; 94c8: ca          .
-    lda l0484,x                                                       ; 94c9: bd 84 04    ...
+    lda input_buffer,x                                                ; 94c9: bd 84 04    ...
     cmp #&20 ; ' '                                                    ; 94cc: c9 20       .
     beq loop_c94c8                                                    ; 94ce: f0 f8       ..
     inx                                                               ; 94d0: e8          .
     lda #&0d                                                          ; 94d1: a9 0d       ..
-    sta l0484,x                                                       ; 94d3: 9d 84 04    ...
-    lda l0484                                                         ; 94d6: ad 84 04    ...
+    sta input_buffer,x                                                ; 94d3: 9d 84 04    ...
+    lda input_buffer                                                  ; 94d6: ad 84 04    ...
     cmp #&0d                                                          ; 94d9: c9 0d       ..
     rts                                                               ; 94db: 60          `
 
@@ -3925,8 +3481,6 @@ l8820 = sub_c881f+1
 .return_25
     rts                                                               ; 94ef: 60          `
 
-; &94f0 referenced 1 time by &87e5
-.sub_c94f0
     jsr sub_c9b87                                                     ; 94f0: 20 87 9b     ..
 ; &94f3 referenced 1 time by &9e5d
 .sub_c94f3
@@ -3945,52 +3499,146 @@ l8820 = sub_c881f+1
     jsr sub_c8554                                                     ; 9504: 20 54 85     T.
 ; &9507 referenced 2 times by &8693, &95f9
 .c9507
-    jsr sub_c9bdb                                                     ; 9507: 20 db 9b     ..
-    ror l746f                                                         ; 950a: 6e 6f 74    not
+    jsr print_inline_string                                           ; 9507: 20 db 9b     ..
+; overlapping: ror l746f                                              ; 950a: 6e 6f 74    not
+    equs "not"                                                        ; 950a: 6e 6f 74    not
 ; overlapping: ldy #&20 ; ' '                                         ; 950d: a0 20       .
     equb &a0                                                          ; 950d: a0          .
 
 ; &950e referenced 2 times by &86b2, &9d2e
 .sub_c950e
-    jsr sub_c9bdb                                                     ; 950e: 20 db 9b     ..
-    ror l006f                                                         ; 9511: 66 6f       fo
-    adc l006e,x                                                       ; 9513: 75 6e       un
-    equb &64, &8d, &60, &a9,   6, &d0,   2, &a9, &74, &85, 5, &20     ; 9515: 64 8d 60... d.`
-    equb &87, &9b, &20, &82, &9c, &b0, &ef, &20, &db, &9b             ; 9521: 87 9b 20... ..
+    jsr print_inline_string                                           ; 950e: 20 db 9b     ..
+; overlapping: ror l006f                                              ; 9511: 66 6f       fo
+    equs "found"                                                      ; 9511: 66 6f 75... fou
+; overlapping: adc l006e,x                                            ; 9513: 75 6e       un
+; overlapping: stz l008d                                              ; 9515: 64 8d       d.
+    equb &8d                                                          ; 9516: 8d          .
+
+; &9517 referenced 1 time by &9526
+.return_26
+    rts                                                               ; 9517: 60          `
+
+    lda #6                                                            ; 9518: a9 06       ..
+    bne c951e                                                         ; 951a: d0 02       ..             ; ALWAYS branch
+
+    lda #&74 ; 't'                                                    ; 951c: a9 74       .t
+; &951e referenced 1 time by &951a
+.c951e
+    sta l0005                                                         ; 951e: 85 05       ..
+    jsr sub_c9b87                                                     ; 9520: 20 87 9b     ..
+    jsr sub_c9c82                                                     ; 9523: 20 82 9c     ..
+    bcs return_26                                                     ; 9526: b0 ef       ..
+; &9528 referenced 2 times by &9535, &953a
+.c9528
+    jsr print_inline_string                                           ; 9528: 20 db 9b     ..
     equs "_Word?"                                                     ; 952b: 5f 57 6f... _Wo
-    equb &a0, &20, &1c, &81, &f0, &f1, &20, &c0, &95, &4c, &28, &95   ; 9531: a0 20 1c... . .
-    equb &a0, &fc, &b9, &6b, &ff, &48, &c8, &d0, &f9, &a5, &2e, &48   ; 953d: a0 fc b9... ...
-    equb &a5,   6, &48, &a5,   7, &48, &a5                            ; 9549: a5 06 48... ..H
-    equs "bH "                                                        ; 9550: 62 48 20    bH
-    equb &14, &98, &a9, &ff, &99, &c4,   4, &b9, &83,   4, &88, &d0   ; 9553: 14 98 a9... ...
-    equb &f7, &8d, &c4,   4, &a2, &c1, &a0,   4, &86, &3a, &84, &3b   ; 955f: f7 8d c4... ...
-    equb &a5                                                          ; 956b: a5          .
-    equs "&H8"                                                        ; 956c: 26 48 38    &H8
-    equb &e9, 7, &85                                                  ; 956f: e9 07 85    ...
-    equs "& y"                                                        ; 9572: 26 20 79    & y
-    equb &8c, &68, &85, &26, &68, &85, &62, &68, &85,   7, &68, &85   ; 9575: 8c 68 85... .h.
-    equb   6, &68, &85, &2e, &a2,   4, &68, &95, &66, &ca, &d0, &fa   ; 9581: 06 68 85... .h.
-    equb &a4, &4d, &b9, &c3,   4, &48, &b9, &82,   4, &99, &83,   4   ; 958d: a4 4d b9... .M.
-    equb &88, &d0, &f7, &68, &c9,   2, &d0, &2e, &20, &db, &9b        ; 9599: 88 d0 f7... ...
+    equb &a0                                                          ; 9531: a0          .
+
+    jsr sub_c811c                                                     ; 9532: 20 1c 81     ..
+    beq c9528                                                         ; 9535: f0 f1       ..
+    jsr sub_c95c0                                                     ; 9537: 20 c0 95     ..
+    jmp c9528                                                         ; 953a: 4c 28 95    L(.
+
+; &953d referenced 1 time by &95c9
+.c953d
+    ldy #&fc                                                          ; 953d: a0 fc       ..
+; &953f referenced 1 time by &9544
+.loop_c953f
+    lda lff6b,y                                                       ; 953f: b9 6b ff    .k.
+    pha                                                               ; 9542: 48          H
+    iny                                                               ; 9543: c8          .
+    bne loop_c953f                                                    ; 9544: d0 f9       ..
+    lda l002e                                                         ; 9546: a5 2e       ..
+    pha                                                               ; 9548: 48          H
+    lda l0006                                                         ; 9549: a5 06       ..
+    pha                                                               ; 954b: 48          H
+    lda l0007                                                         ; 954c: a5 07       ..
+    pha                                                               ; 954e: 48          H
+    lda l0062                                                         ; 954f: a5 62       .b
+    pha                                                               ; 9551: 48          H
+    jsr sub_c9814                                                     ; 9552: 20 14 98     ..
+    lda #&ff                                                          ; 9555: a9 ff       ..
+; &9557 referenced 1 time by &955e
+.loop_c9557
+    sta l04c4,y                                                       ; 9557: 99 c4 04    ...
+    lda l0483,y                                                       ; 955a: b9 83 04    ...
+    dey                                                               ; 955d: 88          .
+    bne loop_c9557                                                    ; 955e: d0 f7       ..
+    sta l04c4                                                         ; 9560: 8d c4 04    ...
+    ldx #&c1                                                          ; 9563: a2 c1       ..
+    ldy #4                                                            ; 9565: a0 04       ..
+    stx l003a                                                         ; 9567: 86 3a       .:
+    sty l003b                                                         ; 9569: 84 3b       .;
+    lda himem+1                                                       ; 956b: a5 26       .&
+    pha                                                               ; 956d: 48          H
+    sec                                                               ; 956e: 38          8
+    sbc #7                                                            ; 956f: e9 07       ..
+    sta himem+1                                                       ; 9571: 85 26       .&
+    jsr sub_c8c79                                                     ; 9573: 20 79 8c     y.
+    pla                                                               ; 9576: 68          h
+    sta himem+1                                                       ; 9577: 85 26       .&
+    pla                                                               ; 9579: 68          h
+    sta l0062                                                         ; 957a: 85 62       .b
+    pla                                                               ; 957c: 68          h
+    sta l0007                                                         ; 957d: 85 07       ..
+    pla                                                               ; 957f: 68          h
+    sta l0006                                                         ; 9580: 85 06       ..
+    pla                                                               ; 9582: 68          h
+    sta l002e                                                         ; 9583: 85 2e       ..
+    ldx #4                                                            ; 9585: a2 04       ..
+; &9587 referenced 1 time by &958b
+.loop_c9587
+    pla                                                               ; 9587: 68          h
+    sta l0066,x                                                       ; 9588: 95 66       .f
+    dex                                                               ; 958a: ca          .
+    bne loop_c9587                                                    ; 958b: d0 fa       ..
+    ldy l004d                                                         ; 958d: a4 4d       .M
+    lda l04c3,y                                                       ; 958f: b9 c3 04    ...
+    pha                                                               ; 9592: 48          H
+; &9593 referenced 1 time by &959a
+.loop_c9593
+    lda l0482,y                                                       ; 9593: b9 82 04    ...
+    sta l0483,y                                                       ; 9596: 99 83 04    ...
+    dey                                                               ; 9599: 88          .
+    bne loop_c9593                                                    ; 959a: d0 f7       ..
+    pla                                                               ; 959c: 68          h
+    cmp #2                                                            ; 959d: c9 02       ..
+    bne c95cf                                                         ; 959f: d0 2e       ..
+    jsr print_inline_string                                           ; 95a1: 20 db 9b     ..
     equs "_In"                                                        ; 95a4: 5f 49 6e    _In
     equb &a0                                                          ; 95a7: a0          .
 
 ; &95a8 referenced 1 time by &8c86
 .sub_c95a8
-    jsr sub_c9bdb                                                     ; 95a8: 20 db 9b     ..
-    adc l7361                                                         ; 95ab: 6d 61 73    mas
-    equs "ter"                                                        ; 95ae: 74 65 72    ter
+    jsr print_inline_string                                           ; 95a8: 20 db 9b     ..
+; overlapping: adc l7361                                              ; 95ab: 6d 61 73    mas
+    equs "master"                                                     ; 95ab: 6d 61 73... mas
+; overlapping: stz l0065,x                                            ; 95ae: 74 65       te
+; overlapping: adc (l00a0)                                            ; 95b0: 72 a0       r.
     equb &a0                                                          ; 95b1: a0          .
 
-; &95b2 referenced 1 time by &9ba0
-.sub_c95b2
-    jsr sub_c9bdb                                                     ; 95b2: 20 db 9b     ..
+; &95b2 referenced 2 times by &9ba0, &9bcd
+.c95b2
+    jsr print_inline_string                                           ; 95b2: 20 db 9b     ..
+; overlapping: stz l0069                                              ; 95b5: 64 69       di
     equs "dictionar"                                                  ; 95b5: 64 69 63... dic
-    equb &f9, &60, &20, &a4, &9c, &86, &4d, &24, 5, &50, 3, &4c, &3d  ; 95be: f9 60 20... .`
-    equb &95, &20, &14, &98                                           ; 95cb: 95 20 14... . .
+    equb &f9                                                          ; 95be: f9          .
 
-; &95cf referenced 1 time by &874c
-.sub_c95cf
+    rts                                                               ; 95bf: 60          `
+
+; &95c0 referenced 1 time by &9537
+.sub_c95c0
+    jsr sub_c9ca4                                                     ; 95c0: 20 a4 9c     ..
+    stx l004d                                                         ; 95c3: 86 4d       .M
+    bit l0005                                                         ; 95c5: 24 05       $.
+    bvc c95cc                                                         ; 95c7: 50 03       P.
+    jmp c953d                                                         ; 95c9: 4c 3d 95    L=.
+
+; &95cc referenced 1 time by &95c7
+.c95cc
+    jsr sub_c9814                                                     ; 95cc: 20 14 98     ..
+; &95cf referenced 1 time by &959f
+.c95cf
     jsr sub_c97f9                                                     ; 95cf: 20 f9 97     ..
     jsr sub_c9a1d                                                     ; 95d2: 20 1d 9a     ..
 ; &95d5 referenced 1 time by &95e7
@@ -4014,7 +3662,7 @@ l8820 = sub_c881f+1
 .c95f2
     bit l0005                                                         ; 95f2: 24 05       $.
     clc                                                               ; 95f4: 18          .
-    bmi return_26                                                     ; 95f5: 30 38       08
+    bmi return_27                                                     ; 95f5: 30 38       08
     bvs c95fc                                                         ; 95f7: 70 03       p.
     jmp c9507                                                         ; 95f9: 4c 07 95    L..
 
@@ -4023,20 +3671,20 @@ l8820 = sub_c881f+1
     ldy #0                                                            ; 95fc: a0 00       ..
     lda l004d                                                         ; 95fe: a5 4d       .M
     clc                                                               ; 9600: 18          .
-    adc (adjusted_himem),y                                            ; 9601: 71 25       q%
+    adc (himem),y                                                     ; 9601: 71 25       q%
     tax                                                               ; 9603: aa          .
     iny                                                               ; 9604: c8          .              ; Y=&01
-    lda (adjusted_himem),y                                            ; 9605: b1 25       .%
+    lda (himem),y                                                     ; 9605: b1 25       .%
     sbc #2                                                            ; 9607: e9 02       ..
     tay                                                               ; 9609: a8          .
-    cpy adjusted_himem+1                                              ; 960a: c4 26       .&
+    cpy himem+1                                                       ; 960a: c4 26       .&
     php                                                               ; 960c: 08          .
     bcc c9618                                                         ; 960d: 90 09       ..
     plp                                                               ; 960f: 28          (
     cpx #&e0                                                          ; 9610: e0 e0       ..
     php                                                               ; 9612: 08          .
     bcc c9618                                                         ; 9613: 90 03       ..
-    jsr c9736                                                         ; 9615: 20 36 97     6.
+    jsr sub_c9736                                                     ; 9615: 20 36 97     6.
 ; &9618 referenced 2 times by &960d, &9613
 .c9618
     ldy l000c                                                         ; 9618: a4 0c       ..
@@ -4045,14 +3693,14 @@ l8820 = sub_c881f+1
     sta l002e                                                         ; 961f: 85 2e       ..
     ldy #0                                                            ; 9621: a0 00       ..
     lda l003c                                                         ; 9623: a5 3c       .<
-    sta (adjusted_himem),y                                            ; 9625: 91 25       .%
+    sta (himem),y                                                     ; 9625: 91 25       .%
     lda l003d                                                         ; 9627: a5 3d       .=
     iny                                                               ; 9629: c8          .              ; Y=&01
-    sta (adjusted_himem),y                                            ; 962a: 91 25       .%
+    sta (himem),y                                                     ; 962a: 91 25       .%
     plp                                                               ; 962c: 28          (
     bcs c9651                                                         ; 962d: b0 22       ."
 ; &962f referenced 1 time by &95f5
-.return_26
+.return_27
     rts                                                               ; 962f: 60          `
 
 ; &9630 referenced 1 time by &95f0
@@ -4063,12 +3711,15 @@ l8820 = sub_c881f+1
 
 ; &9637 referenced 1 time by &9632
 .c9637
-    jsr sub_c9bdb                                                     ; 9637: 20 db 9b     ..
+    jsr print_inline_string                                           ; 9637: 20 db 9b     ..
     equs "_In u%"                                                     ; 963a: 5f 49 6e... _In
     equb &8d                                                          ; 9640: 8d          .
+
 ; &9641 referenced 1 time by &9678
-.l9641
-    equb &60, &ff, &ff                                                ; 9641: 60 ff ff    `..
+.return_28
+    rts                                                               ; 9641: 60          `
+
+    equb &ff, &ff                                                     ; 9642: ff ff       ..
     equs "TTZ"                                                        ; 9644: 54 54 5a    TTZ
     equb 1, &ef                                                       ; 9647: 01 ef       ..
 ; &9649 referenced 1 time by &96d7
@@ -4103,27 +3754,27 @@ l8820 = sub_c881f+1
     ldy #8                                                            ; 9676: a0 08       ..
 ; &9678 referenced 1 time by &967f
 .loop_c9678
-    lda l9641,y                                                       ; 9678: b9 41 96    .A.
+    lda return_28,y                                                   ; 9678: b9 41 96    .A.
     sta l0483,y                                                       ; 967b: 99 83 04    ...
     dey                                                               ; 967e: 88          .
     bne loop_c9678                                                    ; 967f: d0 f7       ..
     ldx #7                                                            ; 9681: a2 07       ..
     stx l004d                                                         ; 9683: 86 4d       .M
-    lda adjusted_himem+1                                              ; 9685: a5 26       .&
+    lda himem+1                                                       ; 9685: a5 26       .&
     clc                                                               ; 9687: 18          .
     adc #2                                                            ; 9688: 69 02       i.
     sta l003f                                                         ; 968a: 85 3f       .?
-    lda adjusted_himem                                                ; 968c: a5 25       .%
+    lda himem                                                         ; 968c: a5 25       .%
     sta l003e                                                         ; 968e: 85 3e       .>
     ldy #&df                                                          ; 9690: a0 df       ..
     jsr c99eb                                                         ; 9692: 20 eb 99     ..
     jsr c91d1                                                         ; 9695: 20 d1 91     ..
     ldy #0                                                            ; 9698: a0 00       ..
     lda l003e                                                         ; 969a: a5 3e       .>
-    sta (adjusted_himem),y                                            ; 969c: 91 25       .%
+    sta (himem),y                                                     ; 969c: 91 25       .%
     lda l003f                                                         ; 969e: a5 3f       .?
     iny                                                               ; 96a0: c8          .              ; Y=&01
-    sta (adjusted_himem),y                                            ; 96a1: 91 25       .%
+    sta (himem),y                                                     ; 96a1: 91 25       .%
     lda #2                                                            ; 96a3: a9 02       ..
     jsr sub_c9a0e                                                     ; 96a5: 20 0e 9a     ..
     lda l003c                                                         ; 96a8: a5 3c       .<
@@ -4191,7 +3842,7 @@ l8820 = sub_c881f+1
     ldy l0014                                                         ; 970f: a4 14       ..
     lda #0                                                            ; 9711: a9 00       ..
     sta l0014                                                         ; 9713: 85 14       ..
-    ldx adjusted_himem+1                                              ; 9715: a6 26       .&
+    ldx himem+1                                                       ; 9715: a6 26       .&
     inx                                                               ; 9717: e8          .
     inx                                                               ; 9718: e8          .
     inx                                                               ; 9719: e8          .
@@ -4213,8 +3864,8 @@ l8820 = sub_c881f+1
     bne c9744                                                         ; 9731: d0 11       ..
     jmp c8103                                                         ; 9733: 4c 03 81    L..
 
-; &9736 referenced 6 times by &80fd, &8103, &87df, &9615, &9af9, &9b29
-.c9736
+; &9736 referenced 5 times by &80fd, &8103, &9615, &9af9, &9b29
+.sub_c9736
     lda l002e                                                         ; 9736: a5 2e       ..
     beq c9779                                                         ; 9738: f0 3f       .?
     lda #0                                                            ; 973a: a9 00       ..
@@ -4225,15 +3876,15 @@ l8820 = sub_c881f+1
 .c9744
     jsr sub_c9b63                                                     ; 9744: 20 63 9b     c.
     ldy #1                                                            ; 9747: a0 01       ..
-    lda (adjusted_himem),y                                            ; 9749: b1 25       .%
+    lda (himem),y                                                     ; 9749: b1 25       .%
     sta l000e                                                         ; 974b: 85 0e       ..
-    sbc adjusted_himem+1                                              ; 974d: e5 26       .&
-    sta (adjusted_himem),y                                            ; 974f: 91 25       .%
+    sbc himem+1                                                       ; 974d: e5 26       .&
+    sta (himem),y                                                     ; 974f: 91 25       .%
     lda #2                                                            ; 9751: a9 02       ..
     jsr c9c72                                                         ; 9753: 20 72 9c     r.
     ldy #1                                                            ; 9756: a0 01       ..
     lda l000e                                                         ; 9758: a5 0e       ..
-    sta (adjusted_himem),y                                            ; 975a: 91 25       .%
+    sta (himem),y                                                     ; 975a: 91 25       .%
     lda l002f                                                         ; 975c: a5 2f       ./
     beq c9779                                                         ; 975e: f0 19       ..
     jsr sub_c9b51                                                     ; 9760: 20 51 9b     Q.
@@ -4310,14 +3961,14 @@ l8820 = sub_c881f+1
     lda l003c                                                         ; 97db: a5 3c       .<
     sec                                                               ; 97dd: 38          8
     sbc l0044                                                         ; 97de: e5 44       .D
-    sta (adjusted_himem),y                                            ; 97e0: 91 25       .%
+    sta (himem),y                                                     ; 97e0: 91 25       .%
     iny                                                               ; 97e2: c8          .              ; Y=&01
-    lda (adjusted_himem),y                                            ; 97e3: b1 25       .%
+    lda (himem),y                                                     ; 97e3: b1 25       .%
     sbc #0                                                            ; 97e5: e9 00       ..
-    sta (adjusted_himem),y                                            ; 97e7: 91 25       .%
+    sta (himem),y                                                     ; 97e7: 91 25       .%
     lda #1                                                            ; 97e9: a9 01       ..
     sta l002e                                                         ; 97eb: 85 2e       ..
-    jsr sub_c9bdb                                                     ; 97ed: 20 db 9b     ..
+    jsr print_inline_string                                           ; 97ed: 20 db 9b     ..
     equs "Deleted"                                                    ; 97f0: 44 65 6c... Del
     equb &8d, &60                                                     ; 97f7: 8d 60       .`
 
@@ -4328,7 +3979,7 @@ l8820 = sub_c881f+1
     sty l000b                                                         ; 97fe: 84 0b       ..
 ; &9800 referenced 1 time by &980a
 .loop_c9800
-    lda l0484,y                                                       ; 9800: b9 84 04    ...
+    lda input_buffer,y                                                ; 9800: b9 84 04    ...
     iny                                                               ; 9803: c8          .
     cmp #&5b ; '['                                                    ; 9804: c9 5b       .[
     bcs c980d                                                         ; 9806: b0 05       ..
@@ -4341,7 +3992,7 @@ l8820 = sub_c881f+1
     lda #0                                                            ; 980f: a9 00       ..
     jmp c9899                                                         ; 9811: 4c 99 98    L..
 
-; &9814 referenced 2 times by &8299, &8a54
+; &9814 referenced 3 times by &8299, &9552, &95cc
 .sub_c9814
     ldy l004d                                                         ; 9814: a4 4d       .M
     ldx l004d                                                         ; 9816: a6 4d       .M
@@ -4431,7 +4082,7 @@ l8820 = sub_c881f+1
     lda (l0047),y                                                     ; 988d: b1 47       .G
 ; &988f referenced 2 times by &981b, &983f
 .c988f
-    sta l0484,x                                                       ; 988f: 9d 84 04    ...
+    sta input_buffer,x                                                ; 988f: 9d 84 04    ...
     sta l0046                                                         ; 9892: 85 46       .F
     inx                                                               ; 9894: e8          .
     stx l004d                                                         ; 9895: 86 4d       .M
@@ -4482,18 +4133,18 @@ l8820 = sub_c881f+1
 .loop_c98c6
     iny                                                               ; 98c6: c8          .
     lda (l0047),y                                                     ; 98c7: b1 47       .G
-    beq return_27                                                     ; 98c9: f0 06       ..
+    beq return_29                                                     ; 98c9: f0 06       ..
     dex                                                               ; 98cb: ca          .
-    cmp l0484,x                                                       ; 98cc: dd 84 04    ...
+    cmp input_buffer,x                                                ; 98cc: dd 84 04    ...
     beq loop_c98c6                                                    ; 98cf: f0 f5       ..
 ; &98d1 referenced 3 times by &98c9, &98d4, &98e2
-.return_27
+.return_29
     rts                                                               ; 98d1: 60          `
 
-; &98d2 referenced 4 times by &870c, &8b94, &8b9f, &9e02
+; &98d2 referenced 3 times by &8b94, &8b9f, &9e02
 .sub_c98d2
     cmp #&ef                                                          ; 98d2: c9 ef       ..
-    beq return_27                                                     ; 98d4: f0 fb       ..
+    beq return_29                                                     ; 98d4: f0 fb       ..
     jsr sub_c9d91                                                     ; 98d6: 20 91 9d     ..
     bcc c98e0                                                         ; 98d9: 90 05       ..
 ; &98db referenced 1 time by &98ef
@@ -4504,9 +4155,9 @@ l8820 = sub_c881f+1
 ; &98e0 referenced 1 time by &98d9
 .c98e0
     cmp #&f1                                                          ; 98e0: c9 f1       ..
-    bcs return_27                                                     ; 98e2: b0 ed       ..
+    bcs return_29                                                     ; 98e2: b0 ed       ..
     cmp #&5b ; '['                                                    ; 98e4: c9 5b       .[
-    bcc return_28                                                     ; 98e6: 90 10       ..
+    bcc return_30                                                     ; 98e6: 90 10       ..
     jsr sub_c98f9                                                     ; 98e8: 20 f9 98     ..
     ldx #0                                                            ; 98eb: a2 00       ..
     beq c98f3                                                         ; 98ed: f0 04       ..             ; ALWAYS branch
@@ -4520,7 +4171,7 @@ l8820 = sub_c881f+1
     lda l04e6,x                                                       ; 98f3: bd e6 04    ...
     bne loop_c98ef                                                    ; 98f6: d0 f7       ..
 ; &98f8 referenced 1 time by &98e6
-.return_28
+.return_30
     rts                                                               ; 98f8: 60          `
 
 ; &98f9 referenced 2 times by &98e8, &9dd1
@@ -4637,16 +4288,16 @@ l8820 = sub_c881f+1
 ; &99d2 referenced 3 times by &8664, &95d5, &9a1d
 .sub_c99d2
     ldy #0                                                            ; 99d2: a0 00       ..
-    lda (adjusted_himem),y                                            ; 99d4: b1 25       .%
+    lda (himem),y                                                     ; 99d4: b1 25       .%
     sta l003c                                                         ; 99d6: 85 3c       .<
     iny                                                               ; 99d8: c8          .              ; Y=&01
-    lda (adjusted_himem),y                                            ; 99d9: b1 25       .%
+    lda (himem),y                                                     ; 99d9: b1 25       .%
     sta l003d                                                         ; 99db: 85 3d       .=
-    lda adjusted_himem                                                ; 99dd: a5 25       .%
+    lda himem                                                         ; 99dd: a5 25       .%
     clc                                                               ; 99df: 18          .
     adc #2                                                            ; 99e0: 69 02       i.
     sta l003e                                                         ; 99e2: 85 3e       .>
-    lda adjusted_himem+1                                              ; 99e4: a5 26       .&
+    lda himem+1                                                       ; 99e4: a5 26       .&
     adc #0                                                            ; 99e6: 69 00       i.
     sta l003f                                                         ; 99e8: 85 3f       .?
     rts                                                               ; 99ea: 60          `
@@ -4665,15 +4316,15 @@ l8820 = sub_c881f+1
     jsr sub_c9d8d                                                     ; 99f7: 20 8d 9d     ..
     bcc loop_c99f4                                                    ; 99fa: 90 f8       ..
 ; &99fc referenced 2 times by &9a02, &9a04
-.return_29
+.return_31
     rts                                                               ; 99fc: 60          `
 
 ; &99fd referenced 3 times by &866a, &95d8, &9a0b
 .c99fd
     ldy #&80                                                          ; 99fd: a0 80       ..
     jsr sub_c92a5                                                     ; 99ff: 20 a5 92     ..
-    beq return_29                                                     ; 9a02: f0 f8       ..
-    bcc return_29                                                     ; 9a04: 90 f6       ..
+    beq return_31                                                     ; 9a02: f0 f8       ..
+    bcc return_31                                                     ; 9a04: 90 f6       ..
     lda #&7f                                                          ; 9a06: a9 7f       ..
     jsr sub_c9a0e                                                     ; 9a08: 20 0e 9a     ..
     jmp c99fd                                                         ; 9a0b: 4c fd 99    L..
@@ -4692,7 +4343,7 @@ l8820 = sub_c881f+1
     lda l003f                                                         ; 9a18: a5 3f       .?
     adc #0                                                            ; 9a1a: 69 00       i.
 ; &9a1c referenced 1 time by &9a28
-.return_30
+.return_32
     rts                                                               ; 9a1c: 60          `
 
 ; &9a1d referenced 1 time by &95d2
@@ -4701,7 +4352,7 @@ l8820 = sub_c881f+1
     ldy #&ff                                                          ; 9a20: a0 ff       ..
     jsr c99eb                                                         ; 9a22: 20 eb 99     ..
     jsr sub_c92a8                                                     ; 9a25: 20 a8 92     ..
-    bcs return_30                                                     ; 9a28: b0 f2       ..
+    bcs return_32                                                     ; 9a28: b0 f2       ..
     jmp c9af9                                                         ; 9a2a: 4c f9 9a    L..
 
 ; &9a2d referenced 3 times by &9a34, &9a38, &9a41
@@ -4732,20 +4383,20 @@ l8820 = sub_c881f+1
 ; &9a50 referenced 2 times by &9a8c, &9a94
 .sub_c9a50
     sta l0068                                                         ; 9a50: 85 68       .h
-    lda adjusted_himem                                                ; 9a52: a5 25       .%
+    lda himem                                                         ; 9a52: a5 25       .%
     sta l0063                                                         ; 9a54: 85 63       .c
-    lda adjusted_himem+1                                              ; 9a56: a5 26       .&
+    lda himem+1                                                       ; 9a56: a5 26       .&
     clc                                                               ; 9a58: 18          .
     adc #3                                                            ; 9a59: 69 03       i.
     sta l0064                                                         ; 9a5b: 85 64       .d
     bne c9a7c                                                         ; 9a5d: d0 1d       ..
 ; &9a5f referenced 1 time by &970c
 .sub_c9a5f
-    lda adjusted_himem                                                ; 9a5f: a5 25       .%
+    lda himem                                                         ; 9a5f: a5 25       .%
     sec                                                               ; 9a61: 38          8
     sbc l0063                                                         ; 9a62: e5 63       .c
     sta l0067                                                         ; 9a64: 85 67       .g
-    ldx adjusted_himem+1                                              ; 9a66: a6 26       .&
+    ldx himem+1                                                       ; 9a66: a6 26       .&
     inx                                                               ; 9a68: e8          .
     inx                                                               ; 9a69: e8          .
     inx                                                               ; 9a6a: e8          .
@@ -4757,7 +4408,7 @@ l8820 = sub_c881f+1
     sec                                                               ; 9a73: 38          8
     sta l0010                                                         ; 9a74: 85 10       ..
     lda l0064                                                         ; 9a76: a5 64       .d
-    sbc adjusted_himem+1                                              ; 9a78: e5 26       .&
+    sbc himem+1                                                       ; 9a78: e5 26       .&
     sta l0011                                                         ; 9a7a: 85 11       ..
 ; &9a7c referenced 2 times by &9776, &9a5d
 .c9a7c
@@ -4814,12 +4465,12 @@ l8820 = sub_c881f+1
     jsr c9ef0                                                         ; 9ac3: 20 f0 9e     ..
     ldx l003d                                                         ; 9ac6: a6 3d       .=
     inx                                                               ; 9ac8: e8          .
-    cpx adjusted_himem+1                                              ; 9ac9: e4 26       .&
-    bcc return_31                                                     ; 9acb: 90 04       ..
+    cpx himem+1                                                       ; 9ac9: e4 26       .&
+    bcc return_33                                                     ; 9acb: 90 04       ..
     lda l003c                                                         ; 9acd: a5 3c       .<
     cmp #&f9                                                          ; 9acf: c9 f9       ..
 ; &9ad1 referenced 1 time by &9acb
-.return_31
+.return_33
     rts                                                               ; 9ad1: 60          `
 
 ; &9ad2 referenced 1 time by &9b00
@@ -4843,9 +4494,9 @@ l8820 = sub_c881f+1
     ldy #0                                                            ; 9ae3: a0 00       ..
 ; &9ae5 referenced 2 times by &9a3c, &9b0c
 .sub_c9ae5
-    lda l0484                                                         ; 9ae5: ad 84 04    ...
+    lda input_buffer                                                  ; 9ae5: ad 84 04    ...
     cmp (l002b),y                                                     ; 9ae8: d1 2b       .+
-    bne return_32                                                     ; 9aea: d0 0c       ..
+    bne return_34                                                     ; 9aea: d0 0c       ..
     iny                                                               ; 9aec: c8          .
     lda l0485                                                         ; 9aed: ad 85 04    ...
     cmp #&5b ; '['                                                    ; 9af0: c9 5b       .[
@@ -4857,12 +4508,12 @@ l8820 = sub_c881f+1
 .c9af6
     cmp (l002b),y                                                     ; 9af6: d1 2b       .+
 ; &9af8 referenced 1 time by &9aea
-.return_32
+.return_34
     rts                                                               ; 9af8: 60          `
 
 ; &9af9 referenced 3 times by &8661, &9a2a, &9b08
 .c9af9
-    jsr c9736                                                         ; 9af9: 20 36 97     6.
+    jsr sub_c9736                                                     ; 9af9: 20 36 97     6.
     ldx #&ff                                                          ; 9afc: a2 ff       ..
     stx l0007                                                         ; 9afe: 86 07       ..
 ; &9b00 referenced 1 time by &97f9
@@ -4889,10 +4540,10 @@ l8820 = sub_c881f+1
     bne c9b29                                                         ; 9b21: d0 06       ..
     ldy l002b                                                         ; 9b23: a4 2b       .+
     cpy l0006                                                         ; 9b25: c4 06       ..
-    beq return_33                                                     ; 9b27: f0 27       .'
+    beq return_35                                                     ; 9b27: f0 27       .'
 ; &9b29 referenced 1 time by &9b21
 .c9b29
-    jsr c9736                                                         ; 9b29: 20 36 97     6.
+    jsr sub_c9736                                                     ; 9b29: 20 36 97     6.
 ; &9b2c referenced 1 time by &9e91
 .sub_c9b2c
     jsr sub_c9c2c                                                     ; 9b2c: 20 2c 9c     ,.
@@ -4905,15 +4556,15 @@ l8820 = sub_c881f+1
     jsr c8c95                                                         ; 9b3d: 20 95 8c     ..
     clc                                                               ; 9b40: 18          .
     ldy #0                                                            ; 9b41: a0 00       ..
-    lda (adjusted_himem),y                                            ; 9b43: b1 25       .%
-    adc adjusted_himem                                                ; 9b45: 65 25       e%
-    sta (adjusted_himem),y                                            ; 9b47: 91 25       .%
+    lda (himem),y                                                     ; 9b43: b1 25       .%
+    adc himem                                                         ; 9b45: 65 25       e%
+    sta (himem),y                                                     ; 9b47: 91 25       .%
     iny                                                               ; 9b49: c8          .              ; Y=&01
-    lda (adjusted_himem),y                                            ; 9b4a: b1 25       .%
-    adc adjusted_himem+1                                              ; 9b4c: 65 26       e&
-    sta (adjusted_himem),y                                            ; 9b4e: 91 25       .%
+    lda (himem),y                                                     ; 9b4a: b1 25       .%
+    adc himem+1                                                       ; 9b4c: 65 26       e&
+    sta (himem),y                                                     ; 9b4e: 91 25       .%
 ; &9b50 referenced 1 time by &9b27
-.return_33
+.return_35
     rts                                                               ; 9b50: 60          `
 
 ; &9b51 referenced 2 times by &9760, &9c51
@@ -4947,9 +4598,9 @@ l8820 = sub_c881f+1
     jsr sub_c9b5a                                                     ; 9b6f: 20 5a 9b     Z.
 ; &9b72 referenced 5 times by &8e1a, &9654, &9763, &9a81, &9a8f
 .sub_c9b72
-    lda adjusted_himem                                                ; 9b72: a5 25       .%
+    lda himem                                                         ; 9b72: a5 25       .%
     sta l0063                                                         ; 9b74: 85 63       .c
-    lda adjusted_himem+1                                              ; 9b76: a5 26       .&
+    lda himem+1                                                       ; 9b76: a5 26       .&
     sta l0064                                                         ; 9b78: 85 64       .d
     lda #4                                                            ; 9b7a: a9 04       ..
     sta l0068                                                         ; 9b7c: 85 68       .h
@@ -4958,24 +4609,24 @@ l8820 = sub_c881f+1
     sta l0069                                                         ; 9b82: 85 69       .i
     sta l006a                                                         ; 9b84: 85 6a       .j
 ; &9b86 referenced 3 times by &9b94, &9b9e, &9bae
-.return_34
+.return_36
     rts                                                               ; 9b86: 60          `
 
-; &9b87 referenced 1 time by &94f0
+; &9b87 referenced 2 times by &94f0, &9520
 .sub_c9b87
     jsr sub_c8483                                                     ; 9b87: 20 83 84     ..
-    lda l0484                                                         ; 9b8a: ad 84 04    ...
+    lda input_buffer                                                  ; 9b8a: ad 84 04    ...
     cmp #&0d                                                          ; 9b8d: c9 0d       ..
     bne c9bab                                                         ; 9b8f: d0 1a       ..
     jsr sub_c9bb3                                                     ; 9b91: 20 b3 9b     ..
-    bne return_34                                                     ; 9b94: d0 f0       ..
+    bne return_36                                                     ; 9b94: d0 f0       ..
 ; &9b96 referenced 1 time by &9c2c
 .sub_c9b96
     jsr sub_c8f6f                                                     ; 9b96: 20 6f 8f     o.
     lda l041c                                                         ; 9b99: ad 1c 04    ...
     cmp #&0d                                                          ; 9b9c: c9 0d       ..
-    bne return_34                                                     ; 9b9e: d0 e6       ..
-    jsr sub_c95b2                                                     ; 9ba0: 20 b2 95     ..
+    bne return_36                                                     ; 9b9e: d0 e6       ..
+    jsr c95b2                                                         ; 9ba0: 20 b2 95     ..
     ldx #&fd                                                          ; 9ba3: a2 fd       ..
     txs                                                               ; 9ba5: 9a          .
     lda #&3f ; '?'                                                    ; 9ba6: a9 3f       .?
@@ -4986,10 +4637,10 @@ l8820 = sub_c881f+1
 ; &9bab referenced 1 time by &9b8f
 .c9bab
     jsr sub_c93d5                                                     ; 9bab: 20 d5 93     ..
-    bcc return_34                                                     ; 9bae: 90 d6       ..
+    bcc return_36                                                     ; 9bae: 90 d6       ..
     jmp c8103                                                         ; 9bb0: 4c 03 81    L..
 
-; &9bb3 referenced 2 times by &8365, &9b91
+; &9bb3 referenced 1 time by &9b91
 .sub_c9bb3
     ldy #&ff                                                          ; 9bb3: a0 ff       ..
 ; &9bb5 referenced 1 time by &9bbe
@@ -5006,20 +4657,23 @@ l8820 = sub_c881f+1
 .c9bc2
     cmp #&25 ; '%'                                                    ; 9bc2: c9 25       .%
     bne loop_c9ba8                                                    ; 9bc4: d0 e2       ..
-    jsr sub_c9bdb                                                     ; 9bc6: 20 db 9b     ..
+    jsr print_inline_string                                           ; 9bc6: 20 db 9b     ..
     equs "ser"                                                        ; 9bc9: 73 65 72    ser
-    equb &a0, &4c, &b2, &95                                           ; 9bcc: a0 4c b2... .L.
+    equb &a0                                                          ; 9bcc: a0          .
+
+    jmp c95b2                                                         ; 9bcd: 4c b2 95    L..
 
 ; &9bd0 referenced 7 times by &81aa, &82e7, &9301, &9403, &9c79, &9cf5, &9f2f
 .sub_c9bd0
-    jsr sub_c9bdb                                                     ; 9bd0: 20 db 9b     ..
+    jsr print_inline_string                                           ; 9bd0: 20 db 9b     ..
     equb &42, &61, &e4, &a9, &20                                      ; 9bd3: 42 61 e4... Ba.
 
-; &9bd8 referenced 3 times by &83aa, &83d2, &8572
+; &9bd8 referenced 2 times by &8572, &9f8b
 .sub_c9bd8
     jsr osasci                                                        ; 9bd8: 20 e3 ff     ..            ; Write character
-; &9bdb referenced 31 times by &8090, &80d3, &8131, &8248, &82ac, &8325, &833b, &836a, &8378, &8393, &83cb, &8696, &86aa, &870f, &8805, &8830, &888f, &894a, &8dba, &90ab, &9329, &9507, &950e, &95a8, &95b2, &9637, &97ed, &9bc6, &9bd0, &9c21, &9f7f
-.sub_c9bdb
+; ***************************************************************************************
+; &9bdb referenced 30 times by &8090, &80d3, &80e1, &8131, &8248, &82ac, &8325, &83cb, &8696, &86aa, &8830, &888f, &894a, &8dba, &90ab, &9329, &933c, &934d, &9507, &950e, &9528, &95a1, &95a8, &95b2, &9637, &97ed, &9bc6, &9bd0, &9c21, &9f7f
+.print_inline_string
     txa                                                               ; 9bdb: 8a          .
     pha                                                               ; 9bdc: 48          H
     tya                                                               ; 9bdd: 98          .
@@ -5034,10 +4688,10 @@ l8820 = sub_c881f+1
 ; &9bea referenced 1 time by &9be5
 .c9bea
     lda l0103,x                                                       ; 9bea: bd 03 01    ...
-    sta top                                                           ; 9bed: 85 18       ..
+    sta l0018                                                         ; 9bed: 85 18       ..
     lda l0104,x                                                       ; 9bef: bd 04 01    ...
-    sta top+1                                                         ; 9bf2: 85 19       ..
-    lda (top),y                                                       ; 9bf4: b1 18       ..
+    sta l0019                                                         ; 9bf2: 85 19       ..
+    lda (l0018),y                                                     ; 9bf4: b1 18       ..
     pha                                                               ; 9bf6: 48          H
     and #&7f                                                          ; 9bf7: 29 7f       ).
     jsr sub_c9c05                                                     ; 9bf9: 20 05 9c     ..
@@ -5049,7 +4703,7 @@ l8820 = sub_c881f+1
     pla                                                               ; 9c02: 68          h
     tax                                                               ; 9c03: aa          .
 ; &9c04 referenced 1 time by &9c16
-.return_35
+.return_37
     rts                                                               ; 9c04: 60          `
 
 ; &9c05 referenced 1 time by &9bf9
@@ -5062,12 +4716,12 @@ l8820 = sub_c881f+1
 .c9c0c
     cmp #&5f ; '_'                                                    ; 9c0c: c9 5f       ._
     bne c9c1d                                                         ; 9c0e: d0 0d       ..
-; &9c10 referenced 6 times by &823b, &8554, &8588, &863c, &9d21, &9d5f
+; &9c10 referenced 7 times by &823b, &8554, &8588, &85e7, &863c, &9d21, &9d5f
 .sub_c9c10
     lda #osbyte_read_text_cursor_pos                                  ; 9c10: a9 86       ..
     jsr osbyte                                                        ; 9c12: 20 f4 ff     ..            ; Read input cursor position (Sets X=POS and Y=VPOS)
     txa                                                               ; 9c15: 8a          .              ; X is the horizontal text position ('POS')
-    beq return_35                                                     ; 9c16: f0 ec       ..
+    beq return_37                                                     ; 9c16: f0 ec       ..
     lda #&0d                                                          ; 9c18: a9 0d       ..
     jmp c8f1a                                                         ; 9c1a: 4c 1a 8f    L..
 
@@ -5075,12 +4729,12 @@ l8820 = sub_c881f+1
 .c9c1d
     cmp #&60 ; '`'                                                    ; 9c1d: c9 60       .`
     bne c9bc2                                                         ; 9c1f: d0 a1       ..
-; &9c21 referenced 3 times by &8390, &8690, &9d2b
+; &9c21 referenced 2 times by &8690, &9d2b
 .sub_c9c21
-    jsr sub_c9bdb                                                     ; 9c21: 20 db 9b     ..
+    jsr print_inline_string                                           ; 9c21: 20 db 9b     ..
     jsr l6f77                                                         ; 9c24: 20 77 6f     wo
-    equs "rds"                                                        ; 9c27: 72 64 73    rds
-    equb &a0, &60                                                     ; 9c2a: a0 60       .`
+    adc (l0064)                                                       ; 9c27: 72 64       rd
+    equb &73, &a0, &60                                                ; 9c29: 73 a0 60    s.`
 
 ; &9c2c referenced 4 times by &9651, &9741, &9b2c, &9c82
 .sub_c9c2c
@@ -5138,7 +4792,7 @@ l8820 = sub_c881f+1
 
     equb &60                                                          ; 9c81: 60          `
 
-; &9c82 referenced 2 times by &8651, &94fb
+; &9c82 referenced 3 times by &8651, &94fb, &9523
 .sub_c9c82
     jsr sub_c9c2c                                                     ; 9c82: 20 2c 9c     ,.
     jsr sub_c9c51                                                     ; 9c85: 20 51 9c     Q.
@@ -5146,7 +4800,7 @@ l8820 = sub_c881f+1
 ; &9c8a referenced 1 time by &9c94
 .loop_c9c8a
     lda (l0027),y                                                     ; 9c8a: b1 27       .'
-    cmp unknown_table_2,y                                             ; 9c8c: d9 3e 94    .>.
+    cmp l943e,y                                                       ; 9c8c: d9 3e 94    .>.
     bne c9c79                                                         ; 9c8f: d0 e8       ..
     iny                                                               ; 9c91: c8          .
     cpy #6                                                            ; 9c92: c0 06       ..
@@ -5164,28 +4818,30 @@ l8820 = sub_c881f+1
     ldy #>(l007d)                                                     ; 9c9f: a0 00       ..
     jmp osfile                                                        ; 9ca1: 4c dd ff    L..
 
+; &9ca4 referenced 1 time by &95c0
+.sub_c9ca4
     lda #&ff                                                          ; 9ca4: a9 ff       ..
 ; &9ca6 referenced 1 time by &9d19
 .sub_c9ca6
     ldy #1                                                            ; 9ca6: a0 01       ..
     ldx #0                                                            ; 9ca8: a2 00       ..
-    sta top                                                           ; 9caa: 85 18       ..
-    lda l0484                                                         ; 9cac: ad 84 04    ...
+    sta l0018                                                         ; 9caa: 85 18       ..
+    lda input_buffer                                                  ; 9cac: ad 84 04    ...
     jsr sub_c927c                                                     ; 9caf: 20 7c 92     |.
-    sta l0484                                                         ; 9cb2: 8d 84 04    ...
+    sta input_buffer                                                  ; 9cb2: 8d 84 04    ...
     bcc c9ccf                                                         ; 9cb5: 90 18       ..
 ; &9cb7 referenced 3 times by &9ccd, &9cd5, &9ce4
 .c9cb7
     inx                                                               ; 9cb7: e8          .
 ; &9cb8 referenced 1 time by &9ce0
 .c9cb8
-    lda l0484,y                                                       ; 9cb8: b9 84 04    ...
+    lda input_buffer,y                                                ; 9cb8: b9 84 04    ...
     cmp #&21 ; '!'                                                    ; 9cbb: c9 21       .!
     bcc c9cee                                                         ; 9cbd: 90 2f       ./
     jsr sub_c927c                                                     ; 9cbf: 20 7c 92     |.
 ; &9cc2 referenced 1 time by &9cec
 .c9cc2
-    sta l0484,x                                                       ; 9cc2: 9d 84 04    ...
+    sta input_buffer,x                                                ; 9cc2: 9d 84 04    ...
     iny                                                               ; 9cc5: c8          .
     cpy #&21 ; '!'                                                    ; 9cc6: c0 21       .!
     bcs c9cf5                                                         ; 9cc8: b0 2b       .+
@@ -5193,18 +4849,18 @@ l8820 = sub_c881f+1
     bcs c9cb7                                                         ; 9ccd: b0 e8       ..
 ; &9ccf referenced 1 time by &9cb5
 .c9ccf
-    bit top                                                           ; 9ccf: 24 18       $.
+    bit l0018                                                         ; 9ccf: 24 18       $.
     bmi c9cf5                                                         ; 9cd1: 30 22       0"
     cmp #&3f ; '?'                                                    ; 9cd3: c9 3f       .?
     beq c9cb7                                                         ; 9cd5: f0 e0       ..
     cmp #&2a ; '*'                                                    ; 9cd7: c9 2a       .*
     bne c9cf5                                                         ; 9cd9: d0 1a       ..
-    lda l0484,y                                                       ; 9cdb: b9 84 04    ...
+    lda input_buffer,y                                                ; 9cdb: b9 84 04    ...
     cmp #&2a ; '*'                                                    ; 9cde: c9 2a       .*
     beq c9cb8                                                         ; 9ce0: f0 d6       ..
     cmp #&3f ; '?'                                                    ; 9ce2: c9 3f       .?
     bne c9cb7                                                         ; 9ce4: d0 d1       ..
-    sta l0484,x                                                       ; 9ce6: 9d 84 04    ...
+    sta input_buffer,x                                                ; 9ce6: 9d 84 04    ...
     inx                                                               ; 9ce9: e8          .
     lda #&2a ; '*'                                                    ; 9cea: a9 2a       .*
     bne c9cc2                                                         ; 9cec: d0 d4       ..             ; ALWAYS branch
@@ -5213,17 +4869,19 @@ l8820 = sub_c881f+1
 .c9cee
     tay                                                               ; 9cee: a8          .
     lda #0                                                            ; 9cef: a9 00       ..
-    sta l0484,x                                                       ; 9cf1: 9d 84 04    ...
+    sta input_buffer,x                                                ; 9cf1: 9d 84 04    ...
     rts                                                               ; 9cf4: 60          `
 
 ; &9cf5 referenced 4 times by &9cc8, &9cd1, &9cd9, &9d12
 .c9cf5
     jsr sub_c9bd0                                                     ; 9cf5: 20 d0 9b     ..
     equs "word"                                                       ; 9cf8: 77 6f 72... wor
-    equb &8d, &68, &68                                                ; 9cfc: 8d 68 68    .hh
+    equb &8d                                                          ; 9cfc: 8d          .
 
+    pla                                                               ; 9cfd: 68          h
+    pla                                                               ; 9cfe: 68          h
 ; &9cff referenced 1 time by &9d0a
-.return_36
+.return_38
     rts                                                               ; 9cff: 60          `
 
 ; &9d00 referenced 3 times by &8935, &8c73, &90ea
@@ -5235,7 +4893,7 @@ l8820 = sub_c881f+1
     ldy l007e                                                         ; 9d04: a4 7e       .~
     jsr osfind                                                        ; 9d06: 20 ce ff     ..            ; Open or close file(s)
     tax                                                               ; 9d09: aa          .
-    bne return_36                                                     ; 9d0a: d0 f3       ..
+    bne return_38                                                     ; 9d0a: d0 f3       ..
     jsr sub_c9504                                                     ; 9d0c: 20 04 95     ..
 ; &9d0f referenced 1 time by &9d31
 .c9d0f
@@ -5263,7 +4921,7 @@ l8820 = sub_c881f+1
 .c9d38
     ldx #&ff                                                          ; 9d38: a2 ff       ..
     stx l0032                                                         ; 9d3a: 86 32       .2
-    lda l0484                                                         ; 9d3c: ad 84 04    ...
+    lda input_buffer                                                  ; 9d3c: ad 84 04    ...
     cmp #&2a ; '*'                                                    ; 9d3f: c9 2a       .*
     beq c9d55                                                         ; 9d41: f0 12       ..
     jsr sub_c9d9c                                                     ; 9d43: 20 9c 9d     ..
@@ -5313,7 +4971,7 @@ l8820 = sub_c881f+1
 .c9d84
     pla                                                               ; 9d84: 68          h
 ; &9d85 referenced 3 times by &9dab, &9db1, &9dca
-.return_38
+.return_40
     rts                                                               ; 9d85: 60          `
 
 ; &9d86 referenced 1 time by &9d81
@@ -5327,17 +4985,17 @@ l8820 = sub_c881f+1
 ; &9d8d referenced 2 times by &8c42, &99f7
 .sub_c9d8d
     cmp #&ff                                                          ; 9d8d: c9 ff       ..
-    beq return_37                                                     ; 9d8f: f0 0a       ..
-; &9d91 referenced 8 times by &8781, &8bd6, &8be9, &903e, &98d6, &9930, &99ee, &9cca
+    beq return_39                                                     ; 9d8f: f0 0a       ..
+; &9d91 referenced 7 times by &8bd6, &8be9, &903e, &98d6, &9930, &99ee, &9cca
 .sub_c9d91
     cmp #&21 ; '!'                                                    ; 9d91: c9 21       .!
-    bcc return_37                                                     ; 9d93: 90 06       ..
+    bcc return_39                                                     ; 9d93: 90 06       ..
     cmp #&5b ; '['                                                    ; 9d95: c9 5b       .[
     ror a                                                             ; 9d97: 6a          j
     eor #&80                                                          ; 9d98: 49 80       I.
     rol a                                                             ; 9d9a: 2a          *
 ; &9d9b referenced 2 times by &9d8f, &9d93
-.return_37
+.return_39
     rts                                                               ; 9d9b: 60          `
 
 ; &9d9c referenced 2 times by &8cc2, &9d43
@@ -5346,7 +5004,7 @@ l8820 = sub_c881f+1
 ; &9d9e referenced 1 time by &9da5
 .loop_c9d9e
     inx                                                               ; 9d9e: e8          .
-    lda l0484,x                                                       ; 9d9f: bd 84 04    ...
+    lda input_buffer,x                                                ; 9d9f: bd 84 04    ...
     sta l0483,x                                                       ; 9da2: 9d 83 04    ...
     bne loop_c9d9e                                                    ; 9da5: d0 f7       ..
     rts                                                               ; 9da7: 60          `
@@ -5354,12 +5012,12 @@ l8820 = sub_c881f+1
 ; &9da8 referenced 1 time by &9db5
 .loop_c9da8
     jsr sub_c9d70                                                     ; 9da8: 20 70 9d     p.
-    bcs return_38                                                     ; 9dab: b0 d8       ..
+    bcs return_40                                                     ; 9dab: b0 d8       ..
 ; &9dad referenced 1 time by &9dbd
 .loop_c9dad
     lda (l003e),y                                                     ; 9dad: b1 3e       .>
     cmp #&ff                                                          ; 9daf: c9 ff       ..
-    beq return_38                                                     ; 9db1: f0 d2       ..
+    beq return_40                                                     ; 9db1: f0 d2       ..
     cmp #&5b ; '['                                                    ; 9db3: c9 5b       .[
     bcs loop_c9da8                                                    ; 9db5: b0 f1       ..
     jsr sub_c812c                                                     ; 9db7: 20 2c 81     ,.
@@ -5374,7 +5032,7 @@ l8820 = sub_c881f+1
     cmp #&5b ; '['                                                    ; 9dc4: c9 5b       .[
     bcc c9dba                                                         ; 9dc6: 90 f2       ..
     cmp #&ff                                                          ; 9dc8: c9 ff       ..
-    beq return_38                                                     ; 9dca: f0 b9       ..
+    beq return_40                                                     ; 9dca: f0 b9       ..
     jsr sub_c9d70                                                     ; 9dcc: 20 70 9d     p.
     sty l0059                                                         ; 9dcf: 84 59       .Y
     jsr sub_c98f9                                                     ; 9dd1: 20 f9 98     ..
@@ -5446,27 +5104,27 @@ l8820 = sub_c881f+1
 ; &9e32 referenced 2 times by &9e41, &9e46
 .c9e32
     lda l04c4,x                                                       ; 9e32: bd c4 04    ...
-    beq return_39                                                     ; 9e35: f0 11       ..
-    lda l0484,x                                                       ; 9e37: bd 84 04    ...
+    beq return_41                                                     ; 9e35: f0 11       ..
+    lda input_buffer,x                                                ; 9e37: bd 84 04    ...
     inx                                                               ; 9e3a: e8          .
     cmp #&2a ; '*'                                                    ; 9e3b: c9 2a       .*
-    beq return_39                                                     ; 9e3d: f0 09       ..
+    beq return_41                                                     ; 9e3d: f0 09       ..
     cmp #&3f ; '?'                                                    ; 9e3f: c9 3f       .?
     beq c9e32                                                         ; 9e41: f0 ef       ..
     cmp l04c3,x                                                       ; 9e43: dd c3 04    ...
     beq c9e32                                                         ; 9e46: f0 ea       ..
 ; &9e48 referenced 3 times by &9e35, &9e3d, &9e54
-.return_39
+.return_41
     rts                                                               ; 9e48: 60          `
 
 ; &9e49 referenced 2 times by &9d35, &9e4f
 .c9e49
     inx                                                               ; 9e49: e8          .
-    lda l0484,x                                                       ; 9e4a: bd 84 04    ...
+    lda input_buffer,x                                                ; 9e4a: bd 84 04    ...
     cmp #&20 ; ' '                                                    ; 9e4d: c9 20       .
     beq c9e49                                                         ; 9e4f: f0 f8       ..
     jsr sub_c93d7                                                     ; 9e51: 20 d7 93     ..
-    bcs return_39                                                     ; 9e54: b0 f2       ..
+    bcs return_41                                                     ; 9e54: b0 f2       ..
     ldx l0003                                                         ; 9e56: a6 03       ..
     lda #0                                                            ; 9e58: a9 00       ..
     sta l0483,x                                                       ; 9e5a: 9d 83 04    ...
@@ -5477,13 +5135,13 @@ l8820 = sub_c881f+1
     jsr sub_c9ada                                                     ; 9e67: 20 da 9a     ..
 ; &9e6a referenced 1 time by &9e8e
 .c9e6a
-    lda l0484                                                         ; 9e6a: ad 84 04    ...
+    lda input_buffer                                                  ; 9e6a: ad 84 04    ...
     cmp #&2a ; '*'                                                    ; 9e6d: c9 2a       .*
     beq c9e91                                                         ; 9e6f: f0 20       .
     cmp #&3f ; '?'                                                    ; 9e71: c9 3f       .?
     beq c9e91                                                         ; 9e73: f0 1c       ..
     cmp (l002b),y                                                     ; 9e75: d1 2b       .+
-    bcc return_40                                                     ; 9e77: 90 17       ..
+    bcc return_42                                                     ; 9e77: 90 17       ..
     ldy #6                                                            ; 9e79: a0 06       ..
     cmp (l002b),y                                                     ; 9e7b: d1 2b       .+
     bcc c9e91                                                         ; 9e7d: 90 12       ..
@@ -5498,17 +5156,17 @@ l8820 = sub_c881f+1
     cmp #&ff                                                          ; 9e8c: c9 ff       ..
     bne c9e6a                                                         ; 9e8e: d0 da       ..
 ; &9e90 referenced 1 time by &9e77
-.return_40
+.return_42
     rts                                                               ; 9e90: 60          `
 
 ; &9e91 referenced 4 times by &9e6f, &9e73, &9e7d, &9e7f
 .c9e91
     jsr sub_c9b2c                                                     ; 9e91: 20 2c 9b     ,.
-    lda adjusted_himem                                                ; 9e94: a5 25       .%
+    lda himem                                                         ; 9e94: a5 25       .%
     clc                                                               ; 9e96: 18          .
     adc #5                                                            ; 9e97: 69 05       i.
     sta l003e                                                         ; 9e99: 85 3e       .>
-    lda adjusted_himem+1                                              ; 9e9b: a5 26       .&
+    lda himem+1                                                       ; 9e9b: a5 26       .&
     adc #0                                                            ; 9e9d: 69 00       i.
     sta l003f                                                         ; 9e9f: 85 3f       .?
     ldy #0                                                            ; 9ea1: a0 00       ..
@@ -5516,7 +5174,7 @@ l8820 = sub_c881f+1
     beq c9e81                                                         ; 9ea6: f0 d9       ..
 ; &9ea8 referenced 4 times by &9df2, &9eb4, &9ed6, &9eed
 .c9ea8
-    lda l0484,x                                                       ; 9ea8: bd 84 04    ...
+    lda input_buffer,x                                                ; 9ea8: bd 84 04    ...
     inx                                                               ; 9eab: e8          .
     cmp #&3f ; '?'                                                    ; 9eac: c9 3f       .?
     bne c9eb9                                                         ; 9eae: d0 09       ..
@@ -5527,7 +5185,7 @@ l8820 = sub_c881f+1
 .loop_c9eb6
     lda #1                                                            ; 9eb6: a9 01       ..
 ; &9eb8 referenced 2 times by &9ec0, &9eea
-.return_41
+.return_43
     rts                                                               ; 9eb8: 60          `
 
 ; &9eb9 referenced 1 time by &9eae
@@ -5536,8 +5194,8 @@ l8820 = sub_c881f+1
     bne c9ee6                                                         ; 9ebb: d0 29       .)
 ; &9ebd referenced 1 time by &9ec5
 .loop_c9ebd
-    lda l0484,x                                                       ; 9ebd: bd 84 04    ...
-    beq return_41                                                     ; 9ec0: f0 f6       ..
+    lda input_buffer,x                                                ; 9ebd: bd 84 04    ...
+    beq return_43                                                     ; 9ec0: f0 f6       ..
     inx                                                               ; 9ec2: e8          .
     cmp #&2a ; '*'                                                    ; 9ec3: c9 2a       .*
     beq loop_c9ebd                                                    ; 9ec5: f0 f6       ..
@@ -5570,7 +5228,7 @@ l8820 = sub_c881f+1
 .c9ee6
     iny                                                               ; 9ee6: c8          .
     cmp l04c2,y                                                       ; 9ee7: d9 c2 04    ...
-    bne return_41                                                     ; 9eea: d0 cc       ..
+    bne return_43                                                     ; 9eea: d0 cc       ..
     lsr a                                                             ; 9eec: 4a          J
     bne c9ea8                                                         ; 9eed: d0 b9       ..
     rts                                                               ; 9eef: 60          `
@@ -5582,33 +5240,32 @@ l8820 = sub_c881f+1
 .sub_c9ef1
     adc l0000,x                                                       ; 9ef1: 75 00       u.
     sta l0000,x                                                       ; 9ef3: 95 00       ..
-    bcc return_42                                                     ; 9ef5: 90 02       ..
+    bcc return_44                                                     ; 9ef5: 90 02       ..
     inc l0001,x                                                       ; 9ef7: f6 01       ..
 ; &9ef9 referenced 2 times by &9ef5, &9f27
-.return_42
+.return_44
     rts                                                               ; 9ef9: 60          `
 
-    rol a                                                             ; 9efa: 2a          *
-.sub_c9efb
-l9efc = sub_c9efb+1
-    and l1d5e                                                         ; 9efb: 2d 5e 1d    -^.
+    equb &2a, &2d                                                     ; 9efa: 2a 2d       *-
 ; &9efc referenced 1 time by &9f39
-    equb &1c, &5e, &f0, &63, &a2,   0, &38, &e9, &31, &f0,   7, &a2   ; 9efe: 1c 5e f0... .^.
-    equb &41, &38, &e9,   1, &d0, &1f, &86, &19, &85, &1e, &a0,   1   ; 9f0a: 41 38 e9... A8.
+.l9efc
+    equb &5e, &1d, &1c, &5e, &f0, &63, &a2,   0, &38, &e9, &31, &f0   ; 9efc: 5e 1d 1c... ^..
+    equb   7, &a2, &41, &38, &e9,   1, &d0, &1f, &86, &19, &85, &1e   ; 9f08: 07 a2 41... ..A
+    equb &a0,   1                                                     ; 9f14: a0 01       ..
 
 ; &9f16 referenced 2 times by &9f1c, &9f4a
 .c9f16
-    lda l0484,y                                                       ; 9f16: b9 84 04    ...
+    lda input_buffer,y                                                ; 9f16: b9 84 04    ...
     iny                                                               ; 9f19: c8          .
     cmp #&20 ; ' '                                                    ; 9f1a: c9 20       .
     beq c9f16                                                         ; 9f1c: f0 f8       ..
     cmp #&5e ; '^'                                                    ; 9f1e: c9 5e       .^
     bne c9f3d                                                         ; 9f20: d0 1b       ..
-    lda l0484,y                                                       ; 9f22: b9 84 04    ...
+    lda input_buffer,y                                                ; 9f22: b9 84 04    ...
     ldx #3                                                            ; 9f25: a2 03       ..
 ; &9f27 referenced 1 time by &9f2d
 .loop_c9f27
-    cmp return_42,x                                                   ; 9f27: dd f9 9e    ...
+    cmp return_44,x                                                   ; 9f27: dd f9 9e    ...
     beq c9f39                                                         ; 9f2a: f0 0d       ..
     dex                                                               ; 9f2c: ca          .
     bne loop_c9f27                                                    ; 9f2d: d0 f8       ..
@@ -5622,18 +5279,20 @@ l9efc = sub_c9efb+1
 
 ; &9f39 referenced 1 time by &9f2a
 .c9f39
+l9f3a = c9f39+1
     lda l9efc,x                                                       ; 9f39: bd fc 9e    ...
+; &9f3a referenced 1 time by &9f92
     iny                                                               ; 9f3c: c8          .
 ; &9f3d referenced 1 time by &9f20
 .c9f3d
     ldx l001e                                                         ; 9f3d: a6 1e       ..
-    sta l0484,x                                                       ; 9f3f: 9d 84 04    ...
+    sta input_buffer,x                                                ; 9f3f: 9d 84 04    ...
     inc l001e                                                         ; 9f42: e6 1e       ..
     cpx #&41 ; 'A'                                                    ; 9f44: e0 41       .A
     bcs loop_c9f2f                                                    ; 9f46: b0 e7       ..
     sbc #&0c                                                          ; 9f48: e9 0c       ..
     bne c9f16                                                         ; 9f4a: d0 ca       ..
-    ldy top+1                                                         ; 9f4c: a4 19       ..
+    ldy l0019                                                         ; 9f4c: a4 19       ..
     bne c9f53                                                         ; 9f4e: d0 03       ..
     stx l0546                                                         ; 9f50: 8e 46 05    .F.
 ; &9f53 referenced 1 time by &9f4e
@@ -5641,7 +5300,7 @@ l9efc = sub_c9efb+1
     tax                                                               ; 9f53: aa          .
 ; &9f54 referenced 1 time by &9f5e
 .loop_c9f54
-    lda l0484,x                                                       ; 9f54: bd 84 04    ...
+    lda input_buffer,x                                                ; 9f54: bd 84 04    ...
     iny                                                               ; 9f57: c8          .
     sta l0546,y                                                       ; 9f58: 99 46 05    .F.
     inx                                                               ; 9f5b: e8          .
@@ -5654,7 +5313,7 @@ l9efc = sub_c9efb+1
     jsr sub_c9f9a                                                     ; 9f6b: 20 9a 9f     ..
     jmp c8f09                                                         ; 9f6e: 4c 09 8f    L..
 
-; &9f71 referenced 2 times by &89b7, &8f3f
+; &9f71 referenced 1 time by &8f3f
 .sub_c9f71
     stx l0017                                                         ; 9f71: 86 17       ..
     ldx #&2a ; '*'                                                    ; 9f73: a2 2a       .*
@@ -5662,26 +5321,34 @@ l9efc = sub_c9efb+1
     beq c9f7f                                                         ; 9f77: f0 06       ..
     ldx #&2d ; '-'                                                    ; 9f79: a2 2d       .-
     cmp #&1c                                                          ; 9f7b: c9 1c       ..
-    bne c9f93                                                         ; 9f7d: d0 14       ..
+    bne l9f93                                                         ; 9f7d: d0 14       ..
 ; &9f7f referenced 1 time by &9f77
 .c9f7f
-    jsr sub_c9bdb                                                     ; 9f7f: 20 db 9b     ..
+    jsr print_inline_string                                           ; 9f7f: 20 db 9b     ..
     ora (l0000),y                                                     ; 9f82: 11 00       ..
     sta (l00a9),y                                                     ; 9f84: 91 a9       ..
-    equb &87, &20, &ee, &ff, &8a, &20, &d8, &9b, &11, 7, &91, &a9     ; 9f86: 87 20 ee... . .
-    equb &80                                                          ; 9f92: 80          .
+    equb &87                                                          ; 9f86: 87          .
 
+    jsr oswrch                                                        ; 9f87: 20 ee ff     ..            ; Write character
+    txa                                                               ; 9f8a: 8a          .
+    jsr sub_c9bd8                                                     ; 9f8b: 20 d8 9b     ..
+    ora (l0007),y                                                     ; 9f8e: 11 07       ..
+    sta (l00a9),y                                                     ; 9f90: 91 a9       ..
+.sub_c9f92
+l9f93 = sub_c9f92+1
+    bra l9f3a                                                         ; 9f92: 80 a6       ..
+; overlapping: ldx l0017                                              ; 9f93: a6 17       ..
 ; &9f93 referenced 1 time by &9f7d
-.c9f93
-    ldx l0017                                                         ; 9f93: a6 17       ..
+    equb &17                                                          ; 9f94: 17          .
+
     rts                                                               ; 9f95: 60          `
 
-; &9f96 referenced 2 times by &8a9a, &9f65
+; &9f96 referenced 1 time by &9f65
 .sub_c9f96
     ldy #0                                                            ; 9f96: a0 00       ..
     beq c9fa2                                                         ; 9f98: f0 08       ..             ; ALWAYS branch
 
-; &9f9a referenced 2 times by &8aa0, &9f6b
+; &9f9a referenced 1 time by &9f6b
 .sub_c9f9a
     ldy #&41 ; 'A'                                                    ; 9f9a: a0 41       .A
     bne c9fa2                                                         ; 9f9c: d0 04       ..             ; ALWAYS branch
@@ -5701,12 +5368,7 @@ l9efc = sub_c9efb+1
     equb &fc, 3, &0f, &3f                                             ; 9fa8: fc 03 0f... ...
 ; &9fac referenced 1 time by &bb72
 .l9fac
-    equb 0, &f0, &c0, 0                                               ; 9fac: 00 f0 c0... ...
-; &9fb0 referenced 3 times by &b858, &b955, &ba04
-.l9fb0
-    equb &69, &27, &13, &69, &34, &13, &34, &27                       ; 9fb0: 69 27 13... i'.
-; &9fb8 referenced 1 time by &ba14
-.l9fb8
+    equb   0, &f0, &c0,   0, &69, &27, &13, &69, &34, &13, &34, &27   ; 9fac: 00 f0 c0... ...
     equb &1f, &1f, &1f, &18, &1f, &1f, &18, &18                       ; 9fb8: 1f 1f 1f... ...
 ; &9fc0 referenced 1 time by &bd15
 .l9fc0
@@ -5896,7 +5558,7 @@ l9efc = sub_c9efb+1
     equb &20, &96, &ad, &8a, &10,   3, &4c, &a0, &a9, &a9, &8e, &4c   ; a491: 20 96 ad...  ..
     equb &f4, &ff                                                     ; a49d: f4 ff       ..
 
-; &a49f referenced 8 times by &a6d7, &a74a, &a9b4, &a9fe, &aa27, &aaad, &ad4b, &b821
+; &a49f referenced 7 times by &a6d7, &a74a, &a9b4, &a9fe, &aa27, &aaad, &ad4b
 .sub_ca49f
     tsx                                                               ; a49f: ba          .
     lda l0102,x                                                       ; a4a0: bd 02 01    ...
@@ -5922,7 +5584,7 @@ l9efc = sub_c9efb+1
     plp                                                               ; a4c6: 28          (
     rts                                                               ; a4c7: 60          `
 
-; &a4c8 referenced 7 times by &a71f, &a8cd, &aa1d, &aa4e, &ab70, &ad58, &b829
+; &a4c8 referenced 6 times by &a71f, &a8cd, &aa1d, &aa4e, &ab70, &ad58
 .sub_ca4c8
     tsx                                                               ; a4c8: ba          .
     lda l0104,x                                                       ; a4c9: bd 04 01    ...
@@ -5934,14 +5596,14 @@ l9efc = sub_c9efb+1
     pla                                                               ; a4d7: 68          h
     sta l0104,x                                                       ; a4d8: 9d 04 01    ...
 ; &a4db referenced 1 time by &a4e0
-.return_43
+.return_45
     rts                                                               ; a4db: 60          `
 
 ; &a4dc referenced 1 time by &aa75
 .sub_ca4dc
     ldy wrchv+1                                                       ; a4dc: ac 0f 02    ...
     iny                                                               ; a4df: c8          .
-    beq return_43                                                     ; a4e0: f0 f9       ..
+    beq return_45                                                     ; a4e0: f0 f9       ..
     lda #&0d                                                          ; a4e2: a9 0d       ..
     clc                                                               ; a4e4: 18          .
     jsr sub_ca4ee                                                     ; a4e5: 20 ee a4     ..
@@ -5958,7 +5620,7 @@ l9efc = sub_c9efb+1
     ldy #1                                                            ; a4f1: a0 01       ..
 ; &a4f3 referenced 1 time by &a4fb
 .loop_ca4f3
-    lda return_44,y                                                   ; a4f3: b9 70 a5    .p.
+    lda return_46,y                                                   ; a4f3: b9 70 a5    .p.
     sta (l00a8),y                                                     ; a4f6: 91 a8       ..
     iny                                                               ; a4f8: c8          .
     cpy #&0d                                                          ; a4f9: c0 0d       ..
@@ -6038,7 +5700,7 @@ l9efc = sub_c9efb+1
     sta l00aa                                                         ; a56d: 85 aa       ..
     pla                                                               ; a56f: 68          h
 ; &a570 referenced 1 time by &a4f3
-.return_44
+.return_46
     rts                                                               ; a570: 60          `
 
     equb &20, &0c, &ff, &4c, 0, 0, &20, &0f, &ff, &4c, 0, 0           ; a571: 20 0c ff...  ..
@@ -6172,7 +5834,7 @@ l9efc = sub_c9efb+1
     equb &11, &3a, &11, &52, &11, &6a, &11, &82, &11, &9a, &11,   1   ; a686: 11 3a 11... .:.
     equb &b2, &17, &b1, &71, &b1, &b8, &b2, &2b, &b0, &d7, &b1        ; a692: b2 17 b1... ...
 
-; &a69d referenced 5 times by &b02b, &b171, &b1d7, &b201, &b2b8
+; &a69d referenced 1 time by &b02b
 .sub_ca69d
     txa                                                               ; a69d: 8a          .
     pha                                                               ; a69e: 48          H
@@ -6196,7 +5858,7 @@ l9efc = sub_c9efb+1
     sta (l00a8),y                                                     ; a6b2: 91 a8       ..
     rts                                                               ; a6b4: 60          `
 
-; &a6b5 referenced 2 times by &abe8, &b81b
+; &a6b5 referenced 1 time by &abe8
 .sub_ca6b5
     lda #osbyte_read_vdu_status                                       ; a6b5: a9 75       .u
     jsr osbyte                                                        ; a6b7: 20 f4 ff     ..            ; Read VDU status byte
@@ -6224,7 +5886,9 @@ l9efc = sub_c9efb+1
     ror a                                                             ; a6c8: 6a          j
     rts                                                               ; a6c9: 60          `
 
-    equb &20, &f2, &ae, &d0, &54, &20, &dc, &b6                       ; a6ca: 20 f2 ae...  ..
+    jsr sub_caef2                                                     ; a6ca: 20 f2 ae     ..
+    bne ca723                                                         ; a6cd: d0 54       .T
+    jsr sub_cb6dc                                                     ; a6cf: 20 dc b6     ..
     equs "Keep"                                                       ; a6d2: 4b 65 65... Kee
     equb 0                                                            ; a6d6: 00          .
 
@@ -6256,8 +5920,12 @@ l9efc = sub_c9efb+1
 ; &a6fe referenced 1 time by &a6f1
 .ca6fe
     jsr sub_cb6dc                                                     ; a6fe: 20 dc b6     ..
-    jsr l4152                                                         ; a701: 20 52 41     RA
-    equb &4d, <(l0020), >(l0020) ; eor+2 l0020                        ; a704: 4d 20 00    M .
+; overlapping: jsr l4152                                              ; a701: 20 52 41     RA
+    equs " RAM "                                                      ; a701: 20 52 41...  RA
+; overlapping: equb &4d, <(l0020), >(l0020) ; eor+2 l0020             ; a704: 4d 20 00    M .
+
+    brk                                                               ; a706: 00          .
+
 ; &a707 referenced 1 time by &a6fb
 .ca707
     ldy #&fd                                                          ; a707: a0 fd       ..
@@ -6282,6 +5950,8 @@ l9efc = sub_c9efb+1
     jsr sub_ca4c8                                                     ; a71f: 20 c8 a4     ..
     rts                                                               ; a722: 60          `
 
+; &a723 referenced 1 time by &a6cd
+.ca723
     jsr sub_caa7b                                                     ; a723: 20 7b aa     {.
     bcc ca745                                                         ; a726: 90 1d       ..
     ldx #&24 ; '$'                                                    ; a728: a2 24       .$
@@ -6457,6 +6127,7 @@ l9efc = sub_c9efb+1
 ; overlapping: ror l746f                                              ; a83d: 6e 6f 74    not
 ; overlapping: jsr l6f66                                              ; a840: 20 66 6f     fo
 ; overlapping: adc l006e,x                                            ; a843: 75 6e       un
+; overlapping: stz l0000                                              ; a845: 64 00       d.
     equb 0                                                            ; a846: 00          .
 
 ; &a847 referenced 1 time by &a832
@@ -6634,12 +6305,9 @@ l9efc = sub_c9efb+1
     sta (l00a8),y                                                     ; a945: 91 a8       ..
     jmp ca8cd                                                         ; a947: 4c cd a8    L..
 
-    equb 0,   0,   0, &ff, &ff, 0, 0,   0, 0, 0, &3b, 0, 0, 0, &1e    ; a94a: 00 00 00... ...
-    equb 0, &ff, &ff, &90,   0, 0, 0, &81                             ; a959: 00 ff ff... ...
-
-    jsr sub_caef2                                                     ; a961: 20 f2 ae     ..
-    bne ca977                                                         ; a964: d0 11       ..
-    jsr sub_cb6dc                                                     ; a966: 20 dc b6     ..
+    equb   0,   0,   0, &ff, &ff,   0, 0, 0, 0,   0, &3b,   0,   0    ; a94a: 00 00 00... ...
+    equb   0, &1e,   0, &ff, &ff, &90, 0, 0, 0, &81, &20, &f2, &ae    ; a957: 00 1e 00... ...
+    equb &d0, &11, &20, &dc, &b6                                      ; a964: d0 11 20... ..
     equs "Claim"                                                      ; a969: 43 6c 61... Cla
     equb 0                                                            ; a96e: 00          .
 
@@ -6647,8 +6315,6 @@ l9efc = sub_c9efb+1
     cmp #2                                                            ; a972: c9 02       ..
     jmp caa88                                                         ; a974: 4c 88 aa    L..
 
-; &a977 referenced 1 time by &a964
-.ca977
     jsr sub_caa7b                                                     ; a977: 20 7b aa     {.
     bcc ca97f                                                         ; a97a: 90 03       ..
 ; &a97c referenced 1 time by &a984
@@ -6667,14 +6333,14 @@ l9efc = sub_c9efb+1
     pla                                                               ; a98c: 68          h
     bne ca993                                                         ; a98d: d0 04       ..
     cpx #2                                                            ; a98f: e0 02       ..
-    bcc return_45                                                     ; a991: 90 32       .2
+    bcc return_47                                                     ; a991: 90 32       .2
 ; &a993 referenced 1 time by &a98d
 .ca993
     ldx romsel_copy                                                   ; a993: a6 f4       ..
-    eor l0df0,x                                                       ; a995: 5d f0 0d    ]..
+    eor rom_workspace_array,x                                         ; a995: 5d f0 0d    ]..
     and #2                                                            ; a998: 29 02       ).
-    eor l0df0,x                                                       ; a99a: 5d f0 0d    ]..
-    sta l0df0,x                                                       ; a99d: 9d f0 0d    ...
+    eor rom_workspace_array,x                                         ; a99a: 5d f0 0d    ]..
+    sta rom_workspace_array,x                                         ; a99d: 9d f0 0d    ...
 ; &a9a0 referenced 2 times by &a9c2, &aa23
 .ca9a0
     ldx #0                                                            ; a9a0: a2 00       ..
@@ -6695,7 +6361,7 @@ l9efc = sub_c9efb+1
 ; &a9b1 referenced 1 time by &a989
 .ca9b1
     pla                                                               ; a9b1: 68          h
-    bne return_45                                                     ; a9b2: d0 11       ..
+    bne return_47                                                     ; a9b2: d0 11       ..
     jsr sub_ca49f                                                     ; a9b4: 20 9f a4     ..
     ldy #&0e                                                          ; a9b7: a0 0e       ..
     lda (l00a8),y                                                     ; a9b9: b1 a8       ..
@@ -6706,7 +6372,7 @@ l9efc = sub_c9efb+1
     jmp ca9a0                                                         ; a9c2: 4c a0 a9    L..
 
 ; &a9c5 referenced 2 times by &a991, &a9b2
-.return_45
+.return_47
     rts                                                               ; a9c5: 60          `
 
 ; &a9c6 referenced 1 time by &a9a2
@@ -6714,10 +6380,7 @@ l9efc = sub_c9efb+1
     equs "Press BREAK to continue"                                    ; a9c6: 50 72 65... Pre
     equb 0                                                            ; a9dd: 00          .
 
-.sub_ca9de
-la9df = sub_ca9de+1
     jsr sub_caef2                                                     ; a9de: 20 f2 ae     ..
-; &a9df referenced 1 time by &836d
     bne ca9f3                                                         ; a9e1: d0 10       ..
     jsr sub_cb6dc                                                     ; a9e3: 20 dc b6     ..
     equs "Buffer"                                                     ; a9e6: 42 75 66... Buf
@@ -6758,11 +6421,11 @@ la9df = sub_ca9de+1
 .caa1d
     jsr sub_ca4c8                                                     ; aa1d: 20 c8 a4     ..
     pla                                                               ; aa20: 68          h
-    bpl return_46                                                     ; aa21: 10 03       ..
+    bpl return_48                                                     ; aa21: 10 03       ..
     jmp ca9a0                                                         ; aa23: 4c a0 a9    L..
 
 ; &aa26 referenced 1 time by &aa21
-.return_46
+.return_48
     rts                                                               ; aa26: 60          `
 
     jsr sub_ca49f                                                     ; aa27: 20 9f a4     ..
@@ -6831,11 +6494,11 @@ la9df = sub_ca9de+1
 .sub_caa7b
     ldx #&20 ; ' '                                                    ; aa7b: a2 20       .
     jsr sub_cad13                                                     ; aa7d: 20 13 ad     ..
-    bcc return_47                                                     ; aa80: 90 05       ..
+    bcc return_49                                                     ; aa80: 90 05       ..
     ldx #&1d                                                          ; aa82: a2 1d       ..
     jsr sub_cad13                                                     ; aa84: 20 13 ad     ..
 ; &aa87 referenced 1 time by &aa80
-.return_47
+.return_49
     rts                                                               ; aa87: 60          `
 
 ; &aa88 referenced 3 times by &a974, &a9f0, &aa4b
@@ -6859,7 +6522,7 @@ la9df = sub_ca9de+1
 .sub_caa9d
     cmp #&8e                                                          ; aa9d: c9 8e       ..
     beq caaa4                                                         ; aa9f: f0 03       ..
-    jmp return_48                                                     ; aaa1: 4c 78 ab    Lx.
+    jmp return_50                                                     ; aaa1: 4c 78 ab    Lx.
 
 ; &aaa4 referenced 1 time by &aa9f
 .caaa4
@@ -6985,7 +6648,7 @@ la9df = sub_ca9de+1
     tax                                                               ; ab75: aa          .
     lda #&8e                                                          ; ab76: a9 8e       ..
 ; &ab78 referenced 1 time by &aaa1
-.return_48
+.return_50
     rts                                                               ; ab78: 60          `
 
 ; &ab79 referenced 2 times by &ab2b, &abba
@@ -7011,7 +6674,7 @@ la9df = sub_ca9de+1
     beq cab9b                                                         ; ab96: f0 03       ..
 ; &ab98 referenced 1 time by &ab8e
 .cab98
-    jmp return_49                                                     ; ab98: 4c b4 ac    L..
+    jmp return_51                                                     ; ab98: 4c b4 ac    L..
 
 ; &ab9b referenced 1 time by &ab96
 .cab9b
@@ -7019,7 +6682,7 @@ la9df = sub_ca9de+1
     bne cabb1                                                         ; ab9e: d0 11       ..
     lda l0109,x                                                       ; aba0: bd 09 01    ...
     ldx romsel_copy                                                   ; aba3: a6 f4       ..
-    eor l0df0,x                                                       ; aba5: 5d f0 0d    ]..
+    eor rom_workspace_array,x                                         ; aba5: 5d f0 0d    ]..
     and #&c0                                                          ; aba8: 29 c0       ).
     bne cabb1                                                         ; abaa: d0 05       ..
     pla                                                               ; abac: 68          h
@@ -7088,7 +6751,7 @@ la9df = sub_ca9de+1
     ldy #&b1                                                          ; ac0b: a0 b1       ..
     sta (l00a8),y                                                     ; ac0d: 91 a8       ..
     ldx romsel_copy                                                   ; ac0f: a6 f4       ..
-    lda l0df0,x                                                       ; ac11: bd f0 0d    ...
+    lda rom_workspace_array,x                                         ; ac11: bd f0 0d    ...
     asl a                                                             ; ac14: 0a          .
     rol a                                                             ; ac15: 2a          *
     rol a                                                             ; ac16: 2a          *
@@ -7192,7 +6855,7 @@ la9df = sub_ca9de+1
     lda #2                                                            ; acaf: a9 02       ..
     jsr sub_caf82                                                     ; acb1: 20 82 af     ..
 ; &acb4 referenced 1 time by &ab98
-.return_49
+.return_51
     rts                                                               ; acb4: 60          `
 
 ; &acb5 referenced 1 time by &ab8b
@@ -7235,18 +6898,18 @@ la9df = sub_ca9de+1
 
     tya                                                               ; ace8: 98          .
     pha                                                               ; ace9: 48          H
-    jsr sub_cad94                                                     ; acea: 20 94 ad     ..
-    cpx #1                                                            ; aced: e0 01       ..
+    jsr get_reset_type                                                ; acea: 20 94 ad     ..
+    cpx #1                                                            ; aced: e0 01       ..             ; 1 - power on reset
     pla                                                               ; acef: 68          h
     tay                                                               ; acf0: a8          .
-    bcc return_50                                                     ; acf1: 90 05       ..
+    bcc return_52                                                     ; acf1: 90 05       ..
     lda #2                                                            ; acf3: a9 02       ..
     jsr sub_cad5c                                                     ; acf5: 20 5c ad     \.
 ; &acf8 referenced 1 time by &acf1
-.return_50
+.return_52
     rts                                                               ; acf8: 60          `
 
-; &acf9 referenced 6 times by &a736, &a834, &a8d5, &b186, &b6b9, &b796
+; &acf9 referenced 5 times by &a736, &a834, &a8d5, &b6b9, &b796
 .sub_cacf9
     pla                                                               ; acf9: 68          h
     sta l00fd                                                         ; acfa: 85 fd       ..
@@ -7271,10 +6934,10 @@ la9df = sub_ca9de+1
     jsr sub_caef2                                                     ; ad15: 20 f2 ae     ..
 ; &ad18 referenced 1 time by &ad25
 .loop_cad18
-    lda command_table,x                                               ; ad18: bd fd ae    ...
+    lda laefd,x                                                       ; ad18: bd fd ae    ...
     bmi cad33                                                         ; ad1b: 30 16       0.
     eor (os_text_ptr),y                                               ; ad1d: 51 f2       Q.
-    and #&df                                                          ; ad1f: 29 df       ).             ; Convert to Uppercase
+    and #&df                                                          ; ad1f: 29 df       ).
     bne cad27                                                         ; ad21: d0 04       ..
     inx                                                               ; ad23: e8          .
     iny                                                               ; ad24: c8          .
@@ -7307,7 +6970,7 @@ la9df = sub_ca9de+1
 ; &ad3c referenced 1 time by &ad40
 .loop_cad3c
     inx                                                               ; ad3c: e8          .
-    lda command_table,x                                               ; ad3d: bd fd ae    ...
+    lda laefd,x                                                       ; ad3d: bd fd ae    ...
     bpl loop_cad3c                                                    ; ad40: 10 fa       ..
     rts                                                               ; ad42: 60          `
 
@@ -7316,7 +6979,7 @@ la9df = sub_ca9de+1
     jsr sub_cad78                                                     ; ad43: 20 78 ad     x.
     bcs cad4b                                                         ; ad46: b0 03       ..
     lsr a                                                             ; ad48: 4a          J
-    bpl return_51                                                     ; ad49: 10 10       ..
+    bpl return_53                                                     ; ad49: 10 10       ..
 ; &ad4b referenced 1 time by &ad46
 .cad4b
     jsr sub_ca49f                                                     ; ad4b: 20 9f a4     ..
@@ -7329,7 +6992,7 @@ la9df = sub_ca9de+1
     tay                                                               ; ad57: a8          .
     jsr sub_ca4c8                                                     ; ad58: 20 c8 a4     ..
 ; &ad5b referenced 1 time by &ad49
-.return_51
+.return_53
     rts                                                               ; ad5b: 60          `
 
 ; &ad5c referenced 3 times by &a9bf, &aa1a, &acf5
@@ -7346,17 +7009,17 @@ la9df = sub_ca9de+1
 ; &ad69 referenced 1 time by &ad61
 .cad69
     and #&3f ; '?'                                                    ; ad69: 29 3f       )?
-    eor l0df0,x                                                       ; ad6b: 5d f0 0d    ]..
+    eor rom_workspace_array,x                                         ; ad6b: 5d f0 0d    ]..
     and #&3f ; '?'                                                    ; ad6e: 29 3f       )?
-    eor l0df0,x                                                       ; ad70: 5d f0 0d    ]..
-    sta l0df0,x                                                       ; ad73: 9d f0 0d    ...
+    eor rom_workspace_array,x                                         ; ad70: 5d f0 0d    ]..
+    sta rom_workspace_array,x                                         ; ad73: 9d f0 0d    ...
     plp                                                               ; ad76: 28          (
     rts                                                               ; ad77: 60          `
 
 ; &ad78 referenced 8 times by &a4b3, &a6da, &a74d, &a96f, &a986, &aa01, &aa2a, &ad43
 .sub_cad78
     ldx romsel_copy                                                   ; ad78: a6 f4       ..
-    lda l0df0,x                                                       ; ad7a: bd f0 0d    ...
+    lda rom_workspace_array,x                                         ; ad7a: bd f0 0d    ...
     and #&3f ; '?'                                                    ; ad7d: 29 3f       )?
     cmp #4                                                            ; ad7f: c9 04       ..
     rts                                                               ; ad81: 60          `
@@ -7375,8 +7038,9 @@ la9df = sub_ca9de+1
     cmp #&ff                                                          ; ad8f: c9 ff       ..
     jmp cb05c                                                         ; ad91: 4c 5c b0    L\.
 
+; ***************************************************************************************
 ; &ad94 referenced 1 time by &acea
-.sub_cad94
+.get_reset_type
     lda #&fd                                                          ; ad94: a9 fd       ..
 ; &ad96 referenced 11 times by &a506, &a778, &aaa8, &ab86, &abe0, &acda, &ad89, &b008, &b36c, &b398, &b3ab
 .sub_cad96
@@ -7403,7 +7067,7 @@ la9df = sub_ca9de+1
     tax                                                               ; adb4: aa          .
 ; &adb5 referenced 1 time by &adbe
 .loop_cadb5
-    lda ladc1,x                                                       ; adb5: bd c1 ad    ...
+    lda rom_list,x                                                    ; adb5: bd c1 ad    ...
     sta (l00a8),y                                                     ; adb8: 91 a8       ..
     inx                                                               ; adba: e8          .
     iny                                                               ; adbb: c8          .
@@ -7412,7 +7076,7 @@ la9df = sub_ca9de+1
     rts                                                               ; adc0: 60          `
 
 ; &adc1 referenced 1 time by &adb5
-.ladc1
+.rom_list
     equs "Spell"                                                      ; adc1: 53 70 65... Spe
     equb &0d                                                          ; adc6: 0d          .
     equs "Sheet"                                                      ; adc7: 53 68 65... She
@@ -7585,7 +7249,7 @@ la9df = sub_ca9de+1
 ; &aead referenced 1 time by &aebf
 .loop_caead
     ldy laec2,x                                                       ; aead: bc c2 ae    ...
-    beq return_52                                                     ; aeb0: f0 0f       ..
+    beq return_54                                                     ; aeb0: f0 0f       ..
     lda (l00a8),y                                                     ; aeb2: b1 a8       ..
     ldy laed2,x                                                       ; aeb4: bc d2 ae    ...
     sbc (l00a8),y                                                     ; aeb7: f1 a8       ..
@@ -7594,7 +7258,7 @@ la9df = sub_ca9de+1
     inx                                                               ; aebe: e8          .
     bne loop_caead                                                    ; aebf: d0 ec       ..
 ; &aec1 referenced 1 time by &aeb0
-.return_52
+.return_54
     rts                                                               ; aec1: 60          `
 
 ; &aec2 referenced 1 time by &aead
@@ -7610,7 +7274,7 @@ la9df = sub_ca9de+1
     equb &e0, &e1, &e2, &e3, &e4, &e5, &e7, &e8, 0, &c7, &c8, &cc     ; aee2: e0 e1 e2... ...
     equb &cd, &ca, &cb,   0                                           ; aeee: cd ca cb... ...
 
-; &aef2 referenced 8 times by &a90f, &a961, &a981, &a9de, &aa39, &acc6, &ad15, &b389
+; &aef2 referenced 8 times by &a6ca, &a90f, &a981, &a9de, &aa39, &acc6, &ad15, &b389
 .sub_caef2
     dey                                                               ; aef2: 88          .
 ; &aef3 referenced 1 time by &aef8
@@ -7623,7 +7287,7 @@ la9df = sub_ca9de+1
     rts                                                               ; aefc: 60          `
 
 ; &aefd referenced 2 times by &ad18, &ad3d
-.command_table
+.laefd
     equs "KEEP"                                                       ; aefd: 4b 45 45... KEE
     equb &80                                                          ; af01: 80          .
     equs "CLAIM"                                                      ; af02: 43 4c 41... CLA
@@ -7793,7 +7457,7 @@ la9df = sub_ca9de+1
     ldy l1108                                                         ; b053: ac 08 11    ...
     jsr cb03c                                                         ; b056: 20 3c b0     <.
     sta l1108                                                         ; b059: 8d 08 11    ...
-; &b05c referenced 7 times by &ace5, &ad91, &b04c, &b0de, &b1c1, &b253, &b369
+; &b05c referenced 5 times by &ace5, &ad91, &b04c, &b0de, &b369
 .cb05c
     pla                                                               ; b05c: 68          h
     tay                                                               ; b05d: a8          .
@@ -7802,12 +7466,12 @@ la9df = sub_ca9de+1
     pla                                                               ; b060: 68          h
     rts                                                               ; b061: 60          `
 
-; &b062 referenced 7 times by &b04e, &b1b2, &b21b, &b236, &b2aa, &b2d9, &b37d
+; &b062 referenced 2 times by &b04e, &b37d
 .sub_cb062
     lda l1108                                                         ; b062: ad 08 11    ...
-    beq return_53                                                     ; b065: f0 30       .0
+    beq return_55                                                     ; b065: f0 30       .0
     bit l1115                                                         ; b067: 2c 15 11    ,..
-    bpl return_53                                                     ; b06a: 10 2b       .+
+    bpl return_55                                                     ; b06a: 10 2b       .+
     jsr sub_cb098                                                     ; b06c: 20 98 b0     ..
     lda l1101                                                         ; b06f: ad 01 11    ...
     cmp l1105                                                         ; b072: cd 05 11    ...
@@ -7827,9 +7491,9 @@ la9df = sub_ca9de+1
 .cb090
     ldx #8                                                            ; b090: a2 08       ..
     ldy #&11                                                          ; b092: a0 11       ..
-    jsr cb2fe                                                         ; b094: 20 fe b2     ..
+    jsr sub_cb2fe                                                     ; b094: 20 fe b2     ..
 ; &b097 referenced 2 times by &b065, &b06a
-.return_53
+.return_55
     rts                                                               ; b097: 60          `
 
 ; &b098 referenced 2 times by &b06c, &b0e1
@@ -7849,7 +7513,7 @@ la9df = sub_ca9de+1
     dex                                                               ; b0ab: ca          .
     bpl loop_cb0a5                                                    ; b0ac: 10 f7       ..
 ; &b0ae referenced 1 time by &b0d1
-.return_54
+.return_56
     rts                                                               ; b0ae: 60          `
 
 ; &b0af referenced 1 time by &b09a
@@ -7872,10 +7536,8 @@ la9df = sub_ca9de+1
     sta l1115                                                         ; b0c9: 8d 15 11    ...
     jsr cb03c                                                         ; b0cc: 20 3c b0     <.
     cmp #0                                                            ; b0cf: c9 00       ..
-    beq return_54                                                     ; b0d1: f0 db       ..
+    beq return_56                                                     ; b0d1: f0 db       ..
     sta l1108                                                         ; b0d3: 8d 08 11    ...
-; &b0d6 referenced 2 times by &b2b5, &b2ee
-.cb0d6
     pha                                                               ; b0d6: 48          H
     txa                                                               ; b0d7: 8a          .
     pha                                                               ; b0d8: 48          H
@@ -7884,7 +7546,7 @@ la9df = sub_ca9de+1
     jsr sub_cb0e9                                                     ; b0db: 20 e9 b0     ..
     jmp cb05c                                                         ; b0de: 4c 5c b0    L\.
 
-; &b0e1 referenced 3 times by &b114, &b151, &b1b8
+; &b0e1 referenced 1 time by &b114
 .cb0e1
     jsr sub_cb098                                                     ; b0e1: 20 98 b0     ..
     lda #3                                                            ; b0e4: a9 03       ..
@@ -7919,346 +7581,65 @@ la9df = sub_ca9de+1
     bpl loop_cb109                                                    ; b112: 10 f5       ..
     jmp cb0e1                                                         ; b114: 4c e1 b0    L..
 
-    tya                                                               ; b117: 98          .
-    beq cb11f                                                         ; b118: f0 05       ..
-    cpy l1108                                                         ; b11a: cc 08 11    ...
-    beq cb122                                                         ; b11d: f0 03       ..
-; &b11f referenced 1 time by &b118
-.cb11f
-    jmp (l1118)                                                       ; b11f: 6c 18 11    l..
-
-; &b122 referenced 1 time by &b11d
-.cb122
-    clc                                                               ; b122: 18          .
-    php                                                               ; b123: 08          .
-    pha                                                               ; b124: 48          H
-    txa                                                               ; b125: 8a          .
-    pha                                                               ; b126: 48          H
-    tya                                                               ; b127: 98          .
-    pha                                                               ; b128: 48          H
-    jsr sub_cb161                                                     ; b129: 20 61 b1     a.
-    bcc cb13f                                                         ; b12c: 90 11       ..
-    tsx                                                               ; b12e: ba          .
-    lda l0104,x                                                       ; b12f: bd 04 01    ...
-    ora #1                                                            ; b132: 09 01       ..
-    sta l0104,x                                                       ; b134: 9d 04 01    ...
-    lda #&fe                                                          ; b137: a9 fe       ..
-    sta l0103,x                                                       ; b139: 9d 03 01    ...
-    jmp cb154                                                         ; b13c: 4c 54 b1    LT.
-
-; &b13f referenced 1 time by &b12c
-.cb13f
-    ldx l1100                                                         ; b13f: ae 00 11    ...
-    lda l1000,x                                                       ; b142: bd 00 10    ...
-    tsx                                                               ; b145: ba          .
-    sta l0103,x                                                       ; b146: 9d 03 01    ...
-    jsr sub_cb1c4                                                     ; b149: 20 c4 b1     ..
-    lda l1100                                                         ; b14c: ad 00 11    ...
-    bne cb154                                                         ; b14f: d0 03       ..
-    jsr cb0e1                                                         ; b151: 20 e1 b0     ..
-; &b154 referenced 2 times by &b13c, &b14f
-.cb154
-    pla                                                               ; b154: 68          h
-    tay                                                               ; b155: a8          .
-    pla                                                               ; b156: 68          h
-    tax                                                               ; b157: aa          .
-    pla                                                               ; b158: 68          h
-    plp                                                               ; b159: 28          (
-    rts                                                               ; b15a: 60          `
-
-; &b15b referenced 1 time by &b26d
-.sub_cb15b
-    ldx #1                                                            ; b15b: a2 01       ..
-    ldy #3                                                            ; b15d: a0 03       ..
-    bne cb165                                                         ; b15f: d0 04       ..             ; ALWAYS branch
-
-; &b161 referenced 3 times by &b129, &b19d, &b1e7
-.sub_cb161
-    ldx #0                                                            ; b161: a2 00       ..
-    ldy #4                                                            ; b163: a0 04       ..
-; &b165 referenced 1 time by &b15f
-.cb165
-    sec                                                               ; b165: 38          8
-; &b166 referenced 1 time by &b16e
-.loop_cb166
-    lda l1100,x                                                       ; b166: bd 00 11    ...
-    sbc l1104,x                                                       ; b169: fd 04 11    ...
-    inx                                                               ; b16c: e8          .
-    dey                                                               ; b16d: 88          .
-    bne loop_cb166                                                    ; b16e: d0 f6       ..
-    rts                                                               ; b170: 60          `
-
-    jsr sub_ca69d                                                     ; b171: 20 9d a6     ..
-    cpy #0                                                            ; b174: c0 00       ..
-    beq cb17d                                                         ; b176: f0 05       ..
-    cpy l1108                                                         ; b178: cc 08 11    ...
-    beq cb180                                                         ; b17b: f0 03       ..
-; &b17d referenced 1 time by &b176
-.cb17d
-    jmp (l111a)                                                       ; b17d: 6c 1a 11    l..
-
-; &b180 referenced 1 time by &b17b
-.cb180
-    pha                                                               ; b180: 48          H
-    lda l1115                                                         ; b181: ad 15 11    ...
-    bmi cb199                                                         ; b184: 30 13       0.
-    jsr sub_cacf9                                                     ; b186: 20 f9 ac     ..
-; overlapping: cmp (l0046,x)                                          ; b189: c1 46       .F
-    equb &c1                                                          ; b189: c1          .
+    equb &98, &f0,   5, &cc, 8, &11, &f0, 3, &6c, &18, &11, &18, 8    ; b117: 98 f0 05... ...
+    equb &48, &8a, &48, &98                                           ; b124: 48 8a 48... H.H
+    equs "H a"                                                        ; b128: 48 20 61    H a
+    equb &b1, &90, &11, &ba, &bd,   4,   1,   9, 1, &9d,   4, 1, &a9  ; b12b: b1 90 11... ...
+    equb &fe, &9d,   3,   1, &4c, &54, &b1, &ae, 0, &11, &bd, 0, &10  ; b138: fe 9d 03... ...
+    equb &ba, &9d,   3,   1, &20, &c4, &b1, &ad, 0, &11, &d0, 3, &20  ; b145: ba 9d 03... ...
+    equb &e1, &b0, &68, &a8, &68, &aa                                 ; b152: e1 b0 68... ..h
+    equs "h(`"                                                        ; b158: 68 28 60    h(`
+    equb &a2,   1, &a0,   3, &d0,   4, &a2,   0, &a0,   4, &38, &bd   ; b15b: a2 01 a0... ...
+    equb   0, &11, &fd,   4, &11, &e8, &88, &d0, &f6, &60, &20, &9d   ; b167: 00 11 fd... ...
+    equb &a6, &c0,   0, &f0,   5, &cc,   8, &11, &f0,   3, &6c, &1a   ; b173: a6 c0 00... ...
+    equb &11, &48, &ad, &15, &11, &30, &13, &20, &f9, &ac, &c1        ; b17f: 11 48 ad... .H.
     equs "File read only"                                             ; b18a: 46 69 6c... Fil
-; overlapping: adc #&6c ; 'l'                                         ; b18b: 69 6c       il
-; overlapping: adc l0020                                              ; b18d: 65 20       e
-    equb 0                                                            ; b198: 00          .
+    equb 0, &8a, &48, &98                                             ; b198: 00 8a 48... ..H
+    equs "H a"                                                        ; b19c: 48 20 61    H a
+    equb &b1, &90,   3, &20, &c8, &b1, &ba, &bd,   3,   1, &ae,   0   ; b19f: b1 90 03... ...
+    equb &11, &9d,   0, &10, &e8, &d0, &0c, &20, &62, &b0, &20, &c4   ; b1ab: 11 9d 00... ...
+    equb &b1, &20, &e1, &b0, &4c, &c1, &b1, &20, &c4, &b1, &4c, &5c   ; b1b7: b1 20 e1... . .
+    equb &b0, &a2,   0, &10,   2, &a2,   4, &ca, &a0,   4, &88, &30   ; b1c3: b0 a2 00... ...
+    equb   6, &e8, &fe,   0, &11, &f0, &f7, &60, &20, &9d, &a6, &c9   ; b1cf: 06 e8 fe... ...
+    equb   1, &d0, &12, &e0,   0, &f0, &1c, &ec,   8, &11, &d0, &17   ; b1db: 01 d0 12... ...
+    equb &20, &61, &b1, &a2,   0, &90,   1, &ca, &60, &c9,   6, &d0   ; b1e7: 20 61 b1...  a.
+    equb &0a, &ad,   8, &11, &f0,   3, &20, &7d, &b3, &a9,   6, &6c   ; b1f3: 0a ad 08... ...
+    equb &20, &11, &20, &9d, &a6, &48, &8a, &48, &98, &48, &ba, &bd   ; b1ff: 20 11 20...  .
+    equb   3,   1, &48, &bd,   2,   1, &aa, &68, &c0,   0, &d0, &0a   ; b20b: 03 01 48... ..H
+    equb &c9, &ff, &d0, &1e, &20, &62, &b0, &4c, &39, &b2, &cc,   8   ; b217: c9 ff d0... ...
+    equb &11, &d0, &13, &c9,   0, &f0, &17, &c9,   1, &f0, &28, &c9   ; b223: 11 d0 13... ...
+    equb   2, &f0, &13, &c9, &ff, &d0,   3, &20, &62, &b0, &68, &a8   ; b22f: 02 f0 13... ...
+    equb &68, &aa, &68                                                ; b23b: 68 aa 68    h.h
 
-; &b199 referenced 1 time by &b184
-.cb199
-    txa                                                               ; b199: 8a          .
-    pha                                                               ; b19a: 48          H
-    tya                                                               ; b19b: 98          .
-    pha                                                               ; b19c: 48          H
-    jsr sub_cb161                                                     ; b19d: 20 61 b1     a.
-    bcc cb1a5                                                         ; b1a0: 90 03       ..
-    jsr sub_cb1c8                                                     ; b1a2: 20 c8 b1     ..
-; &b1a5 referenced 1 time by &b1a0
-.cb1a5
-    tsx                                                               ; b1a5: ba          .
-    lda l0103,x                                                       ; b1a6: bd 03 01    ...
-    ldx l1100                                                         ; b1a9: ae 00 11    ...
-    sta l1000,x                                                       ; b1ac: 9d 00 10    ...
-    inx                                                               ; b1af: e8          .
-    bne cb1be                                                         ; b1b0: d0 0c       ..
-    jsr sub_cb062                                                     ; b1b2: 20 62 b0     b.
-    jsr sub_cb1c4                                                     ; b1b5: 20 c4 b1     ..
-    jsr cb0e1                                                         ; b1b8: 20 e1 b0     ..
-    jmp cb1c1                                                         ; b1bb: 4c c1 b1    L..
-
-; &b1be referenced 1 time by &b1b0
-.cb1be
-    jsr sub_cb1c4                                                     ; b1be: 20 c4 b1     ..
-; &b1c1 referenced 1 time by &b1bb
-.cb1c1
-    jmp cb05c                                                         ; b1c1: 4c 5c b0    L\.
-
-; &b1c4 referenced 3 times by &b149, &b1b5, &b1be
-.sub_cb1c4
-    ldx #0                                                            ; b1c4: a2 00       ..
-    bpl cb1ca                                                         ; b1c6: 10 02       ..             ; ALWAYS branch
-
-; &b1c8 referenced 1 time by &b1a2
-.sub_cb1c8
-    ldx #4                                                            ; b1c8: a2 04       ..
-; &b1ca referenced 1 time by &b1c6
-.cb1ca
-    dex                                                               ; b1ca: ca          .
-    ldy #4                                                            ; b1cb: a0 04       ..
-; &b1cd referenced 1 time by &b1d4
-.loop_cb1cd
-    dey                                                               ; b1cd: 88          .
-    bmi return_55                                                     ; b1ce: 30 06       0.
-    inx                                                               ; b1d0: e8          .
-    inc l1100,x                                                       ; b1d1: fe 00 11    ...
-    beq loop_cb1cd                                                    ; b1d4: f0 f7       ..
-; &b1d6 referenced 1 time by &b1ce
-.return_55
-    rts                                                               ; b1d6: 60          `
-
-    jsr sub_ca69d                                                     ; b1d7: 20 9d a6     ..
-    cmp #1                                                            ; b1da: c9 01       ..
-    bne cb1f0                                                         ; b1dc: d0 12       ..
-    cpx #0                                                            ; b1de: e0 00       ..
-    beq cb1fe                                                         ; b1e0: f0 1c       ..
-    cpx l1108                                                         ; b1e2: ec 08 11    ...
-    bne cb1fe                                                         ; b1e5: d0 17       ..
-    jsr sub_cb161                                                     ; b1e7: 20 61 b1     a.
-    ldx #0                                                            ; b1ea: a2 00       ..
-    bcc return_56                                                     ; b1ec: 90 01       ..
-    dex                                                               ; b1ee: ca          .              ; X=&ff
-; &b1ef referenced 1 time by &b1ec
-.return_56
-    rts                                                               ; b1ef: 60          `
-
-; &b1f0 referenced 1 time by &b1dc
-.cb1f0
-    cmp #6                                                            ; b1f0: c9 06       ..
-    bne cb1fe                                                         ; b1f2: d0 0a       ..
-    lda l1108                                                         ; b1f4: ad 08 11    ...
-    beq cb1fc                                                         ; b1f7: f0 03       ..
-    jsr sub_cb37d                                                     ; b1f9: 20 7d b3     }.
-; &b1fc referenced 1 time by &b1f7
-.cb1fc
-    lda #6                                                            ; b1fc: a9 06       ..
-; &b1fe referenced 3 times by &b1e0, &b1e5, &b1f2
-.cb1fe
-    jmp (l1120)                                                       ; b1fe: 6c 20 11    l .
-
-    jsr sub_ca69d                                                     ; b201: 20 9d a6     ..
-    pha                                                               ; b204: 48          H
-    txa                                                               ; b205: 8a          .
-    pha                                                               ; b206: 48          H
-    tya                                                               ; b207: 98          .
-    pha                                                               ; b208: 48          H
-    tsx                                                               ; b209: ba          .
-    lda l0103,x                                                       ; b20a: bd 03 01    ...
-    pha                                                               ; b20d: 48          H
-    lda l0102,x                                                       ; b20e: bd 02 01    ...
-    tax                                                               ; b211: aa          .
-    pla                                                               ; b212: 68          h
-    cpy #0                                                            ; b213: c0 00       ..
-    bne cb221                                                         ; b215: d0 0a       ..
-    cmp #&ff                                                          ; b217: c9 ff       ..
-    bne cb239                                                         ; b219: d0 1e       ..
-    jsr sub_cb062                                                     ; b21b: 20 62 b0     b.
-    jmp cb239                                                         ; b21e: 4c 39 b2    L9.
-
-; &b221 referenced 1 time by &b215
-.cb221
-    cpy l1108                                                         ; b221: cc 08 11    ...
-    bne cb239                                                         ; b224: d0 13       ..
-    cmp #0                                                            ; b226: c9 00       ..
-    beq cb241                                                         ; b228: f0 17       ..
-    cmp #1                                                            ; b22a: c9 01       ..
-    beq cb256                                                         ; b22c: f0 28       .(
-    cmp #2                                                            ; b22e: c9 02       ..
-    beq cb245                                                         ; b230: f0 13       ..
-    cmp #&ff                                                          ; b232: c9 ff       ..
-    bne cb239                                                         ; b234: d0 03       ..
-    jsr sub_cb062                                                     ; b236: 20 62 b0     b.
-; &b239 referenced 4 times by &b219, &b21e, &b224, &b234
-.cb239
-    pla                                                               ; b239: 68          h
-    tay                                                               ; b23a: a8          .
-    pla                                                               ; b23b: 68          h
-    tax                                                               ; b23c: aa          .
-    pla                                                               ; b23d: 68          h
-; &b23e referenced 4 times by &b0fa, &b104, &b2b2, &b315
+; &b23e referenced 3 times by &b0fa, &b104, &b315
 .sub_cb23e
     jmp (l1116)                                                       ; b23e: 6c 16 11    l..
 
-; &b241 referenced 1 time by &b228
-.cb241
-    ldy #0                                                            ; b241: a0 00       ..
-    bpl cb247                                                         ; b243: 10 02       ..             ; ALWAYS branch
+    equb &a0,   0, &10,   2, &a0,   4, &b9,   0, &11, &95,   0, &e8   ; b241: a0 00 10... ...
+    equb &c8, &98, &29,   3, &d0, &f4, &4c, &5c, &b0, &b5,   1, &cd   ; b24d: c8 98 29... ..)
+    equb   1, &11, &d0, &4d, &b5,   2, &cd,   2, &11, &d0, &46, &b5   ; b259: 01 11 d0... ...
+    equb   3, &cd,   3, &11, &d0, &3f, &8a                            ; b265: 03 cd 03... ...
+    equs "H ["                                                        ; b26c: 48 20 5b    H [
+    equb &b1, &68, &aa, &90, &2e, &ad,   4, &11, &d5,   0, &b0, &27   ; b26f: b1 68 aa... .h.
+    equb &ad, &15, &11, &30,   9, &ad,   4, &11, &8d,   0, &11, &4c   ; b27b: ad 15 11... ...
+    equb &53, &b2, &b5,   0, &8d,   0, &11, &ac,   4, &11, &a9,   0   ; b287: 53 b2 b5... S..
+    equb &99,   0, &10, &c8, &cc,   0, &11, &90, &f7, &8c,   4, &11   ; b293: 99 00 10... ...
+    equb &4c, &53, &b2, &b5,   0, &8d,   0, &11, &4c, &53, &b2, &20   ; b29f: 4c 53 b2... LS.
+    equb &62, &b0, &68, &a8, &68, &aa                                 ; b2ab: 62 b0 68... b.h
+    equs "h >"                                                        ; b2b1: 68 20 3e    h >
+    equb &b2, &4c, &d6, &b0, &20, &9d, &a6, &c9,   0, &f0, &3f, &c9   ; b2b4: b2 4c d6... .L.
+    equb   5, &b0, &3b, &48, &a5, &ac, &48, &a5, &ad, &48, &86, &ac   ; b2c0: 05 b0 3b... ..;
+    equb &84, &ad, &a0,   0, &b1, &ac, &f0, &1f, &cd,   8, &11, &d0   ; b2cc: 84 ad a0... ...
+    equb &1a, &20, &62, &b0, &20,   1, &b3, &a6, &ac, &a4, &ad, &68   ; b2d8: 1a 20 62... . b
+    equb &85, &ad, &68, &85, &ac, &68, &20, &fe, &b2,   8, &20, &d6   ; b2e4: 85 ad 68... ..h
+    equb &b0, &28, &60, &a6, &ac, &a4, &ad, &68, &85, &ad, &68, &85   ; b2f0: b0 28 60... .(`
+    equb &ac, &68                                                     ; b2fc: ac 68       .h
 
-; &b245 referenced 1 time by &b230
-.cb245
-    ldy #4                                                            ; b245: a0 04       ..
-; &b247 referenced 2 times by &b243, &b251
-.cb247
-    lda l1100,y                                                       ; b247: b9 00 11    ...
-    sta l0000,x                                                       ; b24a: 95 00       ..
-    inx                                                               ; b24c: e8          .
-    iny                                                               ; b24d: c8          .
-    tya                                                               ; b24e: 98          .
-    and #3                                                            ; b24f: 29 03       ).
-    bne cb247                                                         ; b251: d0 f4       ..
-; &b253 referenced 3 times by &b286, &b29f, &b2a7
-.cb253
-    jmp cb05c                                                         ; b253: 4c 5c b0    L\.
-
-; &b256 referenced 1 time by &b22c
-.cb256
-    lda l0001,x                                                       ; b256: b5 01       ..
-    cmp l1101                                                         ; b258: cd 01 11    ...
-    bne cb2aa                                                         ; b25b: d0 4d       .M
-    lda l0002,x                                                       ; b25d: b5 02       ..
-    cmp l1102                                                         ; b25f: cd 02 11    ...
-    bne cb2aa                                                         ; b262: d0 46       .F
-    lda l0003,x                                                       ; b264: b5 03       ..
-    cmp l1103                                                         ; b266: cd 03 11    ...
-    bne cb2aa                                                         ; b269: d0 3f       .?
-    txa                                                               ; b26b: 8a          .
-    pha                                                               ; b26c: 48          H
-    jsr sub_cb15b                                                     ; b26d: 20 5b b1     [.
-    pla                                                               ; b270: 68          h
-    tax                                                               ; b271: aa          .
-    bcc cb2a2                                                         ; b272: 90 2e       ..
-    lda l1104                                                         ; b274: ad 04 11    ...
-    cmp l0000,x                                                       ; b277: d5 00       ..
-    bcs cb2a2                                                         ; b279: b0 27       .'
-    lda l1115                                                         ; b27b: ad 15 11    ...
-    bmi cb289                                                         ; b27e: 30 09       0.
-    lda l1104                                                         ; b280: ad 04 11    ...
-    sta l1100                                                         ; b283: 8d 00 11    ...
-    jmp cb253                                                         ; b286: 4c 53 b2    LS.
-
-; &b289 referenced 1 time by &b27e
-.cb289
-    lda l0000,x                                                       ; b289: b5 00       ..
-    sta l1100                                                         ; b28b: 8d 00 11    ...
-    ldy l1104                                                         ; b28e: ac 04 11    ...
-    lda #0                                                            ; b291: a9 00       ..
-; &b293 referenced 1 time by &b29a
-.loop_cb293
-    sta l1000,y                                                       ; b293: 99 00 10    ...
-    iny                                                               ; b296: c8          .
-    cpy l1100                                                         ; b297: cc 00 11    ...
-    bcc loop_cb293                                                    ; b29a: 90 f7       ..
-    sty l1104                                                         ; b29c: 8c 04 11    ...
-    jmp cb253                                                         ; b29f: 4c 53 b2    LS.
-
-; &b2a2 referenced 2 times by &b272, &b279
-.cb2a2
-    lda l0000,x                                                       ; b2a2: b5 00       ..
-    sta l1100                                                         ; b2a4: 8d 00 11    ...
-    jmp cb253                                                         ; b2a7: 4c 53 b2    LS.
-
-; &b2aa referenced 3 times by &b25b, &b262, &b269
-.cb2aa
-    jsr sub_cb062                                                     ; b2aa: 20 62 b0     b.
-    pla                                                               ; b2ad: 68          h
-    tay                                                               ; b2ae: a8          .
-    pla                                                               ; b2af: 68          h
-    tax                                                               ; b2b0: aa          .
-    pla                                                               ; b2b1: 68          h
-    jsr sub_cb23e                                                     ; b2b2: 20 3e b2     >.
-    jmp cb0d6                                                         ; b2b5: 4c d6 b0    L..
-
-    jsr sub_ca69d                                                     ; b2b8: 20 9d a6     ..
-    cmp #0                                                            ; b2bb: c9 00       ..
-    beq cb2fe                                                         ; b2bd: f0 3f       .?
-    cmp #5                                                            ; b2bf: c9 05       ..
-    bcs cb2fe                                                         ; b2c1: b0 3b       .;
-    pha                                                               ; b2c3: 48          H
-    lda l00ac                                                         ; b2c4: a5 ac       ..
-    pha                                                               ; b2c6: 48          H
-    lda l00ad                                                         ; b2c7: a5 ad       ..
-    pha                                                               ; b2c9: 48          H
-    stx l00ac                                                         ; b2ca: 86 ac       ..
-    sty l00ad                                                         ; b2cc: 84 ad       ..
-    ldy #0                                                            ; b2ce: a0 00       ..
-    lda (l00ac),y                                                     ; b2d0: b1 ac       ..
-    beq cb2f3                                                         ; b2d2: f0 1f       ..
-    cmp l1108                                                         ; b2d4: cd 08 11    ...
-    bne cb2f3                                                         ; b2d7: d0 1a       ..
-    jsr sub_cb062                                                     ; b2d9: 20 62 b0     b.
-    jsr sub_cb301                                                     ; b2dc: 20 01 b3     ..
-    ldx l00ac                                                         ; b2df: a6 ac       ..
-    ldy l00ad                                                         ; b2e1: a4 ad       ..
-    pla                                                               ; b2e3: 68          h
-    sta l00ad                                                         ; b2e4: 85 ad       ..
-    pla                                                               ; b2e6: 68          h
-    sta l00ac                                                         ; b2e7: 85 ac       ..
-    pla                                                               ; b2e9: 68          h
-    jsr cb2fe                                                         ; b2ea: 20 fe b2     ..
-    php                                                               ; b2ed: 08          .
-    jsr cb0d6                                                         ; b2ee: 20 d6 b0     ..
-    plp                                                               ; b2f1: 28          (
-    rts                                                               ; b2f2: 60          `
-
-; &b2f3 referenced 2 times by &b2d2, &b2d7
-.cb2f3
-    ldx l00ac                                                         ; b2f3: a6 ac       ..
-    ldy l00ad                                                         ; b2f5: a4 ad       ..
-    pla                                                               ; b2f7: 68          h
-    sta l00ad                                                         ; b2f8: 85 ad       ..
-    pla                                                               ; b2fa: 68          h
-    sta l00ac                                                         ; b2fb: 85 ac       ..
-    pla                                                               ; b2fd: 68          h
-; &b2fe referenced 4 times by &b094, &b2bd, &b2c1, &b2ea
-.cb2fe
+; &b2fe referenced 1 time by &b094
+.sub_cb2fe
     jmp (l111c)                                                       ; b2fe: 6c 1c 11    l..
 
-; &b301 referenced 2 times by &b2dc, &b380
+; &b301 referenced 1 time by &b380
 .sub_cb301
     ldx #3                                                            ; b301: a2 03       ..
 ; &b303 referenced 1 time by &b30c
@@ -8283,36 +7664,12 @@ la9df = sub_ca9de+1
     bcc loop_cb31a                                                    ; b320: 90 f8       ..
     rts                                                               ; b322: 60          `
 
-    pha                                                               ; b323: 48          H
-    lda romsel_copy                                                   ; b324: a5 f4       ..
-    pha                                                               ; b326: 48          H
-    lda #0                                                            ; b327: a9 00       ..
-    sta romsel_copy                                                   ; b329: 85 f4       ..
-    sta romsel                                                        ; b32b: 8d 30 fe    .0.
-    lda binary_version                                                ; b32e: ad 08 80    ...
-    pha                                                               ; b331: 48          H
-    bit lbffc                                                         ; b332: 2c fc bf    ,..
-    jsr l0000                                                         ; b335: 20 00 00     ..
-    jmp l11b2                                                         ; b338: 4c b2 11    L..
-
-    pha                                                               ; b33b: 48          H
-    txa                                                               ; b33c: 8a          .
-    pha                                                               ; b33d: 48          H
-    tsx                                                               ; b33e: ba          .
-    lda l0102,x                                                       ; b33f: bd 02 01    ...
-    sta l0105,x                                                       ; b342: 9d 05 01    ...
-    lda l0103,x                                                       ; b345: bd 03 01    ...
-    tax                                                               ; b348: aa          .
-    lda lbffc,x                                                       ; b349: bd fc bf    ...
-    pla                                                               ; b34c: 68          h
-    tax                                                               ; b34d: aa          .
-    pla                                                               ; b34e: 68          h
-    pla                                                               ; b34f: 68          h
-    pla                                                               ; b350: 68          h
-    sta romsel_copy                                                   ; b351: 85 f4       ..
-    sta romsel                                                        ; b353: 8d 30 fe    .0.
-    pla                                                               ; b356: 68          h
-    rts                                                               ; b357: 60          `
+    equb &48, &a5, &f4, &48, &a9,   0, &85, &f4, &8d, &30, &fe, &ad   ; b323: 48 a5 f4... H..
+    equb   8, &80, &48, &2c, &fc, &bf, &20,   0,   0, &4c, &b2, &11   ; b32f: 08 80 48... ..H
+    equb &48, &8a, &48, &ba, &bd,   2,   1, &9d,   5,   1, &bd,   3   ; b33b: 48 8a 48... H.H
+    equb   1, &aa, &bd, &fc, &bf, &68, &aa                            ; b347: 01 aa bd... ...
+    equs "hhh"                                                        ; b34e: 68 68 68    hhh
+    equb &85, &f4, &8d, &30, &fe, &68, &60                            ; b351: 85 f4 8d... ...
 
 ; &b358 referenced 1 time by &b0c1
 .sub_cb358
@@ -8344,7 +7701,7 @@ la9df = sub_ca9de+1
 .return_57
     rts                                                               ; b37c: 60          `
 
-; &b37d referenced 2 times by &b1f9, &b378
+; &b37d referenced 1 time by &b378
 .sub_cb37d
     jsr sub_cb062                                                     ; b37d: 20 62 b0     b.
     jsr sub_cb301                                                     ; b380: 20 01 b3     ..
@@ -8371,7 +7728,7 @@ la9df = sub_ca9de+1
 
 ; &b3a0 referenced 1 time by &b39d
 .cb3a0
-    lda l0df0,x                                                       ; b3a0: bd f0 0d    ...
+    lda rom_workspace_array,x                                         ; b3a0: bd f0 0d    ...
     and #&c0                                                          ; b3a3: 29 c0       ).
     cmp #&40 ; '@'                                                    ; b3a5: c9 40       .@
     bne return_58                                                     ; b3a7: d0 f6       ..
@@ -8455,7 +7812,7 @@ la9df = sub_ca9de+1
     ldy #&0b                                                          ; b41b: a0 0b       ..
 ; &b41d referenced 1 time by &b423
 .loop_cb41d
-    lda cb7a3,y                                                       ; b41d: b9 a3 b7    ...
+    lda lb7a3,y                                                       ; b41d: b9 a3 b7    ...
     sta (l0013),y                                                     ; b420: 91 13       ..
     dey                                                               ; b422: 88          .
     bpl loop_cb41d                                                    ; b423: 10 f8       ..
@@ -8548,10 +7905,16 @@ la9df = sub_ca9de+1
     cmp #0                                                            ; b4c8: c9 00       ..             ; A=file handle (or zero on failure)
     bne cb4db                                                         ; b4ca: d0 0f       ..
     jsr sub_cb6dc                                                     ; b4cc: 20 dc b6     ..
-    lsr l746f                                                         ; b4cf: 4e 6f 74    Not
-    jsr l6f66                                                         ; b4d2: 20 66 6f     fo
-    adc l006e,x                                                       ; b4d5: 75 6e       un
-    equb &64, &0d, 0, &60                                             ; b4d7: 64 0d 00... d..
+; overlapping: lsr l746f                                              ; b4cf: 4e 6f 74    Not
+    equs "Not found"                                                  ; b4cf: 4e 6f 74... Not
+; overlapping: jsr l6f66                                              ; b4d2: 20 66 6f     fo
+; overlapping: adc l006e,x                                            ; b4d5: 75 6e       un
+; overlapping: stz l000d                                              ; b4d7: 64 0d       d.
+    equb &0d                                                          ; b4d8: 0d          .
+
+    brk                                                               ; b4d9: 00          .
+
+    equb &60                                                          ; b4da: 60          `
 
 ; &b4db referenced 1 time by &b4ca
 .cb4db
@@ -8576,11 +7939,9 @@ la9df = sub_ca9de+1
 ; &b4fc referenced 1 time by &b50f
 .loop_cb4fc
     jsr sub_cb6dc                                                     ; b4fc: 20 dc b6     ..
-; overlapping: eor l0064                                              ; b4ff: 45 64       Ed
-    equs "Edge"                                                       ; b4ff: 45 64 67... Edg
+    eor l0064                                                         ; b4ff: 45 64       Ed
+    equb &67, &65, &0d, 0, &4c, &11, &b5                              ; b501: 67 65 0d... ge.
 
-    ora l4c00                                                         ; b503: 0d 00 4c    ..L
-    ora (l00b5),y                                                     ; b506: 11 b5       ..
 ; &b508 referenced 1 time by &b4ea
 .cb508
     inc l000b                                                         ; b508: e6 0b       ..
@@ -8592,7 +7953,8 @@ la9df = sub_ca9de+1
 ; &b511 referenced 2 times by &b4e1, &b578
 .cb511
     jsr sub_cb6dc                                                     ; b511: 20 dc b6     ..
-    equs "Recalculating"                                              ; b514: 52 65 63... Rec
+    eor (l0065)                                                       ; b514: 52 65       Re
+    equs "calculating"                                                ; b516: 63 61 6c... cal
     equb 0                                                            ; b521: 00          .
 
     jsr sub_cb559                                                     ; b522: 20 59 b5     Y.
@@ -8734,11 +8096,9 @@ la9df = sub_ca9de+1
 ; &b5ec referenced 1 time by &b604
 .loop_cb5ec
     jsr sub_cb6c4                                                     ; b5ec: 20 c4 b6     ..
-; overlapping: bvc lb663                                              ; b5ef: 50 72       Pr
-    equs "Protected"                                                  ; b5ef: 50 72 6f... Pro
-    equb &0d, 0                                                       ; b5f8: 0d 00       ..
-
-    rts                                                               ; b5fa: 60          `
+    bvc lb663                                                         ; b5ef: 50 72       Pr
+    equs "otected"                                                    ; b5f1: 6f 74 65... ote
+    equb &0d, 0, &60                                                  ; b5f8: 0d 00 60    ..`
 
 ; &b5fb referenced 1 time by &b4e4
 .sub_cb5fb
@@ -8810,6 +8170,7 @@ la9df = sub_ca9de+1
 .sub_cb662
 lb663 = sub_cb662+1
     sty l0063                                                         ; b662: 84 63       .c
+; &b663 referenced 1 time by &b5ef
     bit l004b                                                         ; b664: 24 4b       $K
     bmi cb688                                                         ; b666: 30 20       0
     lda l0011                                                         ; b668: a5 11       ..
@@ -8887,7 +8248,7 @@ lb663 = sub_cb662+1
     jsr cb75b                                                         ; b6d4: 20 5b b7     [.
     lda #&20 ; ' '                                                    ; b6d7: a9 20       .
     jsr oswrch                                                        ; b6d9: 20 ee ff     ..            ; Write character 32
-; &b6dc referenced 12 times by &a6f3, &a6fe, &a966, &a9e3, &aa3e, &aa8a, &aa94, &b47b, &b4cc, &b4fc, &b511, &b56b
+; &b6dc referenced 12 times by &a6cf, &a6f3, &a6fe, &a9e3, &aa3e, &aa8a, &aa94, &b47b, &b4cc, &b4fc, &b511, &b56b
 .sub_cb6dc
     lda l00a8                                                         ; b6dc: a5 a8       ..
     pha                                                               ; b6de: 48          H
@@ -9007,16 +8368,9 @@ lb663 = sub_cb662+1
 
     equs "No sheet"                                                   ; b79a: 4e 6f 20... No
     equb 0                                                            ; b7a2: 00          .
-
 ; &b7a3 referenced 1 time by &b41d
-.cb7a3
-    bit lbffd                                                         ; b7a3: 2c fd bf    ,..
-    jsr l06a0                                                         ; b7a6: 20 a0 06     ..
-    php                                                               ; b7a9: 08          .
-    bit lbffc                                                         ; b7aa: 2c fc bf    ,..
-    plp                                                               ; b7ad: 28          (
-    rts                                                               ; b7ae: 60          `
-
+.lb7a3
+    equb &2c, &fd, &bf, &20, &a0, 6, 8, &2c, &fc, &bf, &28, &60       ; b7a3: 2c fd bf... ,..
 ; &b7af referenced 1 time by &b75c
 .lb7af
     equb &7a                                                          ; b7af: 7a          z
@@ -9057,66 +8411,16 @@ lb663 = sub_cb662+1
     lsr l036a                                                         ; b812: 4e 6a 03    Nj.
     rts                                                               ; b815: 60          `
 
-    lda #&16                                                          ; b816: a9 16       ..
-    jsr oswrch                                                        ; b818: 20 ee ff     ..            ; Write character 22
-    jsr sub_ca6b5                                                     ; b81b: 20 b5 a6     ..
-    jmp oswrch                                                        ; b81e: 4c ee ff    L..            ; Write character
-
-; &b821 referenced 1 time by &b99f
-.sub_cb821
-    jsr sub_ca49f                                                     ; b821: 20 9f a4     ..
-    ldy #&1d                                                          ; b824: a0 1d       ..
-    lda (l00a8),y                                                     ; b826: b1 a8       ..
-    asl a                                                             ; b828: 0a          .
-    jsr sub_ca4c8                                                     ; b829: 20 c8 a4     ..
-    bcs cb84b                                                         ; b82c: b0 1d       ..
-    php                                                               ; b82e: 08          .
-    sei                                                               ; b82f: 78          x
-    lda ind2v                                                         ; b830: ad 32 02    .2.
-    sta wrchv                                                         ; b833: 8d 0e 02    ...
-    lda ind2v+1                                                       ; b836: ad 33 02    .3.
-    sta wrchv+1                                                       ; b839: 8d 0f 02    ...
-    lda ind1v                                                         ; b83c: ad 30 02    .0.
-    sta remv                                                          ; b83f: 8d 2c 02    .,.
-    lda ind1v+1                                                       ; b842: ad 31 02    .1.
-    sta remv+1                                                        ; b845: 8d 2d 02    .-.
-    plp                                                               ; b848: 28          (
-    bcc cb851                                                         ; b849: 90 06       ..
-; &b84b referenced 1 time by &b82c
-.cb84b
-    ldx l0360                                                         ; b84b: ae 60 03    .`.
-    dex                                                               ; b84e: ca          .
-    beq cb855                                                         ; b84f: f0 04       ..
-; &b851 referenced 1 time by &b849
-.cb851
-    lsr l036a                                                         ; b851: 4e 6a 03    Nj.
-    rts                                                               ; b854: 60          `
-
-; &b855 referenced 1 time by &b84f
-.cb855
-    ldx l0355                                                         ; b855: ae 55 03    .U.
-    lda l9fb0,x                                                       ; b858: bd b0 9f    ...
-    sta l030a                                                         ; b85b: 8d 0a 03    ...
-    lda #&17                                                          ; b85e: a9 17       ..
-    jsr nvwrch                                                        ; b860: 20 cb ff     ..            ; Write character 23
-    lda #0                                                            ; b863: a9 00       ..
-    jsr nvwrch                                                        ; b865: 20 cb ff     ..            ; Write character 0
-    lda #&0a                                                          ; b868: a9 0a       ..
-    jsr nvwrch                                                        ; b86a: 20 cb ff     ..            ; Write character 10
-    lda #&20 ; ' '                                                    ; b86d: a9 20       .
-    jsr nvwrch                                                        ; b86f: 20 cb ff     ..            ; Write character 32
-    lda #0                                                            ; b872: a9 00       ..
-    ldx #6                                                            ; b874: a2 06       ..
-; &b876 referenced 1 time by &b87a
-.loop_cb876
-    jsr nvwrch                                                        ; b876: 20 cb ff     ..            ; Write character 0
-    dex                                                               ; b879: ca          .
-    bne loop_cb876                                                    ; b87a: d0 fa       ..
-    ldx #7                                                            ; b87c: a2 07       ..
-    stx l0349                                                         ; b87e: 8e 49 03    .I.
-    lda #&c0                                                          ; b881: a9 c0       ..
-    sta l036a                                                         ; b883: 8d 6a 03    .j.
-    rts                                                               ; b886: 60          `
+    equb &a9, &16, &20, &ee, &ff, &20, &b5, &a6, &4c, &ee, &ff, &20   ; b816: a9 16 20... ..
+    equb &9f, &a4, &a0, &1d, &b1, &a8, &0a, &20, &c8, &a4, &b0, &1d   ; b822: 9f a4 a0... ...
+    equb   8, &78, &ad, &32,   2, &8d, &0e,   2, &ad, &33,   2, &8d   ; b82e: 08 78 ad... .x.
+    equb &0f,   2, &ad, &30,   2, &8d, &2c,   2, &ad, &31,   2, &8d   ; b83a: 0f 02 ad... ...
+    equb &2d,   2, &28, &90,   6, &ae, &60,   3, &ca, &f0,   4, &4e   ; b846: 2d 02 28... -.(
+    equb &6a,   3, &60, &ae, &55,   3, &bd, &b0, &9f, &8d, &0a,   3   ; b852: 6a 03 60... j.`
+    equb &a9, &17, &20, &cb, &ff, &a9,   0, &20, &cb, &ff, &a9, &0a   ; b85e: a9 17 20... ..
+    equb &20, &cb, &ff, &a9, &20, &20, &cb, &ff, &a9,   0, &a2,   6   ; b86a: 20 cb ff...  ..
+    equb &20, &cb, &ff, &ca, &d0, &fa, &a2,   7, &8e, &49,   3, &a9   ; b876: 20 cb ff...  ..
+    equb &c0, &8d, &6a,   3, &60                                      ; b882: c0 8d 6a... ..j
 
 ; &b887 referenced 1 time by &bf76
 .sub_cb887
@@ -9131,7 +8435,7 @@ lb663 = sub_cb662+1
 .cb899
     bit l026a                                                         ; b899: 2c 6a 02    ,j.
     bpl cb8a1                                                         ; b89c: 10 03       ..
-; &b89e referenced 11 times by &b897, &b8de, &b8e4, &b8f3, &b908, &b940, &b94f, &b965, &bbaf, &bc11, &be5d
+; &b89e referenced 5 times by &b897, &b8de, &b8e4, &bbaf, &be5d
 .cb89e
     jmp (ind2v)                                                       ; b89e: 6c 32 02    l2.
 
@@ -9156,7 +8460,7 @@ lb663 = sub_cb662+1
 .cb8b8
     asl a                                                             ; b8b8: 0a          .
     tax                                                               ; b8b9: aa          .
-    lda table_ind3,x                                                  ; b8ba: bd 96 be    ...
+    lda lbe96,x                                                       ; b8ba: bd 96 be    ...
     sta ind3v                                                         ; b8bd: 8d 34 02    .4.
     lda lbe97,x                                                       ; b8c0: bd 97 be    ...
     sta ind3v+1                                                       ; b8c3: 8d 35 02    .5.
@@ -9166,8 +8470,8 @@ lb663 = sub_cb662+1
 
     equb &20, &d5, &b8, &4c, &ac, &b8                                 ; b8cf: 20 d5 b8...  ..
 
-; &b8d5 referenced 2 times by &bad8, &bbdd
-.cb8d5
+; &b8d5 referenced 1 time by &bad8
+.sub_cb8d5
     tax                                                               ; b8d5: aa          .
     lda l00d0                                                         ; b8d6: a5 d0       ..
     tay                                                               ; b8d8: a8          .
@@ -9178,191 +8482,44 @@ lb663 = sub_cb662+1
     sty l00d0                                                         ; b8e1: 84 d0       ..
     rts                                                               ; b8e3: 60          `
 
-; &b8e4 referenced 4 times by &b8ec, &b901, &b936, &bb7c
+; &b8e4 referenced 1 time by &bb7c
 .cb8e4
     jsr cb89e                                                         ; b8e4: 20 9e b8     ..
     jmp cb8ac                                                         ; b8e7: 4c ac b8    L..
 
-    bit l00d0                                                         ; b8ea: 24 d0       $.
-    bmi cb8e4                                                         ; b8ec: 30 f6       0.
-    jsr sub_cba4d                                                     ; b8ee: 20 4d ba     M.
-    lda #&0c                                                          ; b8f1: a9 0c       ..
-    jsr cb89e                                                         ; b8f3: 20 9e b8     ..
-    jsr sub_cba66                                                     ; b8f6: 20 66 ba     f.
-    jsr sub_cbc66                                                     ; b8f9: 20 66 bc     f.
-    jmp cbac6                                                         ; b8fc: 4c c6 ba    L..
+    equb &24, &d0, &30, &f6, &20, &4d, &ba, &a9, &0c, &20, &9e, &b8   ; b8ea: 24 d0 30... $.0
+    equb &20, &66, &ba, &20, &66, &bc, &4c, &c6, &ba, &24, &d0, &30   ; b8f6: 20 66 ba...  f.
+    equb &e1, &20, &63, &bc, &a9, &10, &20, &9e, &b8, &4c, &63, &bc   ; b902: e1 20 63... . c
+    equb &20, &d9, &bb, &a9, &20, &20, &d5, &ba, &4c, &d9, &bb, &2c   ; b90e: 20 d9 bb...  ..
+    equb &6c,   3, &10, &15, &20, &63, &bc, &ad, &6b,   3, &8d, &49   ; b91a: 6c 03 10... l..
+    equb   3, &ad, &5f,   3, &8d, &6a,   3, &20, &81, &bc, &4e, &6c   ; b926: 03 ad 5f... .._
+    equb   3, &60, &24, &d0, &30, &ac, &20, &19, &b9, &20, &81, &bc   ; b932: 03 60 24... .`$
+    equb &a9, &0d, &20, &9e, &b8, &4c, &7e, &bc, &24, &d0, &30, &e9   ; b93e: a9 0d 20... ..
+    equb &20, &81, &bc, &a9, &1a, &20, &9e, &b8, &ae, &55,   3, &bd   ; b94a: 20 81 bc...  ..
+    equb &b0, &9f, &8d, &0a,   3, &4c, &c6, &ba, &a2, &8a, &a0, &b9   ; b956: b0 9f 8d... ...
+    equb &ad, &3e,   3, &20, &9e, &b8, &ad, &5d,   3, &8d, &34,   2   ; b962: ad 3e 03... .>.
+    equb &ad, &5e,   3, &8d, &35,   2, &8e, &e7, &0d, &8c, &e8, &0d   ; b96e: ad 5e 03... .^.
+    equb &a5, &f4, &8d, &e9, &0d, &a9, &48, &8d, &5d,   3, &a9, &ff   ; b97a: a5 f4 8d... ...
+    equb &8d, &5e,   3, &60, &20, &81, &bc, &20, &9d, &ba, &4c, &7e   ; b986: 8d 5e 03... .^.
+    equb &bc, &a2, &99, &a0, &b9, &d0, &c9, &20, &19, &b9, &20, &9d   ; b992: bc a2 99... ...
+    equb &ba, &20, &21, &b8, &10, &e5, &4c, &c6, &ba, &a2, &ae, &a0   ; b99e: ba 20 21... . !
+    equb &b9, &4c, &62, &b9, &20, &cd, &b9, &20, &81, &bc, &ad, &1b   ; b9aa: b9 4c 62... .Lb
+    equb   3, &f0, &26, &c9,   1, &d0, &0d, &ad, &1c,   3, &f0, &14   ; b9b6: 03 f0 26... ..&
+    equb &ad, &6a,   3,   9, &40, &8d, &6a,   3, &20, &81, &bc, &2c   ; b9c2: ad 6a 03... .j.
+    equb &6c,   3, &10,   3, &4c, &c5, &bc, &60, &ad, &6a,   3, &29   ; b9ce: 6c 03 10... l..
+    equb &bf, &8d, &6a,   3, &60, &ad, &1c,   3, &c9, &0a, &d0, &e4   ; b9da: bf 8d 6a... ..j
+    equb &ad, &1d,   3, &29, &60, &c9, &20, &f0, &e7, &ad, &1d,   3   ; b9e6: ad 1d 03... ...
+    equb &29,   7, &8d, &49,   3, &4c, &c2, &b9, &a2,   1, &a0, &ba   ; b9f2: 29 07 8d... )..
+    equb &4c, &62, &b9, &ae, &55,   3, &bd, &b0, &9f, &cd, &22,   3   ; b9fe: 4c 62 b9... Lb.
+    equb &90, &40, &ad, &22,   3, &cd, &20,   3, &90, &38, &bd, &b8   ; ba0a: 90 40 ad... .@.
+    equb &9f, &cd, &21,   3, &90, &30, &ad, &21,   3, &cd, &23,   3   ; ba16: 9f cd 21... ..!
+    equb &90, &28, &20, &19, &b9, &20, &81, &bc, &ad, &22,   3        ; ba22: 90 28 20... .(
+    equs "H s"                                                        ; ba2d: 48 20 73    H s
+    equb &ba, &8d, &22,   3, &ad, &20,   3, &48, &20, &84, &ba, &8d   ; ba30: ba 8d 22... .."
+    equb &20,   3, &20, &9d, &ba, &68, &8d,   8,   3, &68, &8d, &0a   ; ba3c: 20 03 20...  .
+    equb   3, &4c, &c6, &ba, &60                                      ; ba48: 03 4c c6... .L.
 
-    bit l00d0                                                         ; b8ff: 24 d0       $.
-    bmi cb8e4                                                         ; b901: 30 e1       0.
-    jsr cbc63                                                         ; b903: 20 63 bc     c.
-    lda #&10                                                          ; b906: a9 10       ..
-    jsr cb89e                                                         ; b908: 20 9e b8     ..
-    jmp cbc63                                                         ; b90b: 4c 63 bc    Lc.
-
-    jsr cbbd9                                                         ; b90e: 20 d9 bb     ..
-    lda #&20 ; ' '                                                    ; b911: a9 20       .
-    jsr sub_cbad5                                                     ; b913: 20 d5 ba     ..
-    jmp cbbd9                                                         ; b916: 4c d9 bb    L..
-
-; &b919 referenced 3 times by &b938, &b999, &ba24
-.sub_cb919
-    bit l036c                                                         ; b919: 2c 6c 03    ,l.
-    bpl return_62                                                     ; b91c: 10 15       ..
-    jsr cbc63                                                         ; b91e: 20 63 bc     c.
-    lda l036b                                                         ; b921: ad 6b 03    .k.
-    sta l0349                                                         ; b924: 8d 49 03    .I.
-    lda l035f                                                         ; b927: ad 5f 03    ._.
-    sta l036a                                                         ; b92a: 8d 6a 03    .j.
-    jsr cbc81                                                         ; b92d: 20 81 bc     ..
-    lsr l036c                                                         ; b930: 4e 6c 03    Nl.
-; &b933 referenced 2 times by &b91c, &b948
-.return_62
-    rts                                                               ; b933: 60          `
-
-    bit l00d0                                                         ; b934: 24 d0       $.
-    bmi cb8e4                                                         ; b936: 30 ac       0.
-    jsr sub_cb919                                                     ; b938: 20 19 b9     ..
-    jsr cbc81                                                         ; b93b: 20 81 bc     ..
-    lda #&0d                                                          ; b93e: a9 0d       ..
-    jsr cb89e                                                         ; b940: 20 9e b8     ..
-    jmp cbc7e                                                         ; b943: 4c 7e bc    L~.
-
-    bit l00d0                                                         ; b946: 24 d0       $.
-    bmi return_62                                                     ; b948: 30 e9       0.
-    jsr cbc81                                                         ; b94a: 20 81 bc     ..
-    lda #&1a                                                          ; b94d: a9 1a       ..
-    jsr cb89e                                                         ; b94f: 20 9e b8     ..
-    ldx l0355                                                         ; b952: ae 55 03    .U.
-    lda l9fb0,x                                                       ; b955: bd b0 9f    ...
-    sta l030a                                                         ; b958: 8d 0a 03    ...
-    jmp cbac6                                                         ; b95b: 4c c6 ba    L..
-
-    ldx #&8a                                                          ; b95e: a2 8a       ..
-    ldy #&b9                                                          ; b960: a0 b9       ..
-; &b962 referenced 3 times by &b997, &b9ab, &b9fe
-.cb962
-    lda l033e                                                         ; b962: ad 3e 03    .>.
-    jsr cb89e                                                         ; b965: 20 9e b8     ..
-    lda l035d                                                         ; b968: ad 5d 03    .].
-    sta ind3v                                                         ; b96b: 8d 34 02    .4.
-    lda l035e                                                         ; b96e: ad 5e 03    .^.
-    sta ind3v+1                                                       ; b971: 8d 35 02    .5.
-    stx l0de7                                                         ; b974: 8e e7 0d    ...
-    sty l0de8                                                         ; b977: 8c e8 0d    ...
-    lda romsel_copy                                                   ; b97a: a5 f4       ..
-    sta l0de9                                                         ; b97c: 8d e9 0d    ...
-    lda #&48 ; 'H'                                                    ; b97f: a9 48       .H
-    sta l035d                                                         ; b981: 8d 5d 03    .].
-    lda #&ff                                                          ; b984: a9 ff       ..
-    sta l035e                                                         ; b986: 8d 5e 03    .^.
-; &b989 referenced 1 time by &b9a2
-.return_63
-    rts                                                               ; b989: 60          `
-
-    jsr cbc81                                                         ; b98a: 20 81 bc     ..
-    jsr sub_cba9d                                                     ; b98d: 20 9d ba     ..
-    jmp cbc7e                                                         ; b990: 4c 7e bc    L~.
-
-    ldx #&99                                                          ; b993: a2 99       ..
-    ldy #&b9                                                          ; b995: a0 b9       ..
-    bne cb962                                                         ; b997: d0 c9       ..             ; ALWAYS branch
-
-    jsr sub_cb919                                                     ; b999: 20 19 b9     ..
-    jsr sub_cba9d                                                     ; b99c: 20 9d ba     ..
-    jsr sub_cb821                                                     ; b99f: 20 21 b8     !.
-    bpl return_63                                                     ; b9a2: 10 e5       ..
-    jmp cbac6                                                         ; b9a4: 4c c6 ba    L..
-
-    ldx #&ae                                                          ; b9a7: a2 ae       ..
-    ldy #&b9                                                          ; b9a9: a0 b9       ..
-    jmp cb962                                                         ; b9ab: 4c 62 b9    Lb.
-
-    jsr sub_cb9cd                                                     ; b9ae: 20 cd b9     ..
-    jsr cbc81                                                         ; b9b1: 20 81 bc     ..
-    lda l031b                                                         ; b9b4: ad 1b 03    ...
-    beq cb9df                                                         ; b9b7: f0 26       .&
-    cmp #1                                                            ; b9b9: c9 01       ..
-    bne cb9ca                                                         ; b9bb: d0 0d       ..
-    lda l031c                                                         ; b9bd: ad 1c 03    ...
-    beq cb9d6                                                         ; b9c0: f0 14       ..
-; &b9c2 referenced 1 time by &b9f7
-.cb9c2
-    lda l036a                                                         ; b9c2: ad 6a 03    .j.
-    ora #&40 ; '@'                                                    ; b9c5: 09 40       .@
-    sta l036a                                                         ; b9c7: 8d 6a 03    .j.
-; &b9ca referenced 2 times by &b9bb, &b9e4
-.cb9ca
-    jsr cbc81                                                         ; b9ca: 20 81 bc     ..
-; &b9cd referenced 1 time by &b9ae
-.sub_cb9cd
-    bit l036c                                                         ; b9cd: 2c 6c 03    ,l.
-    bpl return_64                                                     ; b9d0: 10 03       ..
-    jmp cbcc5                                                         ; b9d2: 4c c5 bc    L..
-
-; &b9d5 referenced 1 time by &b9d0
-.return_64
-    rts                                                               ; b9d5: 60          `
-
-; &b9d6 referenced 2 times by &b9c0, &b9ed
-.cb9d6
-    lda l036a                                                         ; b9d6: ad 6a 03    .j.
-    and #&bf                                                          ; b9d9: 29 bf       ).
-    sta l036a                                                         ; b9db: 8d 6a 03    .j.
-    rts                                                               ; b9de: 60          `
-
-; &b9df referenced 1 time by &b9b7
-.cb9df
-    lda l031c                                                         ; b9df: ad 1c 03    ...
-    cmp #&0a                                                          ; b9e2: c9 0a       ..
-    bne cb9ca                                                         ; b9e4: d0 e4       ..
-    lda l031d                                                         ; b9e6: ad 1d 03    ...
-    and #&60 ; '`'                                                    ; b9e9: 29 60       )`
-    cmp #&20 ; ' '                                                    ; b9eb: c9 20       .
-    beq cb9d6                                                         ; b9ed: f0 e7       ..
-    lda l031d                                                         ; b9ef: ad 1d 03    ...
-    and #7                                                            ; b9f2: 29 07       ).
-    sta l0349                                                         ; b9f4: 8d 49 03    .I.
-    jmp cb9c2                                                         ; b9f7: 4c c2 b9    L..
-
-    ldx #1                                                            ; b9fa: a2 01       ..
-    ldy #&ba                                                          ; b9fc: a0 ba       ..
-    jmp cb962                                                         ; b9fe: 4c 62 b9    Lb.
-
-    ldx l0355                                                         ; ba01: ae 55 03    .U.
-    lda l9fb0,x                                                       ; ba04: bd b0 9f    ...
-    cmp l0322                                                         ; ba07: cd 22 03    .".
-    bcc return_65                                                     ; ba0a: 90 40       .@
-    lda l0322                                                         ; ba0c: ad 22 03    .".
-    cmp l0320                                                         ; ba0f: cd 20 03    . .
-    bcc return_65                                                     ; ba12: 90 38       .8
-    lda l9fb8,x                                                       ; ba14: bd b8 9f    ...
-    cmp l0321                                                         ; ba17: cd 21 03    .!.
-    bcc return_65                                                     ; ba1a: 90 30       .0
-    lda l0321                                                         ; ba1c: ad 21 03    .!.
-    cmp l0323                                                         ; ba1f: cd 23 03    .#.
-    bcc return_65                                                     ; ba22: 90 28       .(
-    jsr sub_cb919                                                     ; ba24: 20 19 b9     ..
-    jsr cbc81                                                         ; ba27: 20 81 bc     ..
-    lda l0322                                                         ; ba2a: ad 22 03    .".
-    pha                                                               ; ba2d: 48          H
-    jsr sub_cba73                                                     ; ba2e: 20 73 ba     s.
-    sta l0322                                                         ; ba31: 8d 22 03    .".
-    lda l0320                                                         ; ba34: ad 20 03    . .
-    pha                                                               ; ba37: 48          H
-    jsr sub_cba84                                                     ; ba38: 20 84 ba     ..
-    sta l0320                                                         ; ba3b: 8d 20 03    . .
-    jsr sub_cba9d                                                     ; ba3e: 20 9d ba     ..
-    pla                                                               ; ba41: 68          h
-    sta l0308                                                         ; ba42: 8d 08 03    ...
-    pla                                                               ; ba45: 68          h
-    sta l030a                                                         ; ba46: 8d 0a 03    ...
-    jmp cbac6                                                         ; ba49: 4c c6 ba    L..
-
-; &ba4c referenced 4 times by &ba0a, &ba12, &ba1a, &ba22
-.return_65
-    rts                                                               ; ba4c: 60          `
-
-; &ba4d referenced 3 times by &b8ee, &bba6, &bc08
+; &ba4d referenced 1 time by &bba6
 .sub_cba4d
     lda l0308                                                         ; ba4d: ad 08 03    ...
     sta l033a                                                         ; ba50: 8d 3a 03    .:.
@@ -9374,7 +8531,7 @@ lb663 = sub_cb662+1
     sta l030a                                                         ; ba62: 8d 0a 03    ...
     rts                                                               ; ba65: 60          `
 
-; &ba66 referenced 3 times by &b8f6, &bbd3, &bc33
+; &ba66 referenced 1 time by &bbd3
 .sub_cba66
     lda l033c                                                         ; ba66: ad 3c 03    .<.
     sta l030a                                                         ; ba69: 8d 0a 03    ...
@@ -9382,7 +8539,7 @@ lb663 = sub_cb662+1
     sta l0308                                                         ; ba6f: 8d 08 03    ...
     rts                                                               ; ba72: 60          `
 
-; &ba73 referenced 2 times by &ba2e, &ba5f
+; &ba73 referenced 1 time by &ba5f
 .sub_cba73
     pha                                                               ; ba73: 48          H
     jsr sub_cba84                                                     ; ba74: 20 84 ba     ..
@@ -9398,7 +8555,7 @@ lb663 = sub_cb662+1
     txa                                                               ; ba82: 8a          .
     rts                                                               ; ba83: 60          `
 
-; &ba84 referenced 3 times by &ba38, &ba53, &ba74
+; &ba84 referenced 2 times by &ba53, &ba74
 .sub_cba84
     sta l033b                                                         ; ba84: 8d 3b 03    .;.
     ldx #0                                                            ; ba87: a2 00       ..
@@ -9415,16 +8572,16 @@ lb663 = sub_cb662+1
     ror a                                                             ; ba9a: 6a          j
     lsr a                                                             ; ba9b: 4a          J
 ; &ba9c referenced 1 time by &badd
-.return_66
+.return_62
     rts                                                               ; ba9c: 60          `
 
-; &ba9d referenced 5 times by &b8c9, &b98d, &b99c, &ba3e, &bde1
+; &ba9d referenced 2 times by &b8c9, &bde1
 .sub_cba9d
     pha                                                               ; ba9d: 48          H
     txa                                                               ; ba9e: 8a          .
     pha                                                               ; ba9f: 48          H
     ldx romsel_copy                                                   ; baa0: a6 f4       ..
-    lda l0df0,x                                                       ; baa2: bd f0 0d    ...
+    lda rom_workspace_array,x                                         ; baa2: bd f0 0d    ...
     and #&3f ; '?'                                                    ; baa5: 29 3f       )?
     cmp #&24 ; '$'                                                    ; baa7: c9 24       .$
     pla                                                               ; baa9: 68          h
@@ -9433,30 +8590,29 @@ lb663 = sub_cb662+1
     bcc cbac0                                                         ; baac: 90 12       ..
     pha                                                               ; baae: 48          H
     lda #8                                                            ; baaf: a9 08       ..
-    equb &1c, &34, &fe, &68, &20, &c0, &ba, &48, &a9, 8, &0c, &34     ; bab1: 1c 34 fe... .4.
-    equb &fe, &68, &60                                                ; babd: fe 68 60    .h`
+    trb lfe34                                                         ; bab1: 1c 34 fe    .4.
+    pla                                                               ; bab4: 68          h
+    jsr cbac0                                                         ; bab5: 20 c0 ba     ..
+    pha                                                               ; bab8: 48          H
+    lda #8                                                            ; bab9: a9 08       ..
+    tsb lfe34                                                         ; babb: 0c 34 fe    .4.
+    pla                                                               ; babe: 68          h
+    rts                                                               ; babf: 60          `
 
-; &bac0 referenced 1 time by &baac
+; &bac0 referenced 2 times by &baac, &bab5
 .cbac0
     jmp (ind3v)                                                       ; bac0: 6c 34 02    l4.
 
-    equb &20, &81, &bc                                                ; bac3: 20 81 bc     ..
+    equb &20, &81, &bc, &ad, 8, 3, &8d, &18, 3, &ad, &0b, 3, &8d, &19 ; bac3: 20 81 bc...  ..
+    equb   3, &4c, &7e, &bc                                           ; bad1: 03 4c 7e... .L~
 
-; &bac6 referenced 4 times by &b8fc, &b95b, &b9a4, &ba49
-.cbac6
-    lda l0308                                                         ; bac6: ad 08 03    ...
-    sta l0318                                                         ; bac9: 8d 18 03    ...
-    lda l030b                                                         ; bacc: ad 0b 03    ...
-    sta l0319                                                         ; bacf: 8d 19 03    ...
-    jmp cbc7e                                                         ; bad2: 4c 7e bc    L~.
-
-; &bad5 referenced 2 times by &b8a9, &b913
+; &bad5 referenced 1 time by &b8a9
 .sub_cbad5
     sta l031f                                                         ; bad5: 8d 1f 03    ...
-    jsr cb8d5                                                         ; bad8: 20 d5 b8     ..
+    jsr sub_cb8d5                                                     ; bad8: 20 d5 b8     ..
     bit l00d0                                                         ; badb: 24 d0       $.
-    bmi return_66                                                     ; badd: 30 bd       0.
-    jsr cbc63                                                         ; badf: 20 63 bc     c.
+    bmi return_62                                                     ; badd: 30 bd       0.
+    jsr sub_cbc63                                                     ; badf: 20 63 bc     c.
     jsr sub_cbb61                                                     ; bae2: 20 61 bb     a.
     lda #&28 ; '('                                                    ; bae5: a9 28       .(
     sta l00d3                                                         ; bae7: 85 d3       ..
@@ -9576,7 +8732,8 @@ lb663 = sub_cb662+1
     sta l0318                                                         ; bb9d: 8d 18 03    ...
     jmp cbba6                                                         ; bba0: 4c a6 bb    L..
 
-    jsr cbc81                                                         ; bba3: 20 81 bc     ..
+    equb &20, &81, &bc                                                ; bba3: 20 81 bc     ..
+
 ; &bba6 referenced 1 time by &bba0
 .cbba6
     jsr sub_cba4d                                                     ; bba6: 20 4d ba     M.
@@ -9604,58 +8761,14 @@ lb663 = sub_cb662+1
     jsr sub_cba66                                                     ; bbd3: 20 66 ba     f.
     jmp cbc7e                                                         ; bbd6: 4c 7e bc    L~.
 
-; &bbd9 referenced 2 times by &b90e, &b916
-.cbbd9
-    bit l00d0                                                         ; bbd9: 24 d0       $.
-    bpl cbbe3                                                         ; bbdb: 10 06       ..
-    jmp cb8d5                                                         ; bbdd: 4c d5 b8    L..
-
-    equb &4c, &e4, &b8                                                ; bbe0: 4c e4 b8    L..
-
-; &bbe3 referenced 1 time by &bbdb
-.cbbe3
-    jsr cbc81                                                         ; bbe3: 20 81 bc     ..
-    lda l0318                                                         ; bbe6: ad 18 03    ...
-    cmp l0308                                                         ; bbe9: cd 08 03    ...
-    beq cbbfd                                                         ; bbec: f0 0f       ..
-    and #3                                                            ; bbee: 29 03       ).
-    cmp #1                                                            ; bbf0: c9 01       ..
-    beq cbbf7                                                         ; bbf2: f0 03       ..
-    jsr sub_cbc4c                                                     ; bbf4: 20 4c bc     L.
-; &bbf7 referenced 1 time by &bbf2
-.cbbf7
-    dec l0318                                                         ; bbf7: ce 18 03    ...
-    jmp cbc81                                                         ; bbfa: 4c 81 bc    L..
-
-; &bbfd referenced 1 time by &bbec
-.cbbfd
-    lda l030a                                                         ; bbfd: ad 0a 03    ...
-    sta l0318                                                         ; bc00: 8d 18 03    ...
-    bpl cbc08                                                         ; bc03: 10 03       ..
-    jsr cbc81                                                         ; bc05: 20 81 bc     ..
-; &bc08 referenced 1 time by &bc03
-.cbc08
-    jsr sub_cba4d                                                     ; bc08: 20 4d ba     M.
-    lda l0319                                                         ; bc0b: ad 19 03    ...
-    pha                                                               ; bc0e: 48          H
-    lda #&0b                                                          ; bc0f: a9 0b       ..
-    jsr cb89e                                                         ; bc11: 20 9e b8     ..
-    pla                                                               ; bc14: 68          h
-    cmp l0319                                                         ; bc15: cd 19 03    ...
-    bne cbc33                                                         ; bc18: d0 19       ..
-    bit l036c                                                         ; bc1a: 2c 6c 03    ,l.
-    bpl cbc33                                                         ; bc1d: 10 14       ..
-    inc l0365                                                         ; bc1f: ee 65 03    .e.
-    jsr sub_cbcbf                                                     ; bc22: 20 bf bc     ..
-    lda l0309                                                         ; bc25: ad 09 03    ...
-    cmp l0365                                                         ; bc28: cd 65 03    .e.
-    bcs cbc33                                                         ; bc2b: b0 06       ..
-    dec l0365                                                         ; bc2d: ce 65 03    .e.
-    jsr sub_cbc75                                                     ; bc30: 20 75 bc     u.
-; &bc33 referenced 3 times by &bc18, &bc1d, &bc2b
-.cbc33
-    jsr sub_cba66                                                     ; bc33: 20 66 ba     f.
-    jmp cbc7e                                                         ; bc36: 4c 7e bc    L~.
+    equb &24, &d0, &10,   6, &4c, &d5, &b8, &4c, &e4, &b8, &20, &81   ; bbd9: 24 d0 10... $..
+    equb &bc, &ad, &18,   3, &cd,   8,   3, &f0, &0f, &29,   3, &c9   ; bbe5: bc ad 18... ...
+    equb   1, &f0,   3, &20, &4c, &bc, &ce, &18,   3, &4c, &81, &bc   ; bbf1: 01 f0 03... ...
+    equb &ad, &0a,   3, &8d, &18,   3, &10,   3, &20, &81, &bc, &20   ; bbfd: ad 0a 03... ...
+    equb &4d, &ba, &ad, &19,   3, &48, &a9, &0b, &20, &9e, &b8, &68   ; bc09: 4d ba ad... M..
+    equb &cd, &19,   3, &d0, &19, &2c, &6c,   3, &10, &14, &ee, &65   ; bc15: cd 19 03... ...
+    equb   3, &20, &bf, &bc, &ad,   9,   3, &cd, &65,   3, &b0,   6   ; bc21: 03 20 bf... . .
+    equb &ce, &65,   3, &20, &75, &bc, &20, &66, &ba, &4c, &7e, &bc   ; bc2d: ce 65 03... .e.
 
 ; &bc39 referenced 4 times by &bb1f, &bb89, &bc92, &be0a
 .sub_cbc39
@@ -9663,22 +8776,22 @@ lb663 = sub_cb662+1
     lda l00d8                                                         ; bc3a: a5 d8       ..
     adc #8                                                            ; bc3c: 69 08       i.
     sta l00d8                                                         ; bc3e: 85 d8       ..
-    bcc return_67                                                     ; bc40: 90 09       ..
+    bcc return_63                                                     ; bc40: 90 09       ..
     inc l00d9                                                         ; bc42: e6 d9       ..
-    bpl return_67                                                     ; bc44: 10 05       ..
+    bpl return_63                                                     ; bc44: 10 05       ..
     lda l034e                                                         ; bc46: ad 4e 03    .N.
     sta l00d9                                                         ; bc49: 85 d9       ..
 ; &bc4b referenced 2 times by &bc40, &bc44
-.return_67
+.return_63
     rts                                                               ; bc4b: 60          `
 
-; &bc4c referenced 4 times by &bb25, &bbf4, &bc98, &be12
+; &bc4c referenced 3 times by &bb25, &bc98, &be12
 .sub_cbc4c
     sec                                                               ; bc4c: 38          8
     lda l00d8                                                         ; bc4d: a5 d8       ..
     sbc #8                                                            ; bc4f: e9 08       ..
     sta l00d8                                                         ; bc51: 85 d8       ..
-    bcs return_68                                                     ; bc53: b0 0d       ..
+    bcs return_64                                                     ; bc53: b0 0d       ..
     lda l00d9                                                         ; bc55: a5 d9       ..
     sbc #0                                                            ; bc57: e9 00       ..
     cmp l034e                                                         ; bc59: cd 4e 03    .N.
@@ -9688,46 +8801,46 @@ lb663 = sub_cb662+1
 .cbc60
     sta l00d9                                                         ; bc60: 85 d9       ..
 ; &bc62 referenced 1 time by &bc53
-.return_68
+.return_64
     rts                                                               ; bc62: 60          `
 
-; &bc63 referenced 4 times by &b903, &b90b, &b91e, &badf
-.cbc63
+; &bc63 referenced 1 time by &badf
+.sub_cbc63
     jsr cbc81                                                         ; bc63: 20 81 bc     ..
-; &bc66 referenced 2 times by &b8f9, &bb28
+; &bc66 referenced 1 time by &bb28
 .sub_cbc66
     bit l036c                                                         ; bc66: 2c 6c 03    ,l.
-    bpl return_69                                                     ; bc69: 10 09       ..
+    bpl return_65                                                     ; bc69: 10 09       ..
     jsr cbcc5                                                         ; bc6b: 20 c5 bc     ..
     jsr cbc81                                                         ; bc6e: 20 81 bc     ..
     jsr cbcc5                                                         ; bc71: 20 c5 bc     ..
 ; &bc74 referenced 1 time by &bc69
-.return_69
+.return_65
     rts                                                               ; bc74: 60          `
 
-; &bc75 referenced 2 times by &bbd0, &bc30
+; &bc75 referenced 1 time by &bbd0
 .sub_cbc75
     jsr cbcc5                                                         ; bc75: 20 c5 bc     ..
     jsr cbc7e                                                         ; bc78: 20 7e bc     ~.
     jmp cbcc5                                                         ; bc7b: 4c c5 bc    L..
 
-; &bc7e referenced 6 times by &b943, &b990, &bad2, &bbd6, &bc36, &bc78
+; &bc7e referenced 2 times by &bbd6, &bc78
 .cbc7e
     jsr sub_cbd04                                                     ; bc7e: 20 04 bd     ..
-; &bc81 referenced 20 times by &b92d, &b93b, &b94a, &b98a, &b9b1, &b9ca, &ba27, &bb7f, &bb97, &bba3, &bbe3, &bbfa, &bc05, &bc63, &bc6e, &bdb4, &bdd3, &bddb, &bdf1, &be15
+; &bc81 referenced 9 times by &bb7f, &bb97, &bc63, &bc6e, &bdb4, &bdd3, &bddb, &bdf1, &be15
 .cbc81
     bit l036a                                                         ; bc81: 2c 6a 03    ,j.
-    bvc return_70                                                     ; bc84: 50 15       P.
+    bvc return_66                                                     ; bc84: 50 15       P.
     jsr sub_cbb61                                                     ; bc86: 20 61 bb     a.
     jsr sub_cbc9c                                                     ; bc89: 20 9c bc     ..
     lda l00db                                                         ; bc8c: a5 db       ..
-    beq return_70                                                     ; bc8e: f0 0b       ..
+    beq return_66                                                     ; bc8e: f0 0b       ..
     sta l00da                                                         ; bc90: 85 da       ..
     jsr sub_cbc39                                                     ; bc92: 20 39 bc     9.
     jsr sub_cbc9c                                                     ; bc95: 20 9c bc     ..
     jsr sub_cbc4c                                                     ; bc98: 20 4c bc     L.
 ; &bc9b referenced 2 times by &bc84, &bc8e
-.return_70
+.return_66
     rts                                                               ; bc9b: 60          `
 
 ; &bc9c referenced 2 times by &bc89, &bc95
@@ -9752,11 +8865,11 @@ lb663 = sub_cb662+1
     bne loop_cbcaf                                                    ; bcba: d0 f3       ..
     jmp cbb5a                                                         ; bcbc: 4c 5a bb    LZ.
 
-; &bcbf referenced 2 times by &bbc0, &bc22
+; &bcbf referenced 1 time by &bbc0
 .sub_cbcbf
     jsr cbcc5                                                         ; bcbf: 20 c5 bc     ..
     jsr sub_cbd04                                                     ; bcc2: 20 04 bd     ..
-; &bcc5 referenced 11 times by &b9d2, &bc6b, &bc71, &bc75, &bc7b, &bcbf, &bdde, &bde4, &bdee, &be3e, &be58
+; &bcc5 referenced 10 times by &bc6b, &bc71, &bc75, &bc7b, &bcbf, &bdde, &bde4, &bdee, &be3e, &be58
 .cbcc5
     lda l00d0                                                         ; bcc5: a5 d0       ..
     eor #2                                                            ; bcc7: 49 02       I.
@@ -10029,7 +9142,7 @@ lbe8e = sub_cbe8d+1
 .lbe92
     equb 0, 2, 4, 6                                                   ; be92: 00 02 04... ...
 ; &be96 referenced 1 time by &b8ba
-.table_ind3
+.lbe96
     equb &cf                                                          ; be96: cf          .
 ; &be97 referenced 1 time by &b8c0
 .lbe97
@@ -10142,7 +9255,7 @@ lbe8e = sub_cbe8d+1
     plp                                                               ; bfb5: 28          (
     rts                                                               ; bfb6: 60          `
 
-    bit lbff7                                                         ; bfb7: 2c f7 bf    ,..
+    bit rom_swap_area                                                 ; bfb7: 2c f7 bf    ,..
     php                                                               ; bfba: 08          .
     bit lbffc                                                         ; bfbb: 2c fc bf    ,..
     jmp cbf76                                                         ; bfbe: 4c 76 bf    Lv.
@@ -10153,12 +9266,12 @@ lbe8e = sub_cbe8d+1
     cmp lbffc                                                         ; bfc5: cd fc bf    ...
     jmp cbf7c                                                         ; bfc8: 4c 7c bf    L|.
 
-    bit lbff7                                                         ; bfcb: 2c f7 bf    ,..
+    bit rom_swap_area                                                 ; bfcb: 2c f7 bf    ,..
     php                                                               ; bfce: 08          .
     bit lbffc                                                         ; bfcf: 2c fc bf    ,..
     jmp cbf96                                                         ; bfd2: 4c 96 bf    L..
 
-    bit lbff7                                                         ; bfd5: 2c f7 bf    ,..
+    bit rom_swap_area                                                 ; bfd5: 2c f7 bf    ,..
     php                                                               ; bfd8: 08          .
     bit lbffc                                                         ; bfd9: 2c fc bf    ,..
     jmp cbf90                                                         ; bfdc: 4c 90 bf    L..
@@ -10183,12 +9296,12 @@ lbe8e = sub_cbe8d+1
     rts                                                               ; bff6: 60          `
 
 ; &bff7 referenced 3 times by &bfb7, &bfcb, &bfd5
-.lbff7
+.rom_swap_area
     equb 0, &4d, &b5, &b5, &b5                                        ; bff7: 00 4d b5... .M.
-; &bffc referenced 7 times by &b332, &b349, &b7aa, &bfbb, &bfc5, &bfcf, &bfd9
+; &bffc referenced 4 times by &bfbb, &bfc5, &bfcf, &bfd9
 .lbffc
     equb &56                                                          ; bffc: 56          V
-; &bffd referenced 3 times by &b7a3, &bfaf, &bfe9
+; &bffd referenced 2 times by &bfaf, &bfe9
 .lbffd
     equb &b5                                                          ; bffd: b5          .
 ; &bffe referenced 1 time by &bfa9
@@ -10200,1481 +9313,1329 @@ lbe8e = sub_cbe8d+1
 save pydis_start, pydis_end
 
 ; Label references by decreasing frequency:
-;     l00a8:                  151
-;     l0484:                   59
-;     l003e:                   53
-;     l000c:                   35
-;     adjusted_himem:          33
-;     adjusted_himem+0:        33
-;     sub_c9bdb:               31
-;     l0008:                   30
-;     l003f:                   30
-;     l000e:                   28
-;     adjusted_himem+1:        24
-;     l004b:                   23
-;     l0483:                   23
-;     l0000:                   22
-;     l00a9:                   22
-;     l003c:                   21
-;     l004d:                   21
-;     cbc81:                   20
-;     l003d:                   20
-;     oswrch:                  20
-;     osbyte:                  19
-;     romsel_copy:             19
-;     l1108:                   18
-;     cb75b:                   17
-;     l0103:                   17
-;     l00ad:                   16
-;     l0104:                   16
-;     l0007:                   15
-;     l00ac:                   15
-;     l0023:                   14
-;     l004c:                   14
-;     l0059:                   14
-;     l00d8:                   14
-;     l0042:                   13
-;     l0043:                   13
-;     l00ae:                   13
-;     l00d9:                   13
-;     l0318:                   13
-;     l036a:                   13
-;     l000b:                   12
-;     l001c:                   12
-;     l0064:                   12
-;     l00d0:                   12
-;     l0101:                   12
-;     l1100:                   12
-;     sub_cb6dc:               12
-;     cb89e:                   11
-;     cbcc5:                   11
-;     l000d:                   11
-;     l002b:                   11
-;     l0df0:                   11
-;     osfind:                  11
-;     sub_cad96:               11
-;     l002e:                   10
-;     l0047:                   10
-;     l0063:                   10
-;     l033a:                   10
-;     os_text_ptr:             10
-;     sub_caddc:               10
-;     top:                     10
-;     top+0:                   10
-;     c9ef0:                    9
-;     l0006:                    9
-;     l0009:                    9
-;     l0014:                    9
-;     l0020:                    9
-;     l0021:                    9
-;     l0032:                    9
-;     l0055:                    9
-;     l0060:                    9
-;     l006a:                    9
-;     l00aa:                    9
-;     l0319:                    9
-;     l0365:                    9
-;     l036c:                    9
-;     osasci:                   9
-;     l0010:                    8
-;     l005a:                    8
-;     l006e:                    8
-;     l00f7:                    8
-;     l0102:                    8
-;     l030a:                    8
-;     l033b:                    8
-;     l0349:                    8
-;     l04c4:                    8
-;     sub_c812c:                8
-;     sub_c9d91:                8
-;     sub_ca49f:                8
-;     sub_cad78:                8
-;     sub_caef2:                8
-;     c8103:                    7
-;     c9295:                    7
-;     cb05c:                    7
-;     l0001:                    7
-;     l0003:                    7
-;     l0012:                    7
-;     l001e:                    7
-;     l0027:                    7
-;     l0028:                    7
-;     l0049:                    7
-;     l004a:                    7
-;     l0056:                    7
-;     l005c:                    7
-;     l0061:                    7
-;     l006f:                    7
-;     l0088:                    7
-;     l00ab:                    7
-;     l00da:                    7
-;     l0308:                    7
-;     l040e:                    7
-;     lbffc:                    7
-;     sub_c9bd0:                7
-;     sub_ca4c8:                7
-;     sub_cb062:                7
-;     c8c95:                    6
-;     c8f85:                    6
-;     c9736:                    6
-;     cbc7e:                    6
-;     l0011:                    6
-;     l0016:                    6
-;     l001b:                    6
-;     l0024:                    6
-;     l0031:                    6
-;     l0038:                    6
-;     l0041:                    6
-;     l0044:                    6
-;     l0050:                    6
-;     l0058:                    6
-;     l005b:                    6
-;     l0066:                    6
-;     l0068:                    6
-;     l0074:                    6
-;     l008f:                    6
-;     l00d2:                    6
-;     l0341:                    6
-;     l0526:                    6
-;     l1104:                    6
-;     return_21:                6
-;     return_9:                 6
-;     sub_c94df:                6
-;     sub_c9c10:                6
-;     sub_cacf9:                6
-;     top+1:                    6
-;     c8319:                    5
-;     c8f1a:                    5
-;     c99eb:                    5
-;     cb5d1:                    5
-;     l0005:                    5
-;     l000a:                    5
-;     l0035:                    5
-;     l0039:                    5
-;     l003b:                    5
-;     l0046:                    5
-;     l0048:                    5
-;     l004f:                    5
-;     l0052:                    5
-;     l005d:                    5
-;     l005f:                    5
-;     l0067:                    5
-;     l0069:                    5
-;     l0070:                    5
-;     l0075:                    5
-;     l007d:                    5
-;     l0087:                    5
-;     l00d3:                    5
-;     l0100:                    5
-;     l041c:                    5
-;     nvwrch:                   5
-;     osrdsc_ptr:               5
-;     sub_c8568:                5
-;     sub_c9076:                5
-;     sub_c9a0e:                5
-;     sub_c9b5a:                5
-;     sub_c9b72:                5
-;     sub_ca69d:                5
-;     sub_cad13:                5
-;     sub_cba9d:                5
-;     c822f:                    4
-;     c8c3c:                    4
-;     c8f09:                    4
-;     c9005:                    4
-;     c912a:                    4
-;     c91c3:                    4
-;     c91d1:                    4
-;     c9b1d:                    4
-;     c9cf5:                    4
-;     c9e91:                    4
-;     c9ea8:                    4
-;     caa4e:                    4
-;     cab6d:                    4
-;     cae6c:                    4
-;     cb03c:                    4
-;     cb239:                    4
-;     cb2fe:                    4
-;     cb40c:                    4
-;     cb47b:                    4
-;     cb796:                    4
-;     cb8e4:                    4
-;     cbac6:                    4
-;     cbc63:                    4
-;     cbd86:                    4
-;     cbd88:                    4
-;     ind3v:                    4
-;     l0002:                    4
-;     l000f:                    4
-;     l0013:                    4
-;     l0015:                    4
-;     l001f:                    4
-;     l002a:                    4
-;     l002c:                    4
-;     l002f:                    4
-;     l0036:                    4
-;     l0037:                    4
-;     l003a:                    4
-;     l0053:                    4
-;     l0062:                    4
-;     l0071:                    4
-;     l0078:                    4
-;     l0079:                    4
-;     l007e:                    4
-;     l00db:                    4
-;     l0322:                    4
-;     l033e:                    4
-;     l0355:                    4
-;     l0358:                    4
-;     l036b:                    4
-;     l0485:                    4
-;     l04e6:                    4
-;     l0546:                    4
-;     l05c9:                    4
-;     l069d:                    4
-;     l1115:                    4
-;     osgbpb:                   4
-;     return_17:                4
-;     return_65:                4
-;     sub_c8483:                4
-;     sub_c907d:                4
-;     sub_c927c:                4
-;     sub_c92a5:                4
-;     sub_c92d1:                4
-;     sub_c98d2:                4
-;     sub_c9c2c:                4
-;     sub_caa7b:                4
-;     sub_cae00:                4
-;     sub_cae13:                4
-;     sub_cae91:                4
-;     sub_cb23e:                4
-;     sub_cbc39:                4
-;     sub_cbc4c:                4
-;     userv:                    4
-;     c805d:                    3
-;     c8437:                    3
-;     c85f9:                    3
-;     c8696:                    3
-;     c86f5:                    3
-;     c882c:                    3
-;     c8b03:                    3
-;     c8be2:                    3
-;     c8f6a:                    3
-;     c9017:                    3
-;     c90ea:                    3
-;     c9191:                    3
-;     c9373:                    3
-;     c94b2:                    3
-;     c993b:                    3
-;     c99fd:                    3
-;     c9a2d:                    3
-;     c9af9:                    3
-;     c9cb7:                    3
-;     c9dba:                    3
-;     ca736:                    3
-;     ca745:                    3
-;     caa88:                    3
-;     cace5:                    3
-;     cb0e1:                    3
-;     cb1fe:                    3
-;     cb253:                    3
-;     cb2aa:                    3
-;     cb5a8:                    3
-;     cb5ca:                    3
-;     cb713:                    3
-;     cb962:                    3
-;     cbbd3:                    3
-;     cbc33:                    3
-;     cbf99:                    3
-;     l0004:                    3
-;     l001d:                    3
-;     l0029:                    3
-;     l0030:                    3
-;     l005e:                    3
-;     l0081:                    3
-;     l0082:                    3
-;     l0083:                    3
-;     l0089:                    3
-;     l008a:                    3
-;     l031e:                    3
-;     l0320:                    3
-;     l033d:                    3
-;     l035f:                    3
-;     l0364:                    3
-;     l036d:                    3
-;     l036e:                    3
-;     l0400:                    3
-;     l0401:                    3
-;     l0406:                    3
-;     l0429:                    3
-;     l04c2:                    3
-;     l04c3:                    3
-;     l0698:                    3
-;     l069c:                    3
-;     l1000:                    3
-;     l1101:                    3
-;     l9fb0:                    3
-;     lbff7:                    3
-;     lbffd:                    3
-;     osnewl:                   3
-;     osword:                   3
-;     return_27:                3
-;     return_34:                3
-;     return_38:                3
-;     return_39:                3
-;     sub_c8069:                3
-;     sub_c8479:                3
-;     sub_c858f:                3
-;     sub_c87f3:                3
-;     sub_c8825:                3
-;     sub_c8837:                3
-;     sub_c884b:                3
-;     sub_c885e:                3
-;     sub_c8970:                3
-;     sub_c8b5f:                3
-;     sub_c8b72:                3
-;     sub_c8f60:                3
-;     sub_c8f6f:                3
-;     sub_c9224:                3
-;     sub_c9236:                3
-;     sub_c92a3:                3
-;     sub_c93a2:                3
-;     sub_c93d5:                3
-;     sub_c9501:                3
-;     sub_c99d2:                3
-;     sub_c9bd8:                3
-;     sub_c9c21:                3
-;     sub_c9d00:                3
-;     sub_c9d70:                3
-;     sub_ca6ab:                3
-;     sub_cad5c:                3
-;     sub_cad9d:                3
-;     sub_cadf3:                3
-;     sub_cae0f:                3
-;     sub_cae97:                3
-;     sub_caf82:                3
-;     sub_cb161:                3
-;     sub_cb1c4:                3
-;     sub_cb54d:                3
-;     sub_cb57c:                3
-;     sub_cb69c:                3
-;     sub_cb919:                3
-;     sub_cba4d:                3
-;     sub_cba66:                3
-;     sub_cba84:                3
-;     sub_cbb61:                3
-;     sub_cbee7:                3
-;     tube_data_register_3:     3
-;     acknowledge_escape:       2
-;     binary_version:           2
-;     c8054:                    2
-;     c80cc:                    2
-;     c80fa:                    2
-;     c8131:                    2
-;     c815d:                    2
-;     c817d:                    2
-;     c818b:                    2
-;     c81b2:                    2
-;     c81df:                    2
-;     c826c:                    2
-;     c8277:                    2
-;     c82ac:                    2
-;     c82e7:                    2
-;     c830c:                    2
-;     c83ca:                    2
-;     c844f:                    2
-;     c84c3:                    2
-;     c8515:                    2
-;     c851b:                    2
-;     c857f:                    2
-;     c85bf:                    2
-;     c85cc:                    2
-;     c8684:                    2
-;     c86c7:                    2
-;     c872b:                    2
-;     c875a:                    2
-;     c8765:                    2
-;     c8772:                    2
-;     c8779:                    2
-;     c87b6:                    2
-;     c8983:                    2
-;     c89c4:                    2
-;     c89f3:                    2
-;     c89fc:                    2
-;     c8a33:                    2
-;     c8acb:                    2
-;     c8ae0:                    2
-;     c8b23:                    2
-;     c8bac:                    2
-;     c8c19:                    2
-;     c8cdf:                    2
-;     c8ce2:                    2
-;     c8cff:                    2
-;     c8d14:                    2
-;     c8d41:                    2
-;     c8d8e:                    2
-;     c8dae:                    2
-;     c8ddf:                    2
-;     c8e92:                    2
-;     c8f0b:                    2
-;     c8f3c:                    2
-;     c8fa0:                    2
-;     c8fd1:                    2
-;     c8fe3:                    2
-;     c9022:                    2
-;     c9064:                    2
-;     c9166:                    2
-;     c919b:                    2
-;     c91cb:                    2
-;     c9310:                    2
-;     c937e:                    2
-;     c9390:                    2
-;     c93bf:                    2
-;     c93f6:                    2
-;     c941a:                    2
-;     c94ed:                    2
-;     c9507:                    2
-;     c95eb:                    2
-;     c9618:                    2
-;     c971c:                    2
-;     c9779:                    2
-;     c97b2:                    2
-;     c97b8:                    2
-;     c9881:                    2
-;     c988c:                    2
-;     c988f:                    2
-;     c9912:                    2
-;     c9a7c:                    2
-;     c9a8f:                    2
-;     c9aaa:                    2
-;     c9c72:                    2
-;     c9c79:                    2
-;     c9cee:                    2
-;     c9df2:                    2
-;     c9e32:                    2
-;     c9e49:                    2
-;     c9ec7:                    2
-;     c9f16:                    2
-;     c9fa2:                    2
-;     ca316:                    2
-;     ca31b:                    2
-;     ca4c0:                    2
-;     ca75f:                    2
-;     ca899:                    2
-;     ca8cd:                    2
-;     ca942:                    2
-;     ca9a0:                    2
-;     cabb1:                    2
-;     cac5a:                    2
-;     cac87:                    2
-;     cad04:                    2
-;     cb0c9:                    2
-;     cb0d6:                    2
-;     cb154:                    2
-;     cb247:                    2
-;     cb2a2:                    2
-;     cb2f3:                    2
-;     cb4de:                    2
-;     cb511:                    2
-;     cb5c6:                    2
-;     cb617:                    2
-;     cb63d:                    2
-;     cb68a:                    2
-;     cb6aa:                    2
-;     cb8ac:                    2
-;     cb8d5:                    2
-;     cb9ca:                    2
-;     cb9d6:                    2
-;     cba82:                    2
-;     cbb5a:                    2
-;     cbbd9:                    2
-;     cbe22:                    2
-;     command_table:            2
-;     ind1v:                    2
-;     ind2v:                    2
-;     l0017:                    2
-;     l001a:                    2
-;     l0045:                    2
-;     l004e:                    2
-;     l0054:                    2
-;     l0057:                    2
-;     l0072:                    2
-;     l007a:                    2
-;     l007c:                    2
-;     l007f:                    2
-;     l0080:                    2
-;     l008d:                    2
-;     l00d6:                    2
-;     l00d7:                    2
-;     l00f3:                    2
-;     l00fd:                    2
-;     l0105:                    2
-;     l0106:                    2
-;     l0109:                    2
-;     l030b:                    2
-;     l031c:                    2
-;     l031d:                    2
-;     l031f:                    2
-;     l0321:                    2
-;     l033c:                    2
-;     l033f:                    2
-;     l0340:                    2
-;     l034e:                    2
-;     l0357:                    2
-;     l035d:                    2
-;     l035e:                    2
-;     l039f:                    2
-;     l03a2:                    2
-;     l0437:                    2
-;     l043f:                    2
-;     l0441:                    2
-;     l044e:                    2
-;     l044f:                    2
-;     l0500:                    2
-;     l052b:                    2
-;     l052d:                    2
-;     l052e:                    2
-;     l0699:                    2
-;     l069e:                    2
-;     l069f:                    2
-;     l06a0:                    2
-;     l07ec:                    2
-;     l1102:                    2
-;     l1103:                    2
-;     l746f:                    2
-;     l806d:                    2
-;     l996e:                    2
-;     lb7cd:                    2
-;     lff2f:                    2
-;     lff37:                    2
-;     lff6f:                    2
-;     osbget:                   2
-;     osfile:                   2
-;     return_11:                2
-;     return_13:                2
-;     return_16:                2
-;     return_19:                2
-;     return_2:                 2
-;     return_20:                2
-;     return_23:                2
-;     return_24:                2
-;     return_29:                2
-;     return_3:                 2
-;     return_37:                2
-;     return_41:                2
-;     return_42:                2
-;     return_45:                2
-;     return_5:                 2
-;     return_53:                2
-;     return_57:                2
-;     return_61:                2
-;     return_62:                2
-;     return_67:                2
-;     return_7:                 2
-;     return_70:                2
-;     romsel:                   2
-;     sub_c8063:                2
-;     sub_c80d3:                2
-;     sub_c811c:                2
-;     sub_c83dc:                2
-;     sub_c852b:                2
-;     sub_c8564:                2
-;     sub_c8588:                2
-;     sub_c8735:                2
-;     sub_c8812:                2
-;     sub_c88de:                2
-;     sub_c896a:                2
-;     sub_c8ab6:                2
-;     sub_c8b29:                2
-;     sub_c8b4d:                2
-;     sub_c8bb9:                2
-;     sub_c8bc3:                2
-;     sub_c8bf5:                2
-;     sub_c8c0a:                2
-;     sub_c8c67:                2
-;     sub_c8c97:                2
-;     sub_c8ca2:                2
-;     sub_c8d31:                2
-;     sub_c8dba:                2
-;     sub_c8dc8:                2
-;     sub_c8ed1:                2
-;     sub_c8edf:                2
-;     sub_c8ee9:                2
-;     sub_c8f45:                2
-;     sub_c8f51:                2
-;     sub_c8f7a:                2
-;     sub_c8fbe:                2
-;     sub_c9249:                2
-;     sub_c9262:                2
-;     sub_c9268:                2
-;     sub_c9284:                2
-;     sub_c9290:                2
-;     sub_c92a8:                2
-;     sub_c93a6:                2
-;     sub_c94e4:                2
-;     sub_c950e:                2
-;     sub_c9814:                2
-;     sub_c98bb:                2
-;     sub_c98f9:                2
-;     sub_c99cb:                2
-;     sub_c9a13:                2
-;     sub_c9a30:                2
-;     sub_c9a50:                2
-;     sub_c9ae5:                2
-;     sub_c9b51:                2
-;     sub_c9b63:                2
-;     sub_c9bb3:                2
-;     sub_c9c70:                2
-;     sub_c9c82:                2
-;     sub_c9c9b:                2
-;     sub_c9c9d:                2
-;     sub_c9d02:                2
-;     sub_c9d8d:                2
-;     sub_c9d9c:                2
-;     sub_c9f71:                2
-;     sub_c9f96:                2
-;     sub_c9f9a:                2
-;     sub_ca6b5:                2
-;     sub_cab79:                2
-;     sub_cab84:                2
-;     sub_caeac:                2
-;     sub_caff9:                2
-;     sub_cb098:                2
-;     sub_cb301:                2
-;     sub_cb36c:                2
-;     sub_cb37d:                2
-;     sub_cb414:                2
-;     sub_cb559:                2
-;     sub_cb6c4:                2
-;     sub_cba73:                2
-;     sub_cbad5:                2
-;     sub_cbb2e:                2
-;     sub_cbc66:                2
-;     sub_cbc75:                2
-;     sub_cbc9c:                2
-;     sub_cbcbf:                2
-;     sub_cbd04:                2
-;     sub_cbe62:                2
-;     tube_status_register_3:   2
-;     unknown_table_1:          2
-;     brkv:                     1
-;     bytev:                    1
-;     c802a:                    1
-;     c8057:                    1
-;     c80c1:                    1
-;     c8147:                    1
-;     c8152:                    1
-;     c8181:                    1
-;     c8193:                    1
-;     c819d:                    1
-;     c81aa:                    1
-;     c81c0:                    1
-;     c81dc:                    1
-;     c8200:                    1
-;     c8207:                    1
-;     c820e:                    1
-;     c822c:                    1
-;     c825d:                    1
-;     c8285:                    1
-;     c828e:                    1
-;     c8299:                    1
-;     c82c4:                    1
-;     c82f0:                    1
-;     c8316:                    1
-;     c8353:                    1
-;     c8365:                    1
-;     c8374:                    1
-;     c8393:                    1
-;     c83f7:                    1
-;     c8465:                    1
-;     c848a:                    1
-;     c8493:                    1
-;     c849b:                    1
-;     c856a:                    1
-;     c8597:                    1
-;     c85b2:                    1
-;     c85f6:                    1
-;     c8600:                    1
-;     c8642:                    1
-;     c8664:                    1
-;     c866a:                    1
-;     c86a3:                    1
-;     c86aa:                    1
-;     c86b5:                    1
-;     c86b8:                    1
-;     c86e2:                    1
-;     c86ec:                    1
-;     c872e:                    1
-;     c8764:                    1
-;     c87d3:                    1
-;     c87d9:                    1
-;     c87dc:                    1
-;     c881d:                    1
-;     c8823:                    1
-;     c8841:                    1
-;     c8864:                    1
-;     c8875:                    1
-;     c88a5:                    1
-;     c88c0:                    1
-;     c88d8:                    1
-;     c88ed:                    1
-;     c8954:                    1
-;     c898d:                    1
-;     c8990:                    1
-;     c899e:                    1
-;     c89b7:                    1
-;     c89c0:                    1
-;     c89cd:                    1
-;     c89e7:                    1
-;     c89f9:                    1
-;     c8a07:                    1
-;     c8a30:                    1
-;     c8a48:                    1
-;     c8a65:                    1
-;     c8a7f:                    1
-;     c8a91:                    1
-;     c8aa9:                    1
-;     c8aaf:                    1
-;     c8ac8:                    1
-;     c8ade:                    1
-;     c8ae8:                    1
-;     c8aea:                    1
-;     c8b14:                    1
-;     c8b39:                    1
-;     c8bcc:                    1
-;     c8bfe:                    1
-;     c8c05:                    1
-;     c8c1d:                    1
-;     c8c54:                    1
-;     c8c80:                    1
-;     c8cb0:                    1
-;     c8cb5:                    1
-;     c8cc5:                    1
-;     c8cca:                    1
-;     c8cd1:                    1
-;     c8cf0:                    1
-;     c8d09:                    1
-;     c8d1f:                    1
-;     c8d28:                    1
-;     c8d2e:                    1
-;     c8d44:                    1
-;     c8d48:                    1
-;     c8d4c:                    1
-;     c8d65:                    1
-;     c8d6b:                    1
-;     c8d79:                    1
-;     c8d7f:                    1
-;     c8da6:                    1
-;     c8df1:                    1
-;     c8e08:                    1
-;     c8e2b:                    1
-;     c8e61:                    1
-;     c8e77:                    1
-;     c8e8c:                    1
-;     c8ea2:                    1
-;     c8edc:                    1
-;     c8f12:                    1
-;     c8f34:                    1
-;     c8f3e:                    1
-;     c8fbc:                    1
-;     c8ff1:                    1
-;     c8ff7:                    1
-;     c9019:                    1
-;     c901c:                    1
-;     c905a:                    1
-;     c905e:                    1
-;     c9070:                    1
-;     c9083:                    1
-;     c9111:                    1
-;     c9141:                    1
-;     c918c:                    1
-;     c91b3:                    1
-;     c91bc:                    1
-;     c91c9:                    1
-;     c91ec:                    1
-;     c9202:                    1
-;     c920b:                    1
-;     c920f:                    1
-;     c927a:                    1
-;     c9298:                    1
-;     c92a0:                    1
-;     c92c6:                    1
-;     c92f3:                    1
-;     c92fd:                    1
-;     c930c:                    1
-;     c9323:                    1
-;     c9329:                    1
-;     c93a8:                    1
-;     c93bd:                    1
-;     c9438:                    1
-;     c95f2:                    1
-;     c95fc:                    1
-;     c9630:                    1
-;     c9637:                    1
-;     c9651:                    1
-;     c96d5:                    1
-;     c9744:                    1
-;     c977c:                    1
-;     c97c9:                    1
-;     c980d:                    1
-;     c9824:                    1
-;     c9834:                    1
-;     c9845:                    1
-;     c9850:                    1
-;     c9899:                    1
-;     c989e:                    1
-;     c98e0:                    1
-;     c98f3:                    1
-;     c9919:                    1
-;     c99d0:                    1
-;     c9a43:                    1
-;     c9aba:                    1
-;     c9abf:                    1
-;     c9ade:                    1
-;     c9af6:                    1
-;     c9b29:                    1
-;     c9bab:                    1
-;     c9bc2:                    1
-;     c9bea:                    1
-;     c9c0c:                    1
-;     c9c1d:                    1
-;     c9cb8:                    1
-;     c9cc2:                    1
-;     c9ccf:                    1
-;     c9d0f:                    1
-;     c9d38:                    1
-;     c9d55:                    1
-;     c9d5a:                    1
-;     c9d75:                    1
-;     c9d84:                    1
-;     c9d86:                    1
-;     c9dbf:                    1
-;     c9dfd:                    1
-;     c9e0e:                    1
-;     c9e1b:                    1
-;     c9e6a:                    1
-;     c9e81:                    1
-;     c9eb9:                    1
-;     c9ee1:                    1
-;     c9ee6:                    1
-;     c9f39:                    1
-;     c9f3d:                    1
-;     c9f53:                    1
-;     c9f7f:                    1
-;     c9f93:                    1
-;     ca4fd:                    1
-;     ca514:                    1
-;     ca548:                    1
-;     ca552:                    1
-;     ca568:                    1
-;     ca5a2:                    1
-;     ca5aa:                    1
-;     ca5b1:                    1
-;     ca5d3:                    1
-;     ca5e3:                    1
-;     ca5ef:                    1
-;     ca6b0:                    1
-;     ca6e7:                    1
-;     ca6ed:                    1
-;     ca6fe:                    1
-;     ca707:                    1
-;     ca71c:                    1
-;     ca71f:                    1
-;     ca769:                    1
-;     ca76c:                    1
-;     ca786:                    1
-;     ca792:                    1
-;     ca795:                    1
-;     ca798:                    1
-;     ca7a1:                    1
-;     ca7b5:                    1
-;     ca7f1:                    1
-;     ca847:                    1
-;     ca84b:                    1
-;     ca867:                    1
-;     ca878:                    1
-;     ca88f:                    1
-;     ca89e:                    1
-;     ca8aa:                    1
-;     ca8ab:                    1
-;     ca8d3:                    1
-;     ca8d5:                    1
-;     ca8e1:                    1
-;     ca8f9:                    1
-;     ca904:                    1
-;     ca922:                    1
-;     ca977:                    1
-;     ca97f:                    1
-;     ca993:                    1
-;     ca9ad:                    1
-;     ca9b1:                    1
-;     ca9f3:                    1
-;     ca9fb:                    1
-;     caa0f:                    1
-;     caa1d:                    1
-;     caa38:                    1
-;     caa4b:                    1
-;     caa52:                    1
-;     caa5a:                    1
-;     caa65:                    1
-;     caa94:                    1
-;     caaa4:                    1
-;     caabe:                    1
-;     caaf7:                    1
-;     cab06:                    1
-;     cab2e:                    1
-;     cab42:                    1
-;     cab44:                    1
-;     cab51:                    1
-;     cab98:                    1
-;     cab9b:                    1
-;     cabbd:                    1
-;     cabcf:                    1
-;     cabde:                    1
-;     cabfb:                    1
-;     cac0b:                    1
-;     cac2b:                    1
-;     cac33:                    1
-;     cac7e:                    1
-;     cac81:                    1
-;     cad27:                    1
-;     cad33:                    1
-;     cad39:                    1
-;     cad3b:                    1
-;     cad4b:                    1
-;     cad67:                    1
-;     cad69:                    1
-;     cae0a:                    1
-;     cae15:                    1
-;     cae1f:                    1
-;     cae70:                    1
-;     cae89:                    1
-;     cafcd:                    1
-;     caff7:                    1
-;     cb035:                    1
-;     cb03f:                    1
-;     cb08e:                    1
-;     cb090:                    1
-;     cb0b8:                    1
-;     cb11f:                    1
-;     cb122:                    1
-;     cb13f:                    1
-;     cb165:                    1
-;     cb17d:                    1
-;     cb180:                    1
-;     cb199:                    1
-;     cb1a5:                    1
-;     cb1be:                    1
-;     cb1c1:                    1
-;     cb1ca:                    1
-;     cb1f0:                    1
-;     cb1fc:                    1
-;     cb221:                    1
-;     cb241:                    1
-;     cb245:                    1
-;     cb256:                    1
-;     cb289:                    1
-;     cb369:                    1
-;     cb396:                    1
-;     cb3a0:                    1
-;     cb3b4:                    1
-;     cb3d2:                    1
-;     cb3ed:                    1
-;     cb418:                    1
-;     cb457:                    1
-;     cb488:                    1
-;     cb4bf:                    1
-;     cb4db:                    1
-;     cb508:                    1
-;     cb539:                    1
-;     cb56b:                    1
-;     cb591:                    1
-;     cb5d6:                    1
-;     cb5df:                    1
-;     cb64c:                    1
-;     cb64f:                    1
-;     cb67f:                    1
-;     cb688:                    1
-;     cb6b6:                    1
-;     cb6f9:                    1
-;     cb751:                    1
-;     cb7a3:                    1
-;     cb7fc:                    1
-;     cb84b:                    1
-;     cb851:                    1
-;     cb855:                    1
-;     cb899:                    1
-;     cb8a1:                    1
-;     cb8b6:                    1
-;     cb8b8:                    1
-;     cb9c2:                    1
-;     cb9df:                    1
-;     cba9a:                    1
-;     cbac0:                    1
-;     cbb10:                    1
-;     cbb28:                    1
-;     cbb7f:                    1
-;     cbb82:                    1
-;     cbb8c:                    1
-;     cbb9a:                    1
-;     cbba6:                    1
-;     cbbcd:                    1
-;     cbbe3:                    1
-;     cbbf7:                    1
-;     cbbfd:                    1
-;     cbc08:                    1
-;     cbc60:                    1
-;     cbd22:                    1
-;     cbd3e:                    1
-;     cbd57:                    1
-;     cbdb7:                    1
-;     cbdde:                    1
-;     cbde9:                    1
-;     cbe15:                    1
-;     cbe47:                    1
-;     cbe58:                    1
-;     cbe5b:                    1
-;     cbe83:                    1
-;     cbe86:                    1
-;     cbe8f:                    1
-;     cbef2:                    1
-;     cbf76:                    1
-;     cbf7c:                    1
-;     cbf90:                    1
-;     cbf96:                    1
-;     cbfac:                    1
-;     cbfb2:                    1
-;     cliv:                     1
-;     enter_language_rom:       1
-;     l0022:                    1
-;     l002d:                    1
-;     l0033:                    1
-;     l0034:                    1
-;     l0040:                    1
-;     l0065:                    1
-;     l0073:                    1
-;     l0076:                    1
-;     l0077:                    1
-;     l008b:                    1
-;     l008c:                    1
-;     l008e:                    1
-;     l00a0:                    1
-;     l00af:                    1
-;     l00b5:                    1
-;     l00fe:                    1
-;     l00ff:                    1
-;     l0107:                    1
-;     l026a:                    1
-;     l027d:                    1
-;     l0309:                    1
-;     l031b:                    1
-;     l0323:                    1
-;     l0350:                    1
-;     l0351:                    1
-;     l0354:                    1
-;     l0360:                    1
-;     l041b:                    1
-;     l041d:                    1
-;     l0436:                    1
-;     l044d:                    1
-;     l0482:                    1
-;     l04c5:                    1
-;     l04e5:                    1
-;     l0527:                    1
-;     l0528:                    1
-;     l052c:                    1
-;     l0545:                    1
-;     l0547:                    1
-;     l0549:                    1
-;     l0588:                    1
-;     l0683:                    1
-;     l069a:                    1
-;     l069b:                    1
-;     l06a1:                    1
-;     l06a2:                    1
-;     l07b0:                    1
-;     l0de7:                    1
-;     l0de8:                    1
-;     l0de9:                    1
-;     l1105:                    1
-;     l1106:                    1
-;     l1107:                    1
-;     l1109:                    1
-;     l110d:                    1
-;     l110e:                    1
-;     l1112:                    1
-;     l1116:                    1
-;     l1118:                    1
-;     l111a:                    1
-;     l111c:                    1
-;     l111e:                    1
-;     l1120:                    1
-;     l11b2:                    1
-;     l190d:                    1
-;     l1d5e:                    1
-;     l4152:                    1
-;     l464f:                    1
-;     l4c00:                    1
-;     l4e4f:                    1
-;     l6000:                    1
-;     l6129:                    1
-;     l646f:                    1
-;     l6920:                    1
-;     l6f66:                    1
-;     l6f77:                    1
-;     l7361:                    1
-;     l7465:                    1
-;     l8072:                    1
-;     l8076:                    1
-;     l81c1:                    1
-;     l8820:                    1
-;     l9641:                    1
-;     l9649:                    1
-;     l9944:                    1
-;     l9945:                    1
-;     l996f:                    1
-;     l9efc:                    1
-;     l9fa8:                    1
-;     l9fac:                    1
-;     l9fb8:                    1
-;     l9fc0:                    1
-;     l9fc1:                    1
-;     la32d:                    1
-;     la32e:                    1
-;     la57d:                    1
-;     la57e:                    1
-;     la57f:                    1
-;     la580:                    1
-;     la581:                    1
-;     la582:                    1
-;     la60e:                    1
-;     la9c6:                    1
-;     la9df:                    1
-;     lab80:                    1
-;     ladc1:                    1
-;     ladd8:                    1
-;     laec2:                    1
-;     laed2:                    1
-;     laee2:                    1
-;     laf31:                    1
-;     laf49:                    1
-;     language_handler:         1
-;     lb0af:                    1
-;     lb7af:                    1
-;     lb7b0:                    1
-;     lbe8e:                    1
-;     lbe92:                    1
-;     lbe97:                    1
-;     lbed7:                    1
-;     lbedb:                    1
-;     lbffe:                    1
-;     lf060:                    1
-;     lff8b:                    1
-;     loop_c803a:               1
-;     loop_c8156:               1
-;     loop_c8212:               1
-;     loop_c8219:               1
-;     loop_c83e7:               1
-;     loop_c8409:               1
-;     loop_c8417:               1
-;     loop_c845f:               1
-;     loop_c84e3:               1
-;     loop_c855a:               1
-;     loop_c857c:               1
-;     loop_c85a8:               1
-;     loop_c86ff:               1
-;     loop_c877b:               1
-;     loop_c87b1:               1
-;     loop_c8829:               1
-;     loop_c895d:               1
-;     loop_c8985:               1
-;     loop_c89d9:               1
-;     loop_c8a1a:               1
-;     loop_c8a80:               1
-;     loop_c8ab8:               1
-;     loop_c8b67:               1
-;     loop_c8b92:               1
-;     loop_c8b94:               1
-;     loop_c8bd0:               1
-;     loop_c8c21:               1
-;     loop_c8c9f:               1
-;     loop_c8d5c:               1
-;     loop_c8dab:               1
-;     loop_c8e0b:               1
-;     loop_c8eb2:               1
-;     loop_c8ebc:               1
-;     loop_c8ec6:               1
-;     loop_c8ef9:               1
-;     loop_c8efe:               1
-;     loop_c8fab:               1
-;     loop_c903b:               1
-;     loop_c9044:               1
-;     loop_c9162:               1
-;     loop_c91be:               1
-;     loop_c91f6:               1
-;     loop_c9213:               1
-;     loop_c9226:               1
-;     loop_c9239:               1
-;     loop_c92af:               1
-;     loop_c9319:               1
-;     loop_c9380:               1
-;     loop_c93af:               1
-;     loop_c942f:               1
-;     loop_c94b1:               1
-;     loop_c94bc:               1
-;     loop_c94c8:               1
-;     loop_c94dc:               1
-;     loop_c95d5:               1
-;     loop_c9659:               1
-;     loop_c9668:               1
-;     loop_c9678:               1
-;     loop_c96d7:               1
-;     loop_c96eb:               1
-;     loop_c97a4:               1
-;     loop_c97cc:               1
-;     loop_c9800:               1
-;     loop_c986c:               1
-;     loop_c989c:               1
-;     loop_c98a0:               1
-;     loop_c98bd:               1
-;     loop_c98c6:               1
-;     loop_c98ef:               1
-;     loop_c992b:               1
-;     loop_c99f4:               1
-;     loop_c9b0a:               1
-;     loop_c9b55:               1
-;     loop_c9b65:               1
-;     loop_c9ba8:               1
-;     loop_c9bb5:               1
-;     loop_c9bdf:               1
-;     loop_c9c3c:               1
-;     loop_c9c8a:               1
-;     loop_c9d5f:               1
-;     loop_c9d9e:               1
-;     loop_c9da8:               1
-;     loop_c9dad:               1
-;     loop_c9dd8:               1
-;     loop_c9e02:               1
-;     loop_c9e17:               1
-;     loop_c9e18:               1
-;     loop_c9eb6:               1
-;     loop_c9ebd:               1
-;     loop_c9f27:               1
-;     loop_c9f2f:               1
-;     loop_c9f54:               1
-;     loop_c9f9e:               1
-;     loop_ca4f3:               1
-;     loop_ca5b5:               1
-;     loop_ca5dc:               1
-;     loop_ca5f4:               1
-;     loop_ca713:               1
-;     loop_ca7ee:               1
-;     loop_ca80c:               1
-;     loop_ca928:               1
-;     loop_ca97c:               1
-;     loop_ca9a2:               1
-;     loop_ca9ae:               1
-;     loop_cab32:               1
-;     loop_cab38:               1
-;     loop_cabc1:               1
-;     loop_cabc7:               1
-;     loop_cac47:               1
-;     loop_cacc5:               1
-;     loop_cad18:               1
-;     loop_cad2e:               1
-;     loop_cad3c:               1
-;     loop_cadb5:               1
-;     loop_cade7:               1
-;     loop_cae9b:               1
-;     loop_caead:               1
-;     loop_caef3:               1
-;     loop_cafac:               1
-;     loop_cafc1:               1
-;     loop_cb09a:               1
-;     loop_cb0a5:               1
-;     loop_cb0eb:               1
-;     loop_cb109:               1
-;     loop_cb166:               1
-;     loop_cb1cd:               1
-;     loop_cb293:               1
-;     loop_cb303:               1
-;     loop_cb31a:               1
-;     loop_cb3d9:               1
-;     loop_cb409:               1
-;     loop_cb41d:               1
-;     loop_cb447:               1
-;     loop_cb45d:               1
-;     loop_cb4fc:               1
-;     loop_cb52f:               1
-;     loop_cb57b:               1
-;     loop_cb5ec:               1
-;     loop_cb638:               1
-;     loop_cb6ef:               1
-;     loop_cb808:               1
-;     loop_cb876:               1
-;     loop_cbafa:               1
-;     loop_cbb0a:               1
-;     loop_cbb40:               1
-;     loop_cbcaf:               1
-;     loop_cbd6b:               1
-;     loop_cbdf8:               1
-;     loop_cbe24:               1
-;     loop_cbe73:               1
-;     loop_cbe7e:               1
-;     loop_cbfe4:               1
-;     osargs:                   1
-;     oscli:                    1
-;     remv:                     1
-;     return_1:                 1
-;     return_10:                1
-;     return_12:                1
-;     return_14:                1
-;     return_15:                1
-;     return_18:                1
-;     return_22:                1
-;     return_25:                1
-;     return_26:                1
-;     return_28:                1
-;     return_30:                1
-;     return_31:                1
-;     return_32:                1
-;     return_33:                1
-;     return_35:                1
-;     return_36:                1
-;     return_4:                 1
-;     return_40:                1
-;     return_43:                1
-;     return_44:                1
-;     return_46:                1
-;     return_47:                1
-;     return_48:                1
-;     return_49:                1
-;     return_50:                1
-;     return_51:                1
-;     return_52:                1
-;     return_54:                1
-;     return_55:                1
-;     return_56:                1
-;     return_58:                1
-;     return_59:                1
-;     return_6:                 1
-;     return_60:                1
-;     return_63:                1
-;     return_64:                1
-;     return_66:                1
-;     return_68:                1
-;     return_69:                1
-;     return_8:                 1
-;     service_handler:          1
-;     sub_c8085:                1
-;     sub_c8467:                1
-;     sub_c847e:                1
-;     sub_c848d:                1
-;     sub_c84b2:                1
-;     sub_c854e:                1
-;     sub_c8554:                1
-;     sub_c8557:                1
-;     sub_c8572:                1
-;     sub_c85d6:                1
-;     sub_c8737:                1
-;     sub_c8844:                1
-;     sub_c884e:                1
-;     sub_c8867:                1
-;     sub_c8869:                1
-;     sub_c88a9:                1
-;     sub_c8932:                1
-;     sub_c8935:                1
-;     sub_c8ada:                1
-;     sub_c8b4f:                1
-;     sub_c8ba9:                1
-;     sub_c8c79:                1
-;     sub_c8d50:                1
-;     sub_c8dd6:                1
-;     sub_c8dfc:                1
-;     sub_c8ead:                1
-;     sub_c8ec0:                1
-;     sub_c8eca:                1
-;     sub_c8ed3:                1
-;     sub_c8ee2:                1
-;     sub_c8f66:                1
-;     sub_c9086:                1
-;     sub_c90a0:                1
-;     sub_c90f2:                1
-;     sub_c914e:                1
-;     sub_c9231:                1
-;     sub_c93d7:                1
-;     sub_c941b:                1
-;     sub_c94f0:                1
-;     sub_c94f3:                1
-;     sub_c9504:                1
-;     sub_c95a8:                1
-;     sub_c95b2:                1
-;     sub_c95cf:                1
-;     sub_c97f9:                1
-;     sub_c98c4:                1
-;     sub_c98db:                1
-;     sub_c9a1d:                1
-;     sub_c9a5f:                1
-;     sub_c9a81:                1
-;     sub_c9a9c:                1
-;     sub_c9ad2:                1
-;     sub_c9ada:                1
-;     sub_c9ae3:                1
-;     sub_c9b00:                1
-;     sub_c9b2c:                1
-;     sub_c9b5e:                1
-;     sub_c9b87:                1
-;     sub_c9b96:                1
-;     sub_c9c05:                1
-;     sub_c9c51:                1
-;     sub_c9ca6:                1
-;     sub_c9d33:                1
-;     sub_c9d4f:                1
-;     sub_c9e13:                1
-;     sub_c9ef1:                1
-;     sub_ca300:                1
-;     sub_ca321:                1
-;     sub_ca4dc:                1
-;     sub_ca4eb:                1
-;     sub_ca4ee:                1
-;     sub_ca597:                1
-;     sub_ca607:                1
-;     sub_ca608:                1
-;     sub_caa8a:                1
-;     sub_caa9d:                1
-;     sub_cacb5:                1
-;     sub_cacba:                1
-;     sub_cad43:                1
-;     sub_cad82:                1
-;     sub_cad94:                1
-;     sub_cae02:                1
-;     sub_cb044:                1
-;     sub_cb0e9:                1
-;     sub_cb15b:                1
-;     sub_cb1c8:                1
-;     sub_cb358:                1
-;     sub_cb405:                1
-;     sub_cb587:                1
-;     sub_cb5fb:                1
-;     sub_cb70e:                1
-;     sub_cb771:                1
-;     sub_cb821:                1
-;     sub_cb887:                1
-;     sub_cb9cd:                1
-;     sub_cbb78:                1
-;     sub_cbd61:                1
-;     sub_cbd8b:                1
-;     sub_cbf6f:                1
-;     table_ind3:               1
-;     unknown_table_2:          1
-;     wrchv:                    1
+;     l00a8:                       150
+;     l003e:                        52
+;     input_buffer:                 47
+;     l000c:                        35
+;     himem:                        33
+;     himem+0:                      33
+;     print_inline_string:          30
+;     l003f:                        29
+;     himem+1:                      27
+;     current_mode:                 26
+;     l0483:                        25
+;     l000e:                        23
+;     l00a9:                        23
+;     l004d:                        22
+;     l003c:                        21
+;     l003d:                        20
+;     l004b:                        19
+;     osbyte:                       19
+;     oswrch:                       18
+;     cb75b:                        17
+;     l0000:                        17
+;     l0007:                        15
+;     romsel_copy:                  15
+;     l0023:                        14
+;     l0064:                        14
+;     l00d8:                        14
+;     l0104:                        14
+;     l00ae:                        13
+;     l00d9:                        13
+;     l000b:                        12
+;     l0018:                        12
+;     l001c:                        12
+;     l002e:                        12
+;     l0043:                        12
+;     l0101:                        12
+;     l0103:                        12
+;     l1108:                        12
+;     sub_cb6dc:                    12
+;     l0006:                        11
+;     l000d:                        11
+;     l002b:                        11
+;     l004c:                        11
+;     osfind:                       11
+;     rom_workspace_array:          11
+;     sub_cad96:                    11
+;     cbcc5:                        10
+;     l0047:                        10
+;     l0059:                        10
+;     l0063:                        10
+;     l00ad:                        10
+;     l033a:                        10
+;     os_text_ptr:                  10
+;     sub_caddc:                    10
+;     c9ef0:                         9
+;     cbc81:                         9
+;     l0009:                         9
+;     l0014:                         9
+;     l0021:                         9
+;     l0055:                         9
+;     l0060:                         9
+;     l006a:                         9
+;     l00aa:                         9
+;     l0318:                         9
+;     l040e:                         9
+;     l0010:                         8
+;     l00ac:                         8
+;     l00f7:                         8
+;     l033b:                         8
+;     sub_cad78:                     8
+;     sub_caef2:                     8
+;     c8103:                         7
+;     l0012:                         7
+;     l001e:                         7
+;     l0049:                         7
+;     l004a:                         7
+;     l0056:                         7
+;     l0061:                         7
+;     l0066:                         7
+;     l0088:                         7
+;     l00ab:                         7
+;     l00d0:                         7
+;     l00da:                         7
+;     sub_c812c:                     7
+;     sub_c9bd0:                     7
+;     sub_c9c10:                     7
+;     sub_c9d91:                     7
+;     sub_ca49f:                     7
+;     c8319:                         6
+;     c8c95:                         6
+;     l0001:                         6
+;     l0003:                         6
+;     l0005:                         6
+;     l0011:                         6
+;     l0019:                         6
+;     l0024:                         6
+;     l0027:                         6
+;     l0028:                         6
+;     l0031:                         6
+;     l0038:                         6
+;     l003b:                         6
+;     l0041:                         6
+;     l0042:                         6
+;     l0044:                         6
+;     l0058:                         6
+;     l005a:                         6
+;     l005b:                         6
+;     l005c:                         6
+;     l0062:                         6
+;     l0068:                         6
+;     l006e:                         6
+;     l006f:                         6
+;     l0074:                         6
+;     l00d2:                         6
+;     l0102:                         6
+;     l0319:                         6
+;     l0341:                         6
+;     l0365:                         6
+;     l036a:                         6
+;     l04c4:                         6
+;     l0526:                         6
+;     osasci:                        6
+;     return_21:                     6
+;     return_9:                      6
+;     sub_c94df:                     6
+;     sub_ca4c8:                     6
+;     c8f09:                         5
+;     c99eb:                         5
+;     cb05c:                         5
+;     cb5d1:                         5
+;     cb89e:                         5
+;     l000a:                         5
+;     l0032:                         5
+;     l0035:                         5
+;     l0039:                         5
+;     l003a:                         5
+;     l0048:                         5
+;     l004f:                         5
+;     l0050:                         5
+;     l005f:                         5
+;     l0067:                         5
+;     l0069:                         5
+;     l0070:                         5
+;     l0075:                         5
+;     l007d:                         5
+;     l0087:                         5
+;     l008f:                         5
+;     l00d3:                         5
+;     l0100:                         5
+;     l0349:                         5
+;     l036c:                         5
+;     l041c:                         5
+;     osrdsc_ptr:                    5
+;     sub_c8568:                     5
+;     sub_c9076:                     5
+;     sub_c9736:                     5
+;     sub_c9a0e:                     5
+;     sub_c9b5a:                     5
+;     sub_c9b72:                     5
+;     sub_cacf9:                     5
+;     sub_cad13:                     5
+;     c822f:                         4
+;     c8c3c:                         4
+;     c8f1a:                         4
+;     c9005:                         4
+;     c912a:                         4
+;     c91c3:                         4
+;     c91d1:                         4
+;     c9295:                         4
+;     c9b1d:                         4
+;     c9cf5:                         4
+;     c9e91:                         4
+;     c9ea8:                         4
+;     caa4e:                         4
+;     cab6d:                         4
+;     cae6c:                         4
+;     cb03c:                         4
+;     cb40c:                         4
+;     cb47b:                         4
+;     cb796:                         4
+;     cbd86:                         4
+;     cbd88:                         4
+;     l0013:                         4
+;     l0015:                         4
+;     l0016:                         4
+;     l002a:                         4
+;     l002c:                         4
+;     l002f:                         4
+;     l0036:                         4
+;     l0037:                         4
+;     l0046:                         4
+;     l005d:                         4
+;     l0071:                         4
+;     l0078:                         4
+;     l0079:                         4
+;     l007e:                         4
+;     l00db:                         4
+;     l0308:                         4
+;     l030a:                         4
+;     l0358:                         4
+;     l0429:                         4
+;     l0485:                         4
+;     l04c3:                         4
+;     l04e6:                         4
+;     l069d:                         4
+;     lbffc:                         4
+;     osgbpb:                        4
+;     return_17:                     4
+;     sub_c8483:                     4
+;     sub_c907d:                     4
+;     sub_c92a5:                     4
+;     sub_c92d1:                     4
+;     sub_c9c2c:                     4
+;     sub_caa7b:                     4
+;     sub_cae00:                     4
+;     sub_cae13:                     4
+;     sub_cae91:                     4
+;     sub_cbc39:                     4
+;     userv:                         4
+;     c805d:                         3
+;     c82e7:                         3
+;     c8437:                         3
+;     c85f9:                         3
+;     c8696:                         3
+;     c8b03:                         3
+;     c8f0b:                         3
+;     c8f6a:                         3
+;     c9017:                         3
+;     c90ea:                         3
+;     c9191:                         3
+;     c9373:                         3
+;     c94b2:                         3
+;     c993b:                         3
+;     c99fd:                         3
+;     c9a2d:                         3
+;     c9af9:                         3
+;     c9cb7:                         3
+;     c9dba:                         3
+;     ca736:                         3
+;     ca745:                         3
+;     caa88:                         3
+;     cace5:                         3
+;     cb5a8:                         3
+;     cb5ca:                         3
+;     cb713:                         3
+;     cbbd3:                         3
+;     cbf99:                         3
+;     ind3v:                         3
+;     l0004:                         3
+;     l001b:                         3
+;     l001d:                         3
+;     l001f:                         3
+;     l0020:                         3
+;     l0029:                         3
+;     l0030:                         3
+;     l0052:                         3
+;     l0053:                         3
+;     l005e:                         3
+;     l0081:                         3
+;     l0082:                         3
+;     l0083:                         3
+;     l0089:                         3
+;     l008a:                         3
+;     l00fd:                         3
+;     l031e:                         3
+;     l033d:                         3
+;     l033e:                         3
+;     l0364:                         3
+;     l036b:                         3
+;     l036d:                         3
+;     l036e:                         3
+;     l0400:                         3
+;     l0401:                         3
+;     l0406:                         3
+;     l0441:                         3
+;     l04c2:                         3
+;     l0546:                         3
+;     l0698:                         3
+;     l069c:                         3
+;     osnewl:                        3
+;     osword:                        3
+;     return_29:                     3
+;     return_36:                     3
+;     return_40:                     3
+;     return_41:                     3
+;     rom_swap_area:                 3
+;     sub_c8069:                     3
+;     sub_c8479:                     3
+;     sub_c8825:                     3
+;     sub_c884b:                     3
+;     sub_c8b72:                     3
+;     sub_c8f6f:                     3
+;     sub_c9236:                     3
+;     sub_c927c:                     3
+;     sub_c92a3:                     3
+;     sub_c9361:                     3
+;     sub_c93d5:                     3
+;     sub_c9501:                     3
+;     sub_c9814:                     3
+;     sub_c98d2:                     3
+;     sub_c99d2:                     3
+;     sub_c9c82:                     3
+;     sub_c9d00:                     3
+;     sub_c9d70:                     3
+;     sub_ca6ab:                     3
+;     sub_cad5c:                     3
+;     sub_cad9d:                     3
+;     sub_cadf3:                     3
+;     sub_cae0f:                     3
+;     sub_cae97:                     3
+;     sub_caf82:                     3
+;     sub_cb23e:                     3
+;     sub_cb54d:                     3
+;     sub_cb57c:                     3
+;     sub_cb69c:                     3
+;     sub_cbb61:                     3
+;     sub_cbc4c:                     3
+;     sub_cbee7:                     3
+;     tube_data_register_3:          3
+;     c80cc:                         2
+;     c815d:                         2
+;     c817d:                         2
+;     c818b:                         2
+;     c81b2:                         2
+;     c81df:                         2
+;     c826c:                         2
+;     c8277:                         2
+;     c84c3:                         2
+;     c8515:                         2
+;     c851b:                         2
+;     c857f:                         2
+;     c85bf:                         2
+;     c85cc:                         2
+;     c8684:                         2
+;     c86c7:                         2
+;     c882c:                         2
+;     c8ae0:                         2
+;     c8b23:                         2
+;     c8bac:                         2
+;     c8be2:                         2
+;     c8c19:                         2
+;     c8cdf:                         2
+;     c8ce2:                         2
+;     c8cff:                         2
+;     c8d14:                         2
+;     c8d41:                         2
+;     c8d8e:                         2
+;     c8dae:                         2
+;     c8ddf:                         2
+;     c8e92:                         2
+;     c8f3c:                         2
+;     c8fa0:                         2
+;     c8fd1:                         2
+;     c9022:                         2
+;     c9064:                         2
+;     c9166:                         2
+;     c919b:                         2
+;     c91cb:                         2
+;     c9310:                         2
+;     c937e:                         2
+;     c9390:                         2
+;     c93f6:                         2
+;     c941a:                         2
+;     c94ed:                         2
+;     c9507:                         2
+;     c9528:                         2
+;     c95b2:                         2
+;     c95eb:                         2
+;     c9618:                         2
+;     c971c:                         2
+;     c9779:                         2
+;     c97b2:                         2
+;     c97b8:                         2
+;     c9881:                         2
+;     c988c:                         2
+;     c988f:                         2
+;     c9912:                         2
+;     c9a7c:                         2
+;     c9a8f:                         2
+;     c9aaa:                         2
+;     c9c72:                         2
+;     c9c79:                         2
+;     c9cee:                         2
+;     c9df2:                         2
+;     c9e32:                         2
+;     c9e49:                         2
+;     c9ec7:                         2
+;     c9f16:                         2
+;     c9fa2:                         2
+;     ca316:                         2
+;     ca31b:                         2
+;     ca4c0:                         2
+;     ca75f:                         2
+;     ca899:                         2
+;     ca8cd:                         2
+;     ca942:                         2
+;     ca9a0:                         2
+;     cabb1:                         2
+;     cac5a:                         2
+;     cac87:                         2
+;     cad04:                         2
+;     cb0c9:                         2
+;     cb4de:                         2
+;     cb511:                         2
+;     cb5c6:                         2
+;     cb617:                         2
+;     cb63d:                         2
+;     cb68a:                         2
+;     cb6aa:                         2
+;     cb8ac:                         2
+;     cba82:                         2
+;     cbac0:                         2
+;     cbb5a:                         2
+;     cbc7e:                         2
+;     cbe22:                         2
+;     change_mode:                   2
+;     display_memory_full:           2
+;     escape_pressed_during_input:   2
+;     l0002:                         2
+;     l001a:                         2
+;     l0045:                         2
+;     l004e:                         2
+;     l0057:                         2
+;     l0065:                         2
+;     l0072:                         2
+;     l0077:                         2
+;     l007a:                         2
+;     l007c:                         2
+;     l007f:                         2
+;     l0080:                         2
+;     l00d6:                         2
+;     l00d7:                         2
+;     l00f3:                         2
+;     l0106:                         2
+;     l0109:                         2
+;     l031f:                         2
+;     l033c:                         2
+;     l033f:                         2
+;     l0340:                         2
+;     l034e:                         2
+;     l0357:                         2
+;     l035f:                         2
+;     l039f:                         2
+;     l03a2:                         2
+;     l0437:                         2
+;     l043f:                         2
+;     l044f:                         2
+;     l0482:                         2
+;     l0500:                         2
+;     l052b:                         2
+;     l052d:                         2
+;     l052e:                         2
+;     l05c9:                         2
+;     l0699:                         2
+;     l069e:                         2
+;     l069f:                         2
+;     l07ec:                         2
+;     l1100:                         2
+;     l1101:                         2
+;     l1115:                         2
+;     l806d:                         2
+;     l85db:                         2
+;     l996e:                         2
+;     laefd:                         2
+;     lb7cd:                         2
+;     lbffd:                         2
+;     lfe34:                         2
+;     lff2f:                         2
+;     lff37:                         2
+;     lff6f:                         2
+;     osbget:                        2
+;     osfile:                        2
+;     return_11:                     2
+;     return_13:                     2
+;     return_16:                     2
+;     return_20:                     2
+;     return_23:                     2
+;     return_24:                     2
+;     return_3:                      2
+;     return_31:                     2
+;     return_39:                     2
+;     return_4:                      2
+;     return_43:                     2
+;     return_44:                     2
+;     return_47:                     2
+;     return_55:                     2
+;     return_57:                     2
+;     return_6:                      2
+;     return_61:                     2
+;     return_63:                     2
+;     return_66:                     2
+;     return_8:                      2
+;     sub_c80d3:                     2
+;     sub_c811c:                     2
+;     sub_c83dc:                     2
+;     sub_c852b:                     2
+;     sub_c858f:                     2
+;     sub_c885e:                     2
+;     sub_c8c0a:                     2
+;     sub_c8c67:                     2
+;     sub_c8c79:                     2
+;     sub_c8c97:                     2
+;     sub_c8ca2:                     2
+;     sub_c8d31:                     2
+;     sub_c8dba:                     2
+;     sub_c8dc8:                     2
+;     sub_c8ed1:                     2
+;     sub_c8edf:                     2
+;     sub_c8ee9:                     2
+;     sub_c8f45:                     2
+;     sub_c8f51:                     2
+;     sub_c8f60:                     2
+;     sub_c8f7a:                     2
+;     sub_c8fbe:                     2
+;     sub_c9224:                     2
+;     sub_c9249:                     2
+;     sub_c9268:                     2
+;     sub_c9284:                     2
+;     sub_c9290:                     2
+;     sub_c92a8:                     2
+;     sub_c93a2:                     2
+;     sub_c93a6:                     2
+;     sub_c94e4:                     2
+;     sub_c950e:                     2
+;     sub_c98bb:                     2
+;     sub_c98f9:                     2
+;     sub_c99cb:                     2
+;     sub_c9a13:                     2
+;     sub_c9a30:                     2
+;     sub_c9a50:                     2
+;     sub_c9ae5:                     2
+;     sub_c9b51:                     2
+;     sub_c9b63:                     2
+;     sub_c9b87:                     2
+;     sub_c9bd8:                     2
+;     sub_c9c21:                     2
+;     sub_c9c70:                     2
+;     sub_c9c9b:                     2
+;     sub_c9c9d:                     2
+;     sub_c9d02:                     2
+;     sub_c9d8d:                     2
+;     sub_c9d9c:                     2
+;     sub_cab79:                     2
+;     sub_cab84:                     2
+;     sub_caeac:                     2
+;     sub_caff9:                     2
+;     sub_cb062:                     2
+;     sub_cb098:                     2
+;     sub_cb36c:                     2
+;     sub_cb414:                     2
+;     sub_cb559:                     2
+;     sub_cb6c4:                     2
+;     sub_cba84:                     2
+;     sub_cba9d:                     2
+;     sub_cbb2e:                     2
+;     sub_cbc9c:                     2
+;     sub_cbd04:                     2
+;     sub_cbe62:                     2
+;     tube_status_register_3:        2
+;     acknowledge_escape:            1
+;     binary_version:                1
+;     brkv:                          1
+;     bytev:                         1
+;     c802a:                         1
+;     c8057:                         1
+;     c80c1:                         1
+;     c8152:                         1
+;     c8193:                         1
+;     c819d:                         1
+;     c81aa:                         1
+;     c81c0:                         1
+;     c81dc:                         1
+;     c8200:                         1
+;     c8207:                         1
+;     c820e:                         1
+;     c822c:                         1
+;     c825d:                         1
+;     c8285:                         1
+;     c828e:                         1
+;     c8299:                         1
+;     c82c4:                         1
+;     c82f0:                         1
+;     c8316:                         1
+;     c83f7:                         1
+;     c844f:                         1
+;     c8465:                         1
+;     c848a:                         1
+;     c8493:                         1
+;     c849b:                         1
+;     c856a:                         1
+;     c8597:                         1
+;     c85b2:                         1
+;     c85f2:                         1
+;     c85f6:                         1
+;     c8600:                         1
+;     c8642:                         1
+;     c8664:                         1
+;     c866a:                         1
+;     c86a3:                         1
+;     c86aa:                         1
+;     c86b5:                         1
+;     c86b8:                         1
+;     c881d:                         1
+;     c8823:                         1
+;     c8841:                         1
+;     c8864:                         1
+;     c8875:                         1
+;     c88c0:                         1
+;     c88d8:                         1
+;     c88ed:                         1
+;     c8954:                         1
+;     c8ade:                         1
+;     c8ae8:                         1
+;     c8aea:                         1
+;     c8b14:                         1
+;     c8b39:                         1
+;     c8bcc:                         1
+;     c8bfe:                         1
+;     c8c05:                         1
+;     c8c1d:                         1
+;     c8c54:                         1
+;     c8c80:                         1
+;     c8cb0:                         1
+;     c8cb5:                         1
+;     c8cc5:                         1
+;     c8cca:                         1
+;     c8cd1:                         1
+;     c8cf0:                         1
+;     c8d09:                         1
+;     c8d1f:                         1
+;     c8d28:                         1
+;     c8d2e:                         1
+;     c8d44:                         1
+;     c8d48:                         1
+;     c8d4c:                         1
+;     c8d65:                         1
+;     c8d6b:                         1
+;     c8d79:                         1
+;     c8d7f:                         1
+;     c8da6:                         1
+;     c8df1:                         1
+;     c8e08:                         1
+;     c8e2b:                         1
+;     c8e61:                         1
+;     c8e77:                         1
+;     c8e8c:                         1
+;     c8ea2:                         1
+;     c8edc:                         1
+;     c8f12:                         1
+;     c8f34:                         1
+;     c8f3e:                         1
+;     c8fbc:                         1
+;     c8fe3:                         1
+;     c8ff1:                         1
+;     c8ff7:                         1
+;     c9019:                         1
+;     c901c:                         1
+;     c905a:                         1
+;     c905e:                         1
+;     c9070:                         1
+;     c9083:                         1
+;     c9111:                         1
+;     c9141:                         1
+;     c918c:                         1
+;     c91b3:                         1
+;     c91bc:                         1
+;     c91c9:                         1
+;     c91ec:                         1
+;     c9202:                         1
+;     c920b:                         1
+;     c920f:                         1
+;     c927a:                         1
+;     c9298:                         1
+;     c92a0:                         1
+;     c92c6:                         1
+;     c92f3:                         1
+;     c92fd:                         1
+;     c930c:                         1
+;     c9323:                         1
+;     c9329:                         1
+;     c936c:                         1
+;     c93a8:                         1
+;     c93bd:                         1
+;     c9438:                         1
+;     c951e:                         1
+;     c953d:                         1
+;     c95cc:                         1
+;     c95cf:                         1
+;     c95f2:                         1
+;     c95fc:                         1
+;     c9630:                         1
+;     c9637:                         1
+;     c9651:                         1
+;     c96d5:                         1
+;     c9744:                         1
+;     c977c:                         1
+;     c97c9:                         1
+;     c980d:                         1
+;     c9824:                         1
+;     c9834:                         1
+;     c9845:                         1
+;     c9850:                         1
+;     c9899:                         1
+;     c989e:                         1
+;     c98e0:                         1
+;     c98f3:                         1
+;     c9919:                         1
+;     c99d0:                         1
+;     c9a43:                         1
+;     c9aba:                         1
+;     c9abf:                         1
+;     c9ade:                         1
+;     c9af6:                         1
+;     c9b29:                         1
+;     c9bab:                         1
+;     c9bc2:                         1
+;     c9bea:                         1
+;     c9c0c:                         1
+;     c9c1d:                         1
+;     c9cb8:                         1
+;     c9cc2:                         1
+;     c9ccf:                         1
+;     c9d0f:                         1
+;     c9d38:                         1
+;     c9d55:                         1
+;     c9d5a:                         1
+;     c9d75:                         1
+;     c9d84:                         1
+;     c9d86:                         1
+;     c9dbf:                         1
+;     c9dfd:                         1
+;     c9e0e:                         1
+;     c9e1b:                         1
+;     c9e6a:                         1
+;     c9e81:                         1
+;     c9eb9:                         1
+;     c9ee1:                         1
+;     c9ee6:                         1
+;     c9f39:                         1
+;     c9f3d:                         1
+;     c9f53:                         1
+;     c9f7f:                         1
+;     ca4fd:                         1
+;     ca514:                         1
+;     ca548:                         1
+;     ca552:                         1
+;     ca568:                         1
+;     ca5a2:                         1
+;     ca5aa:                         1
+;     ca5b1:                         1
+;     ca5d3:                         1
+;     ca5e3:                         1
+;     ca5ef:                         1
+;     ca6b0:                         1
+;     ca6e7:                         1
+;     ca6ed:                         1
+;     ca6fe:                         1
+;     ca707:                         1
+;     ca71c:                         1
+;     ca71f:                         1
+;     ca723:                         1
+;     ca769:                         1
+;     ca76c:                         1
+;     ca786:                         1
+;     ca792:                         1
+;     ca795:                         1
+;     ca798:                         1
+;     ca7a1:                         1
+;     ca7b5:                         1
+;     ca7f1:                         1
+;     ca847:                         1
+;     ca84b:                         1
+;     ca867:                         1
+;     ca878:                         1
+;     ca88f:                         1
+;     ca89e:                         1
+;     ca8aa:                         1
+;     ca8ab:                         1
+;     ca8d3:                         1
+;     ca8d5:                         1
+;     ca8e1:                         1
+;     ca8f9:                         1
+;     ca904:                         1
+;     ca922:                         1
+;     ca97f:                         1
+;     ca993:                         1
+;     ca9ad:                         1
+;     ca9b1:                         1
+;     ca9f3:                         1
+;     ca9fb:                         1
+;     caa0f:                         1
+;     caa1d:                         1
+;     caa38:                         1
+;     caa4b:                         1
+;     caa52:                         1
+;     caa5a:                         1
+;     caa65:                         1
+;     caa94:                         1
+;     caaa4:                         1
+;     caabe:                         1
+;     caaf7:                         1
+;     cab06:                         1
+;     cab2e:                         1
+;     cab42:                         1
+;     cab44:                         1
+;     cab51:                         1
+;     cab98:                         1
+;     cab9b:                         1
+;     cabbd:                         1
+;     cabcf:                         1
+;     cabde:                         1
+;     cabfb:                         1
+;     cac0b:                         1
+;     cac2b:                         1
+;     cac33:                         1
+;     cac7e:                         1
+;     cac81:                         1
+;     cad27:                         1
+;     cad33:                         1
+;     cad39:                         1
+;     cad3b:                         1
+;     cad4b:                         1
+;     cad67:                         1
+;     cad69:                         1
+;     cae0a:                         1
+;     cae15:                         1
+;     cae1f:                         1
+;     cae70:                         1
+;     cae89:                         1
+;     cafcd:                         1
+;     caff7:                         1
+;     cb035:                         1
+;     cb03f:                         1
+;     cb08e:                         1
+;     cb090:                         1
+;     cb0b8:                         1
+;     cb0e1:                         1
+;     cb369:                         1
+;     cb396:                         1
+;     cb3a0:                         1
+;     cb3b4:                         1
+;     cb3d2:                         1
+;     cb3ed:                         1
+;     cb418:                         1
+;     cb457:                         1
+;     cb488:                         1
+;     cb4bf:                         1
+;     cb4db:                         1
+;     cb508:                         1
+;     cb539:                         1
+;     cb56b:                         1
+;     cb591:                         1
+;     cb5d6:                         1
+;     cb5df:                         1
+;     cb64c:                         1
+;     cb64f:                         1
+;     cb67f:                         1
+;     cb688:                         1
+;     cb6b6:                         1
+;     cb6f9:                         1
+;     cb751:                         1
+;     cb7fc:                         1
+;     cb899:                         1
+;     cb8a1:                         1
+;     cb8b6:                         1
+;     cb8b8:                         1
+;     cb8e4:                         1
+;     cba9a:                         1
+;     cbb10:                         1
+;     cbb28:                         1
+;     cbb7f:                         1
+;     cbb82:                         1
+;     cbb8c:                         1
+;     cbb9a:                         1
+;     cbba6:                         1
+;     cbbcd:                         1
+;     cbc60:                         1
+;     cbd22:                         1
+;     cbd3e:                         1
+;     cbd57:                         1
+;     cbdb7:                         1
+;     cbdde:                         1
+;     cbde9:                         1
+;     cbe15:                         1
+;     cbe47:                         1
+;     cbe58:                         1
+;     cbe5b:                         1
+;     cbe83:                         1
+;     cbe86:                         1
+;     cbe8f:                         1
+;     cbef2:                         1
+;     cbf76:                         1
+;     cbf7c:                         1
+;     cbf90:                         1
+;     cbf96:                         1
+;     cbfac:                         1
+;     cbfb2:                         1
+;     cliv:                          1
+;     get_reset_type:                1
+;     ind1v:                         1
+;     ind2v:                         1
+;     l000f:                         1
+;     l0017:                         1
+;     l0022:                         1
+;     l002d:                         1
+;     l0033:                         1
+;     l0034:                         1
+;     l0040:                         1
+;     l0073:                         1
+;     l0076:                         1
+;     l008b:                         1
+;     l008c:                         1
+;     l008d:                         1
+;     l008e:                         1
+;     l00a0:                         1
+;     l00af:                         1
+;     l00fe:                         1
+;     l00ff:                         1
+;     l0105:                         1
+;     l0107:                         1
+;     l026a:                         1
+;     l027d:                         1
+;     l030b:                         1
+;     l0350:                         1
+;     l0351:                         1
+;     l0354:                         1
+;     l0355:                         1
+;     l041b:                         1
+;     l041d:                         1
+;     l0436:                         1
+;     l044e:                         1
+;     l04e5:                         1
+;     l0527:                         1
+;     l0528:                         1
+;     l052c:                         1
+;     l0545:                         1
+;     l0547:                         1
+;     l0549:                         1
+;     l0588:                         1
+;     l0683:                         1
+;     l069a:                         1
+;     l069b:                         1
+;     l06a0:                         1
+;     l06a1:                         1
+;     l06a2:                         1
+;     l08ff:                         1
+;     l1102:                         1
+;     l1103:                         1
+;     l1104:                         1
+;     l1105:                         1
+;     l1106:                         1
+;     l1107:                         1
+;     l1109:                         1
+;     l110d:                         1
+;     l110e:                         1
+;     l1112:                         1
+;     l1116:                         1
+;     l111c:                         1
+;     l111e:                         1
+;     l464f:                         1
+;     l4e4f:                         1
+;     l6000:                         1
+;     l6956:                         1
+;     l6f77:                         1
+;     l8072:                         1
+;     l8076:                         1
+;     l81c1:                         1
+;     l943e:                         1
+;     l9649:                         1
+;     l9944:                         1
+;     l9945:                         1
+;     l996f:                         1
+;     l9efc:                         1
+;     l9f3a:                         1
+;     l9f93:                         1
+;     l9fa8:                         1
+;     l9fac:                         1
+;     l9fc0:                         1
+;     l9fc1:                         1
+;     la32d:                         1
+;     la32e:                         1
+;     la57d:                         1
+;     la57e:                         1
+;     la57f:                         1
+;     la580:                         1
+;     la581:                         1
+;     la582:                         1
+;     la60e:                         1
+;     la9c6:                         1
+;     lab80:                         1
+;     ladd8:                         1
+;     laec2:                         1
+;     laed2:                         1
+;     laee2:                         1
+;     laf31:                         1
+;     laf49:                         1
+;     language_handler:              1
+;     lb0af:                         1
+;     lb663:                         1
+;     lb7a3:                         1
+;     lb7af:                         1
+;     lb7b0:                         1
+;     lbe8e:                         1
+;     lbe92:                         1
+;     lbe96:                         1
+;     lbe97:                         1
+;     lbed7:                         1
+;     lbedb:                         1
+;     lbffe:                         1
+;     le06f:                         1
+;     lff6b:                         1
+;     lff8b:                         1
+;     loop_c803a:                    1
+;     loop_c804e:                    1
+;     loop_c8054:                    1
+;     loop_c8156:                    1
+;     loop_c8212:                    1
+;     loop_c8219:                    1
+;     loop_c83e7:                    1
+;     loop_c8409:                    1
+;     loop_c8417:                    1
+;     loop_c845f:                    1
+;     loop_c84e3:                    1
+;     loop_c855a:                    1
+;     loop_c857c:                    1
+;     loop_c85a8:                    1
+;     loop_c85ee:                    1
+;     loop_c8829:                    1
+;     loop_c895d:                    1
+;     loop_c8b67:                    1
+;     loop_c8b92:                    1
+;     loop_c8b94:                    1
+;     loop_c8bd0:                    1
+;     loop_c8c21:                    1
+;     loop_c8c9f:                    1
+;     loop_c8d5c:                    1
+;     loop_c8dab:                    1
+;     loop_c8e0b:                    1
+;     loop_c8eb2:                    1
+;     loop_c8ebc:                    1
+;     loop_c8ec6:                    1
+;     loop_c8ef9:                    1
+;     loop_c8efe:                    1
+;     loop_c8fab:                    1
+;     loop_c903b:                    1
+;     loop_c9044:                    1
+;     loop_c9162:                    1
+;     loop_c91be:                    1
+;     loop_c91f6:                    1
+;     loop_c9213:                    1
+;     loop_c9226:                    1
+;     loop_c9239:                    1
+;     loop_c92af:                    1
+;     loop_c9319:                    1
+;     loop_c9365:                    1
+;     loop_c9380:                    1
+;     loop_c93af:                    1
+;     loop_c93bf:                    1
+;     loop_c942f:                    1
+;     loop_c94b1:                    1
+;     loop_c94bc:                    1
+;     loop_c94c8:                    1
+;     loop_c94dc:                    1
+;     loop_c953f:                    1
+;     loop_c9557:                    1
+;     loop_c9587:                    1
+;     loop_c9593:                    1
+;     loop_c95d5:                    1
+;     loop_c9659:                    1
+;     loop_c9668:                    1
+;     loop_c9678:                    1
+;     loop_c96d7:                    1
+;     loop_c96eb:                    1
+;     loop_c97a4:                    1
+;     loop_c97cc:                    1
+;     loop_c9800:                    1
+;     loop_c986c:                    1
+;     loop_c989c:                    1
+;     loop_c98a0:                    1
+;     loop_c98bd:                    1
+;     loop_c98c6:                    1
+;     loop_c98ef:                    1
+;     loop_c992b:                    1
+;     loop_c99f4:                    1
+;     loop_c9b0a:                    1
+;     loop_c9b55:                    1
+;     loop_c9b65:                    1
+;     loop_c9ba8:                    1
+;     loop_c9bb5:                    1
+;     loop_c9bdf:                    1
+;     loop_c9c3c:                    1
+;     loop_c9c8a:                    1
+;     loop_c9d5f:                    1
+;     loop_c9d9e:                    1
+;     loop_c9da8:                    1
+;     loop_c9dad:                    1
+;     loop_c9dd8:                    1
+;     loop_c9e02:                    1
+;     loop_c9e17:                    1
+;     loop_c9e18:                    1
+;     loop_c9eb6:                    1
+;     loop_c9ebd:                    1
+;     loop_c9f27:                    1
+;     loop_c9f2f:                    1
+;     loop_c9f54:                    1
+;     loop_c9f9e:                    1
+;     loop_ca4f3:                    1
+;     loop_ca5b5:                    1
+;     loop_ca5dc:                    1
+;     loop_ca5f4:                    1
+;     loop_ca713:                    1
+;     loop_ca7ee:                    1
+;     loop_ca80c:                    1
+;     loop_ca928:                    1
+;     loop_ca97c:                    1
+;     loop_ca9a2:                    1
+;     loop_ca9ae:                    1
+;     loop_cab32:                    1
+;     loop_cab38:                    1
+;     loop_cabc1:                    1
+;     loop_cabc7:                    1
+;     loop_cac47:                    1
+;     loop_cacc5:                    1
+;     loop_cad18:                    1
+;     loop_cad2e:                    1
+;     loop_cad3c:                    1
+;     loop_cadb5:                    1
+;     loop_cade7:                    1
+;     loop_cae9b:                    1
+;     loop_caead:                    1
+;     loop_caef3:                    1
+;     loop_cafac:                    1
+;     loop_cafc1:                    1
+;     loop_cb09a:                    1
+;     loop_cb0a5:                    1
+;     loop_cb0eb:                    1
+;     loop_cb109:                    1
+;     loop_cb303:                    1
+;     loop_cb31a:                    1
+;     loop_cb3d9:                    1
+;     loop_cb409:                    1
+;     loop_cb41d:                    1
+;     loop_cb447:                    1
+;     loop_cb45d:                    1
+;     loop_cb4fc:                    1
+;     loop_cb52f:                    1
+;     loop_cb57b:                    1
+;     loop_cb5ec:                    1
+;     loop_cb638:                    1
+;     loop_cb6ef:                    1
+;     loop_cb808:                    1
+;     loop_cbafa:                    1
+;     loop_cbb0a:                    1
+;     loop_cbb40:                    1
+;     loop_cbcaf:                    1
+;     loop_cbd6b:                    1
+;     loop_cbdf8:                    1
+;     loop_cbe24:                    1
+;     loop_cbe73:                    1
+;     loop_cbe7e:                    1
+;     loop_cbfe4:                    1
+;     osargs:                        1
+;     osrdch:                        1
+;     return_1:                      1
+;     return_10:                     1
+;     return_12:                     1
+;     return_14:                     1
+;     return_15:                     1
+;     return_18:                     1
+;     return_19:                     1
+;     return_2:                      1
+;     return_22:                     1
+;     return_25:                     1
+;     return_26:                     1
+;     return_27:                     1
+;     return_28:                     1
+;     return_30:                     1
+;     return_32:                     1
+;     return_33:                     1
+;     return_34:                     1
+;     return_35:                     1
+;     return_37:                     1
+;     return_38:                     1
+;     return_42:                     1
+;     return_45:                     1
+;     return_46:                     1
+;     return_48:                     1
+;     return_49:                     1
+;     return_5:                      1
+;     return_50:                     1
+;     return_51:                     1
+;     return_52:                     1
+;     return_53:                     1
+;     return_54:                     1
+;     return_56:                     1
+;     return_58:                     1
+;     return_59:                     1
+;     return_60:                     1
+;     return_62:                     1
+;     return_64:                     1
+;     return_65:                     1
+;     return_7:                      1
+;     rom_list:                      1
+;     service_handler:               1
+;     sub_c8085:                     1
+;     sub_c8131:                     1
+;     sub_c83ca:                     1
+;     sub_c847e:                     1
+;     sub_c848d:                     1
+;     sub_c84b2:                     1
+;     sub_c854e:                     1
+;     sub_c8554:                     1
+;     sub_c8557:                     1
+;     sub_c8564:                     1
+;     sub_c8572:                     1
+;     sub_c8588:                     1
+;     sub_c85d6:                     1
+;     sub_c8812:                     1
+;     sub_c8837:                     1
+;     sub_c8844:                     1
+;     sub_c884e:                     1
+;     sub_c8867:                     1
+;     sub_c88a9:                     1
+;     sub_c88de:                     1
+;     sub_c8b29:                     1
+;     sub_c8ba9:                     1
+;     sub_c8bb9:                     1
+;     sub_c8bc3:                     1
+;     sub_c8bf5:                     1
+;     sub_c8d50:                     1
+;     sub_c8dd6:                     1
+;     sub_c8dfc:                     1
+;     sub_c8ead:                     1
+;     sub_c8ec0:                     1
+;     sub_c8eca:                     1
+;     sub_c8ed3:                     1
+;     sub_c8ee2:                     1
+;     sub_c8f66:                     1
+;     sub_c9086:                     1
+;     sub_c90a0:                     1
+;     sub_c90f2:                     1
+;     sub_c914e:                     1
+;     sub_c93d7:                     1
+;     sub_c941b:                     1
+;     sub_c94f3:                     1
+;     sub_c9504:                     1
+;     sub_c95a8:                     1
+;     sub_c95c0:                     1
+;     sub_c97f9:                     1
+;     sub_c98c4:                     1
+;     sub_c98db:                     1
+;     sub_c9a1d:                     1
+;     sub_c9a5f:                     1
+;     sub_c9a81:                     1
+;     sub_c9a9c:                     1
+;     sub_c9ad2:                     1
+;     sub_c9ada:                     1
+;     sub_c9ae3:                     1
+;     sub_c9b00:                     1
+;     sub_c9b2c:                     1
+;     sub_c9b5e:                     1
+;     sub_c9b96:                     1
+;     sub_c9bb3:                     1
+;     sub_c9c05:                     1
+;     sub_c9c51:                     1
+;     sub_c9ca4:                     1
+;     sub_c9ca6:                     1
+;     sub_c9d33:                     1
+;     sub_c9d4f:                     1
+;     sub_c9e13:                     1
+;     sub_c9ef1:                     1
+;     sub_c9f71:                     1
+;     sub_c9f96:                     1
+;     sub_c9f9a:                     1
+;     sub_ca300:                     1
+;     sub_ca321:                     1
+;     sub_ca4dc:                     1
+;     sub_ca4eb:                     1
+;     sub_ca4ee:                     1
+;     sub_ca597:                     1
+;     sub_ca607:                     1
+;     sub_ca608:                     1
+;     sub_ca69d:                     1
+;     sub_ca6b5:                     1
+;     sub_caa8a:                     1
+;     sub_caa9d:                     1
+;     sub_cacb5:                     1
+;     sub_cacba:                     1
+;     sub_cad43:                     1
+;     sub_cad82:                     1
+;     sub_cae02:                     1
+;     sub_cb044:                     1
+;     sub_cb0e9:                     1
+;     sub_cb2fe:                     1
+;     sub_cb301:                     1
+;     sub_cb358:                     1
+;     sub_cb37d:                     1
+;     sub_cb405:                     1
+;     sub_cb587:                     1
+;     sub_cb5fb:                     1
+;     sub_cb70e:                     1
+;     sub_cb771:                     1
+;     sub_cb887:                     1
+;     sub_cb8d5:                     1
+;     sub_cba4d:                     1
+;     sub_cba66:                     1
+;     sub_cba73:                     1
+;     sub_cbad5:                     1
+;     sub_cbb78:                     1
+;     sub_cbc63:                     1
+;     sub_cbc66:                     1
+;     sub_cbc75:                     1
+;     sub_cbcbf:                     1
+;     sub_cbd61:                     1
+;     sub_cbd8b:                     1
+;     sub_cbf6f:                     1
 
 ; Stats:
 ;     Total size (Code + Data) = 16384 bytes
-;     Code                     = 13274 bytes (81%)
-;     Data                     = 3110 bytes (19%)
+;     Code                     = 11591 bytes (71%)
+;     Data                     = 4793 bytes (29%)
 ;
-;     Number of instructions   = 6502
-;     Number of data bytes     = 2330 bytes
+;     Number of instructions   = 5759
+;     Number of data bytes     = 3961 bytes
 ;     Number of data words     = 0 bytes
-;     Number of string bytes   = 780 bytes
-;     Number of strings        = 141
+;     Number of string bytes   = 832 bytes
+;     Number of strings        = 154

@@ -53,7 +53,7 @@ L0033           = $0033
 L0034           = $0034
 L0035           = $0035
 L0036           = $0036
-L0037           = $0037
+scr_mode        = $0037
 L0038           = $0038
 L0039           = $0039
 L003A           = $003A
@@ -354,7 +354,7 @@ LFFFF           = $FFFF
 .L803E          LDA     L8173,X                             ; Print flags (F,J,I)
                 BEQ     ukn_command
 
-                JSR     OSASCI
+                JSR     OSASCI				    ; write character to screen
 
                 INX
                 BRA     L803E
@@ -485,7 +485,7 @@ LFFFF           = $FFFF
                 BEQ     L8108
 
                 CPY     #$06
-                BEQ     L8116
+                BEQ     rd_cmos_ram
 
                 CPY     #$81
                 BNE     ukn_command
@@ -504,7 +504,7 @@ LFFFF           = $FFFF
                 STZ     L0103,X
                 BRA     ukn_command
 
-.L8116          JSR     L815A
+.rd_cmos_ram    JSR     L815A
 
                 LDA     #$A1                            ; Read Configuration RAM/EEPROM
                                                         ; X byte to read (or 255 to read RAM/EEPROM size)
@@ -514,39 +514,39 @@ LFFFF           = $FFFF
                 BRA     L810C
 
 .L8121          DEY
-.L8122          INX
+.Chk_next_let   INX
                 INY
-                LDA     L8163,X
+                LDA     L8163,X				; string WORD and View Setup separated by EQUB &FF (BMI trigger)
                 BMI     L813C
 
                 LDA     (comm_line),Y
                 JSR     cap_sym_lower
 
-                CMP     L8163,X
-                BEQ     L8122
+                CMP     L8163,X				; string WORD and View Setup separated by EQUB &FF
+                BEQ     Chk_next_let			; check next letter
 
-                CMP     #$2E
-                BNE     L813A
+                CMP     #$2E				; check for abbreviation "."
+                BNE     L813A				; no match for command or abreviation
 
                 INY
                 CLC
                 RTS
 
-.L813A          SEC
+.L813A          SEC					; not something i recognise so set carry flag
                 RTS
 
 .L813C          LDA     (comm_line),Y
-                CMP     #$21
+                CMP     #$21				; check for "!"
 .L8140          RTS
 
 .prt_status     LDX     #$00
-.L8143          LDA     L814E,X
-                BEQ     L8162
+.L8143          LDA     L814E,X 			; unknown status, print view configuration setup (not working?)
+                BEQ     L8162				; if 00 then exit loop and return
 
-                JSR     OSWRCH
+                JSR     OSWRCH				; write out character from string
 
                 INX
-                BRA     L8143
+                BRA     L8143				; loop for next character 
 
 .L814E          EQUS    "View setup "
 
@@ -687,7 +687,7 @@ LFFFF           = $FFFF
 
                 EQUB    $00
 
-.L8240          LDA     L0037                           ; Read Screen Mode
+.L8240          LDA     scr_mode   			; Read Screen Mode
                 ORA     #$30                            ; convert to decimal ASCII
                 JSR     OSWRCH                          ; Print Screen Mode
 
@@ -725,35 +725,35 @@ LFFFF           = $FFFF
 
 .L8279          LDX     #$00
                 LDY     #$00
-.L827D          LDA     L0054,X
+.mark_set       LDA     L0054,X
                 BEQ     L82AA
 
                 TYA
-                BNE     L829E
+                BNE     prt_comma
 
-                STX     L0083
+                STX     L0083 		 		; store marker number
                 JSR     str_ptr
 
                 EQUS    "Marker(s) set "
 
                 EQUB    $00
 
-.L8298          LDX     L0083
+.L8298          LDX     L0083				; load marker number
                 LDY     #$01
                 BNE     L82A3
 
-.L829E          LDA     #$2C
+.prt_comma      LDA     #$2C				; ","
                 JSR     OSWRCH
 
 .L82A3          TXA
                 LSR     A
-                ADC     #$31
-                JSR     OSWRCH
+                ADC     #$31				; convert the marker number to character
+                JSR     OSWRCH				; and print
 
 .L82AA          INX
                 INX
                 CPX     #$0C
-                BNE     L827D
+                BNE     mark_set
 
                 TYA
                 BEQ     L82B6
@@ -1379,8 +1379,8 @@ L84B8 = L84B6+2
 
                 BNE     L86A7
 
-                LDA     #$85
-                LDX     L0084
+                LDA     #$85			; read base display memory 
+                LDX     L0084			; if mode x were selected
                 JSR     OSBYTE
 
                 CPY     L000E
@@ -2456,16 +2456,16 @@ L8899 = L8897+2
                 AND     #$DF
 .L8D5D          RTS
 
-.char_type      CMP     #$41
+.char_type      CMP     #$41			; Branch if less than "A"
                 BCC     set_carry_flg
 
-                CMP     #$5B
-                BCC     ret_carry_clr
+                CMP     #$5B			; Branch if less than "[" so Capital Letter A-Z
+                BCC     ret_carry_clr           ; was capital letter so return without setting carry
 
-                CMP     #$61
-                BCC     set_carry_flg
+                CMP     #$61			; Branch if less than "a"
+                BCC     set_carry_flg		; not a capital letter so return with carry set
 
-                CMP     #$7B
+                CMP     #$7B			; strange, we are not checking for the end of the lower case characters we seem to assume it here
 .ret_carry_clr  RTS
 
 .set_carry_flg  SEC
@@ -6936,7 +6936,7 @@ LA4A0 = LA49F+1
                 TXA
                 RTS
 
-.LA767          LDA     L0037
+.LA767          LDA     scr_mode
                 CMP     #$07
                 PHP
                 LDA     #$FF
@@ -6947,7 +6947,7 @@ LA4A0 = LA49F+1
 .LA773          RTS
 
 .LA774          PHA
-                LDA     L0037
+                LDA     scr_mode
                 CMP     #$07
                 BCS     LA79B
 
@@ -6960,7 +6960,7 @@ LA4A0 = LA49F+1
                 BNE     LA796
 
 .LA786          PHA
-                LDA     L0037
+                LDA     scr_mode
                 CMP     #$07
                 BCS     LA79B
 
@@ -7376,7 +7376,7 @@ LA4A0 = LA49F+1
 .LA9E5          JSR     LA9B1
 
                 LDA     #$72
-                LDX     L0037
+                LDX     scr_mode
                 CPX     #$07
                 BEQ     LA9A3
 
@@ -8740,7 +8740,7 @@ LA4A0 = LA49F+1
 .LB19D          LDA     #$87                            ; Character at X and Mode Y
                 JSR     OSBYTE
 
-                STY     L0037                           ; save Screen Mode
+                STY     scr_mode                        ; save Screen Mode
                 LDA     #$A3                            ; Application Support Call
                 LDX     #$FF                            ; VIEW family workspace flag
                 STX     L0052
@@ -8750,7 +8750,7 @@ LA4A0 = LA49F+1
                 CPY     #$01
                 BNE     LB1B5
 
-                STY     L0052                           ; Store copy of Workspace flag
+                STY     L0052                           ; Store defaulted copy of Workspace flag
 .LB1B5          LDA     #$84                            ; Read top of user memory
                 JSR     OSBYTE
 
