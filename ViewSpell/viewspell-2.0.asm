@@ -117,7 +117,7 @@ l0068                   = &0068
 l0069                   = &0069
 l006a                   = &006a
 l006e                   = &006e
-l006f                   = &006f
+file_handle_2           = &006f
 l0070                   = &0070
 l0071                   = &0071
 l0072                   = &0072
@@ -129,7 +129,7 @@ l0077                   = &0077
 l0078                   = &0078
 l0079                   = &0079
 l007a                   = &007a
-l007c                   = &007c
+file_handle_3           = &007c
 pointer2                = &007d
 l007f                   = &007f
 l0080                   = &0080
@@ -177,7 +177,7 @@ l0483                   = &0483
 input_buffer            = &0484
 l04c2                   = &04c2
 l04c3                   = &04c3
-l04c4                   = &04c4
+file_name               = &04c4
 l04c5                   = &04c5
 l04e5                   = &04e5
 l04e6                   = &04e6
@@ -280,8 +280,9 @@ oscli                   = &fff7
     bne pass_service_call_to_next_rom                                 ; 8040: d0 42       .B
     ldx #&ff                                                          ; 8042: a2 ff       ..
     dey                                                               ; 8044: 88          .
+; ***************************************************************************************
 ; &8045 referenced 1 time by &8053
-.loop_c8045
+.was_that_me
     inx                                                               ; 8045: e8          .
     iny                                                               ; 8046: c8          .
     lda rom_command,x                                                 ; 8047: bd c0 80    ...
@@ -289,7 +290,7 @@ oscli                   = &fff7
     lda (os_text_ptr),y                                               ; 804c: b1 f2       ..
     and #&df                                                          ; 804e: 29 df       ).             ; Convert to uppercase
     cmp rom_command,x                                                 ; 8050: dd c0 80    ...
-    beq loop_c8045                                                    ; 8053: f0 f0       ..
+    beq was_that_me                                                   ; 8053: f0 f0       ..
     cmp #&0e                                                          ; 8055: c9 0e       ..
     bne pass_service_call_to_next_rom                                 ; 8057: d0 2b       .+
 ; &8059 referenced 1 time by &8066
@@ -393,7 +394,7 @@ oscli                   = &fff7
     inx                                                               ; 80a8: e8          .
     bne pass_service_call_to_next_rom                                 ; 80a9: d0 d9       ..             ; check for #&ff view application
     tsx                                                               ; 80ab: ba          .
-    ldy l0102,x                                                       ; 80ac: bc 02 01    ...
+    ldy l0102,x                                                       ; 80ac: bc 02 01    ...            ; get the rom number from the service call
     lda last_osbyte_y_register                                        ; 80af: a5 f1       ..
     cmp #4                                                            ; 80b1: c9 04       ..
     bne pass_service_call_to_next_rom                                 ; 80b3: d0 cf       ..
@@ -486,12 +487,12 @@ oscli                   = &fff7
 ; &8144 referenced 7 times by &8112, &815a, &856a, &8647, &9786, &9c03, &9d5d
 .c8144
     jsr c9789                                                         ; 8144: 20 89 97     ..
-    ldx #&7c ; '|'                                                    ; 8147: a2 7c       .|
-    jsr sub_c8ce8                                                     ; 8149: 20 e8 8c     ..
+    ldx #&7c ; '|'                                                    ; 8147: a2 7c       .|             ; X=Offset from 0x0000 which holds the handle number
+    jsr close_file_by_handle                                          ; 8149: 20 e8 8c     ..            ; close file by handle
     ldx #&ff                                                          ; 814c: a2 ff       ..
     txs                                                               ; 814e: 9a          .
-    ldx #&6f ; 'o'                                                    ; 814f: a2 6f       .o
-    jsr sub_c8ce8                                                     ; 8151: 20 e8 8c     ..
+    ldx #&6f ; 'o'                                                    ; 814f: a2 6f       .o             ; X=Offset from 0x0000 which holds the handle number
+    jsr close_file_by_handle                                          ; 8151: 20 e8 8c     ..            ; close file by handle
     jsr reset_directory_name                                          ; 8154: 20 a0 85     ..
     jsr print_input_cursor                                            ; 8157: 20 83 81     ..            ; Prompts for user command
     jmp c8144                                                         ; 815a: 4c 44 81    LD.
@@ -676,7 +677,7 @@ l8213 = c8212+1
     lda pointer1+1                                                    ; 8243: a5 19       ..
     pha                                                               ; 8245: 48          H
     jsr sub_c93f5                                                     ; 8246: 20 f5 93     ..
-    jsr sub_c8fb1                                                     ; 8249: 20 b1 8f     ..
+    jsr store_filename_address_in_pointer2                            ; 8249: 20 b1 8f     ..
     pla                                                               ; 824c: 68          h
     beq c8252                                                         ; 824d: f0 03       ..
     jsr check_file_exists                                             ; 824f: 20 32 95     2.
@@ -996,16 +997,16 @@ l8213 = c8212+1
 ; ***************************************************************************************
 ; reset some zero page variables
 ; 
-; Wipes some of the zero page variables, but keeps 0x0a
+; Wipes some of the zero page variables, but keeps 0x0a and sets 0x31 to &ff
 ; 
 ; On Entry:
 ;     X: offset for indirect
 ; ***************************************************************************************
 ; &8439 referenced 1 time by &843c
-.wipe_variables_from_00_to_8f
+.wipe_variables_from_00_to_8e
     dex                                                               ; 8439: ca          .              ; X=offset for indirect
     sta l0000,x                                                       ; 843a: 95 00       ..
-    bne wipe_variables_from_00_to_8f                                  ; 843c: d0 fb       ..             ; reset some zero page variables
+    bne wipe_variables_from_00_to_8e                                  ; 843c: d0 fb       ..             ; reset some zero page variables
     sty l000a                                                         ; 843e: 84 0a       ..
     dec l0031                                                         ; 8440: c6 31       .1
     jsr get_oshwm                                                     ; 8442: 20 cb 84     ..            ; get value for top
@@ -1022,12 +1023,13 @@ l8213 = c8212+1
     tya                                                               ; 8456: 98          .
     beq print_newline_save_cursor                                     ; 8457: f0 30       .0             ; Prints a new line, backspace and then increments current text cursor forward one
     ldy #&0a                                                          ; 8459: a0 0a       ..
+; ***************************************************************************************
 ; &845b referenced 1 time by &8462
-.loop_c845b
+.populate_prefix_array
     lda default_master_dictionary,y                                   ; 845b: b9 c9 80    ...
     sta prefix_array,y                                                ; 845e: 99 36 04    .6.
     dey                                                               ; 8461: 88          .
-    bne loop_c845b                                                    ; 8462: d0 f7       ..
+    bne populate_prefix_array                                         ; 8462: d0 f7       ..
     sty l0549                                                         ; 8464: 8c 49 05    .I.
     ldy #4                                                            ; 8467: a0 04       ..
 ; &8469 referenced 1 time by &8470
@@ -1073,10 +1075,10 @@ l8213 = c8212+1
     bmi prepare_to_move_cursor                                        ; 84ae: 30 07       0.
     tax                                                               ; 84b0: aa          .
 ; &84b1 referenced 1 time by &84b5
-.loop_c84b1
+.print_space_loop
     jsr print_space                                                   ; 84b1: 20 b6 85     ..
     dex                                                               ; 84b4: ca          .
-    bne loop_c84b1                                                    ; 84b5: d0 fa       ..
+    bne print_space_loop                                              ; 84b5: d0 fa       ..
 ; ***************************************************************************************
 ; &84b7 referenced 1 time by &84ae
 .prepare_to_move_cursor
@@ -1137,7 +1139,7 @@ l8213 = c8212+1
     iny                                                               ; 84db: c8          .              ; Y=page MSB
 ; &84dc referenced 1 time by &84d9
 .not_a_page_boundary
-    jsr sub_8504                                                      ; 84dc: 20 04 85     ..
+    jsr check_page_is_consistent                                      ; 84dc: 20 04 85     ..
 ; ***************************************************************************************
 ; &84df referenced 1 time by &8449
 .move_page_value_to_next_integer_page
@@ -1185,7 +1187,7 @@ l8213 = c8212+1
 ;     Y: page MSB
 ; ***************************************************************************************
 ; &8504 referenced 1 time by &84dc
-.sub_8504
+.check_page_is_consistent
     lda #0                                                            ; 8504: a9 00       ..
     sta pointer1+1                                                    ; 8506: 85 19       ..
     cpx page_pointer                                                  ; 8508: e4 23       .#
@@ -1312,14 +1314,14 @@ l8213 = c8212+1
 ; &85b6 referenced 2 times by &84b1, &89d6
 .print_space
     lda #&20 ; ' '                                                    ; 85b6: a9 20       .
-    bne c85bc                                                         ; 85b8: d0 02       ..             ; ALWAYS branch
+    bne jump_to_oswrch                                                ; 85b8: d0 02       ..             ; ALWAYS branch
 
 ; ***************************************************************************************
 ; &85ba referenced 5 times by &82c2, &82e8, &86b8, &8b62, &8d1f
 .print_full_stop
     lda #&2e ; '.'                                                    ; 85ba: a9 2e       ..
 ; &85bc referenced 2 times by &85b8, &862a
-.c85bc
+.jump_to_oswrch
     jmp oswrch                                                        ; 85bc: 4c ee ff    L..            ; Write character 46
 
 ; ***************************************************************************************
@@ -1359,7 +1361,7 @@ l8213 = c8212+1
 .c85e9
     sta l0008                                                         ; 85e9: 85 08       ..
     inx                                                               ; 85eb: e8          .
-    lda c862c,x                                                       ; 85ec: bd 2c 86    .,.
+    lda data_table4,x                                                 ; 85ec: bd 2c 86    .,.
     sta l0009                                                         ; 85ef: 85 09       ..
     inx                                                               ; 85f1: e8          .
     stx l0010                                                         ; 85f2: 86 10       ..
@@ -1392,24 +1394,26 @@ l8213 = c8212+1
     beq c861e                                                         ; 8615: f0 07       ..
     dec l000c                                                         ; 8617: c6 0c       ..
     lda l000e                                                         ; 8619: a5 0e       ..
-    jsr sub_c8628                                                     ; 861b: 20 28 86     (.
+    jsr convert_hex_to_digit                                          ; 861b: 20 28 86     (.
 ; &861e referenced 2 times by &85e7, &8615
 .c861e
     txa                                                               ; 861e: 8a          .
     pha                                                               ; 861f: 48          H
     ldx l0010                                                         ; 8620: a6 10       ..
-    lda c862c,x                                                       ; 8622: bd 2c 86    .,.
+    lda data_table4,x                                                 ; 8622: bd 2c 86    .,.
     bne c85e9                                                         ; 8625: d0 c2       ..
     pla                                                               ; 8627: 68          h
+; ***************************************************************************************
 ; &8628 referenced 1 time by &861b
-.sub_c8628
+.convert_hex_to_digit
     ora #&30 ; '0'                                                    ; 8628: 09 30       .0
-    bne c85bc                                                         ; 862a: d0 90       ..             ; ALWAYS branch
+    bne jump_to_oswrch                                                ; 862a: d0 90       ..             ; ALWAYS branch
 
+; overlapping: bpl sub_c8655                                          ; 862c: 10 27       .'
 ; &862c referenced 2 times by &85ec, &8622
-.c862c
-    bpl c8655                                                         ; 862c: 10 27       .'
-    inx                                                               ; 862e: e8          .
+.data_table4
+    equb &10, &27, &e8                                                ; 862c: 10 27 e8    .'.
+; overlapping: inx                                                    ; 862e: e8          .
     equb 3, &64, 0, &0a, 0, 0                                         ; 862f: 03 64 00... .d.
 
 ; ***************************************************************************************
@@ -1444,8 +1448,7 @@ l8213 = c8212+1
     sty l004d                                                         ; 8651: 84 4d       .M
     tya                                                               ; 8653: 98          .
     sec                                                               ; 8654: 38          8
-; &8655 referenced 1 time by &862c
-.c8655
+.sub_c8655
     adc corrected_himem                                               ; 8655: 65 25       e%
     sta l0070                                                         ; 8657: 85 70       .p
     lda corrected_himem+1                                             ; 8659: a5 26       .&
@@ -1469,7 +1472,7 @@ l8213 = c8212+1
     lda l0060                                                         ; 8677: a5 60       .`
     ora l0061                                                         ; 8679: 05 61       .a
     beq c8647                                                         ; 867b: f0 ca       ..
-    jsr sub_c8876                                                     ; 867d: 20 76 88     v.
+    jsr is_there_a_file_loaded                                        ; 867d: 20 76 88     v.
     jsr fixup_page                                                    ; 8680: 20 d5 84     ..
     plp                                                               ; 8683: 28          (
     bne c86f4                                                         ; 8684: d0 6e       .n
@@ -1483,7 +1486,7 @@ l8213 = c8212+1
     lda l041c                                                         ; 8693: ad 1c 04    ...
     cmp #&0d                                                          ; 8696: c9 0d       ..
     beq c86d5                                                         ; 8698: f0 3b       .;
-    jsr sub_c8fc0                                                     ; 869a: 20 c0 8f     ..
+    jsr increment_x_by_14_set_y_to_4                                  ; 869a: 20 c0 8f     ..
     jsr get_file_info_then_print_filename_not_found                   ; 869d: 20 54 95     T.
     bcs print_ser                                                     ; 86a0: b0 45       .E
     jsr sub_9cd5                                                      ; 86a2: 20 d5 9c     ..
@@ -1696,14 +1699,14 @@ l8728 = sub_c8727+1
 .loop_c87cc
     iny                                                               ; 87cc: c8          .
     lda (l000e),y                                                     ; 87cd: b1 0e       ..
-    sta l04c4,y                                                       ; 87cf: 99 c4 04    ...
+    sta file_name,y                                                   ; 87cf: 99 c4 04    ...
     jsr sub_c9de8                                                     ; 87d2: 20 e8 9d     ..
     bcs loop_c87cc                                                    ; 87d5: b0 f5       ..
     tya                                                               ; 87d7: 98          .
     tax                                                               ; 87d8: aa          .
     ldy l0032                                                         ; 87d9: a4 32       .2
     lda (l000e),y                                                     ; 87db: b1 0e       ..
-    sta l04c4,x                                                       ; 87dd: 9d c4 04    ...
+    sta file_name,x                                                   ; 87dd: 9d c4 04    ...
     lda #0                                                            ; 87e0: a9 00       ..
     sta l04c5,x                                                       ; 87e2: 9d c5 04    ...
     ldx #&40 ; '@'                                                    ; 87e5: a2 40       .@
@@ -1738,7 +1741,7 @@ l8728 = sub_c8727+1
     lda #&d8                                                          ; 881a: a9 d8       ..
     jsr sub_c8788                                                     ; 881c: 20 88 87     ..
     bcc c8824                                                         ; 881f: 90 03       ..
-    sta l04c4                                                         ; 8821: 8d c4 04    ...
+    sta file_name                                                     ; 8821: 8d c4 04    ...
 ; &8824 referenced 1 time by &881f
 .c8824
     jsr sub_c8844                                                     ; 8824: 20 44 88     D.
@@ -1754,11 +1757,11 @@ l8728 = sub_c8727+1
 
 ; ***************************************************************************************
 .add_cmd
-    jsr sub_c8876                                                     ; 8833: 20 76 88     v.
+    jsr is_there_a_file_loaded                                        ; 8833: 20 76 88     v.
     jsr sub_9543                                                      ; 8836: 20 43 95     C.
     jsr sub_c8c0a                                                     ; 8839: 20 0a 8c     ..
     lda #&40 ; '@'                                                    ; 883c: a9 40       .@
-    stx l04c4                                                         ; 883e: 8e c4 04    ...
+    stx file_name                                                     ; 883e: 8e c4 04    ...
     jmp c8807                                                         ; 8841: 4c 07 88    L..
 
 ; &8844 referenced 3 times by &8810, &8824, &882a
@@ -1802,12 +1805,13 @@ l8728 = sub_c8727+1
 .return_4
     rts                                                               ; 8875: 60          `
 
+; ***************************************************************************************
 ; &8876 referenced 4 times by &867d, &8833, &88ce, &9464
-.sub_c8876
+.is_there_a_file_loaded
     lda editing_file_flag                                             ; 8876: a5 4b       .K
-    bne c8892                                                         ; 8878: d0 18       ..
+    bne have_file_loaded                                              ; 8878: d0 18       ..
 ; &887a referenced 1 time by &8899
-.loop_c887a
+.reset_stack_pointer
     ldx #&fd                                                          ; 887a: a2 fd       ..
     txs                                                               ; 887c: 9a          .
 ; &887d referenced 3 times by &888b, &88f1, &8a2a
@@ -1830,8 +1834,9 @@ l8728 = sub_c8727+1
     clc                                                               ; 888d: 18          .
     lda editing_file_flag                                             ; 888e: a5 4b       .K
     beq return_5                                                      ; 8890: f0 f5       ..
+; ***************************************************************************************
 ; &8892 referenced 1 time by &8878
-.c8892
+.have_file_loaded
     jmp c9058                                                         ; 8892: 4c 58 90    LX.
 
 ; ***************************************************************************************
@@ -1839,7 +1844,7 @@ l8728 = sub_c8727+1
 .sub_8895
     jsr sub_c889c                                                     ; 8895: 20 9c 88     ..
     tya                                                               ; 8898: 98          .
-    bne loop_c887a                                                    ; 8899: d0 df       ..
+    bne reset_stack_pointer                                           ; 8899: d0 df       ..
     rts                                                               ; 889b: 60          `
 
 ; &889c referenced 3 times by &842e, &8888, &8895
@@ -1891,7 +1896,7 @@ l8728 = sub_c8727+1
 
 ; ***************************************************************************************
 .save_cmd
-    jsr sub_c8876                                                     ; 88ce: 20 76 88     v.
+    jsr is_there_a_file_loaded                                        ; 88ce: 20 76 88     v.
     lda #0                                                            ; 88d1: a9 00       ..
     jsr sub_c892f                                                     ; 88d3: 20 2f 89     /.
     jsr sub_c93f5                                                     ; 88d6: 20 f5 93     ..
@@ -1920,7 +1925,7 @@ l8728 = sub_c8727+1
     pha                                                               ; 88fc: 48          H
     lda pointer2+1                                                    ; 88fd: a5 7e       .~
     pha                                                               ; 88ff: 48          H
-    jsr sub_c8fb1                                                     ; 8900: 20 b1 8f     ..
+    jsr store_filename_address_in_pointer2                            ; 8900: 20 b1 8f     ..
     lda l0052                                                         ; 8903: a5 52       .R
     bne c893e                                                         ; 8905: d0 37       .7
     dec l0052                                                         ; 8907: c6 52       .R
@@ -1973,7 +1978,7 @@ l8728 = sub_c8727+1
     jsr check_file_exists                                             ; 8952: 20 32 95     2.
     lda #&c0                                                          ; 8955: a9 c0       ..
     jsr call_osfind_with_block                                        ; 8957: 20 50 9d     P.
-    sta l007c                                                         ; 895a: 85 7c       .|
+    sta file_handle_3                                                 ; 895a: 85 7c       .|
     sta l0526                                                         ; 895c: 8d 26 05    .&.
     tay                                                               ; 895f: a8          .
     ldx #&87                                                          ; 8960: a2 87       ..
@@ -1987,7 +1992,7 @@ l8728 = sub_c8727+1
     jsr osgbpb                                                        ; 8973: 20 d1 ff     ..            ; append bytes to file at current file pointer (A=2)
     ldy l0526                                                         ; 8976: ac 26 05    .&.
     lda #osfind_close                                                 ; 8979: a9 00       ..
-    sta l007c                                                         ; 897b: 85 7c       .|
+    sta file_handle_3                                                 ; 897b: 85 7c       .|
     jsr osfind                                                        ; 897d: 20 ce ff     ..            ; Close one or all files
     jmp c8929                                                         ; 8980: 4c 29 89    L).
 
@@ -1998,7 +2003,7 @@ l8728 = sub_c8727+1
 ; &8986 referenced 1 time by &89cf
 .sub_c8986
     jsr open_file_for_input                                           ; 8986: 20 4e 9d     N.
-    sta l006f                                                         ; 8989: 85 6f       .o
+    sta file_handle_2                                                 ; 8989: 85 6f       .o
     jsr sub_c8bc3                                                     ; 898b: 20 c3 8b     ..
     stx l052d                                                         ; 898e: 8e 2d 05    .-.
     sty l052e                                                         ; 8991: 8c 2e 05    ...
@@ -2043,7 +2048,7 @@ l8728 = sub_c8727+1
 ; ***************************************************************************************
 .screen_cmd
     jsr sub_89bb                                                      ; 89c9: 20 bb 89     ..
-    jsr sub_c8fb1                                                     ; 89cc: 20 b1 8f     ..
+    jsr store_filename_address_in_pointer2                            ; 89cc: 20 b1 8f     ..
     jsr sub_c8986                                                     ; 89cf: 20 86 89     ..
     beq c89ef                                                         ; 89d2: f0 1b       ..
 ; &89d4 referenced 2 times by &89e6, &89f1
@@ -2144,7 +2149,7 @@ l8728 = sub_c8727+1
 ; &8a58 referenced 1 time by &8a88
 .c8a58
     sta l05c9,x                                                       ; 8a58: 9d c9 05    ...
-    jsr sub_c92c9                                                     ; 8a5b: 20 c9 92     ..
+    jsr convert_a_reg_to_uppercase                                    ; 8a5b: 20 c9 92     ..            ; converts the a reg to upper case if appropriate
     bit l0054                                                         ; 8a5e: 24 54       $T
     bpl c8a81                                                         ; 8a60: 10 1f       ..
     eor input_buffer,x                                                ; 8a62: 5d 84 04    ]..
@@ -2538,7 +2543,7 @@ l8728 = sub_c8727+1
     inc l0059                                                         ; 8c8d: e6 59       .Y
     ldy l0059                                                         ; 8c8f: a4 59       .Y
     lda (l0056),y                                                     ; 8c91: b1 56       .V
-    jsr sub_c9de4                                                     ; 8c93: 20 e4 9d     ..
+    jsr check_for_non_printables_and_marker                           ; 8c93: 20 e4 9d     ..
     bcs c8ca5                                                         ; 8c96: b0 0d       ..
     cmp #2                                                            ; 8c98: c9 02       ..
     beq c8c8d                                                         ; 8c9a: f0 f1       ..
@@ -2595,27 +2600,38 @@ l8728 = sub_c8727+1
     bne c8d06                                                         ; 8ce4: d0 20       .
 ; &8ce6 referenced 7 times by &8d04, &8e3c, &9501, &9791, &97cc, &9b90, &9ce9
 .c8ce6
-    ldx #&62 ; 'b'                                                    ; 8ce6: a2 62       .b
+    ldx #&62 ; 'b'                                                    ; 8ce6: a2 62       .b             ; output_file_handle; X=Offset from 0x0000 which holds the handle number
+; ***************************************************************************************
+; close file by handle
+; 
+; Closed a file specified by the handle in x
+;  called with values &62, &7c, &6f
+; 
+; On Entry:
+;     X: Offset from 0x0000 which holds the handle number
+; ***************************************************************************************
 ; &8ce8 referenced 2 times by &8149, &8151
-.sub_c8ce8
+.close_file_by_handle
     ldy l0000,x                                                       ; 8ce8: b4 00       ..
     beq return_14                                                     ; 8cea: f0 dd       ..
     lda #osfind_close                                                 ; 8cec: a9 00       ..
     sta l0000,x                                                       ; 8cee: 95 00       ..
+; ***************************************************************************************
 ; &8cf0 referenced 1 time by &8cff
-.loop_c8cf0
+.jmp_to_osfind
     jmp osfind                                                        ; 8cf0: 4c ce ff    L..            ; Close one or all files
 
 ; ***************************************************************************************
 ; &8cf3 referenced 2 times by &88d9, &8998
 .save_file
-    ldx #<(l04c4)                                                     ; 8cf3: a2 c4       ..
-    ldy #>(l04c4)                                                     ; 8cf5: a0 04       ..
+    ldx #<(file_name)                                                 ; 8cf3: a2 c4       ..
+    ldy #>(file_name)                                                 ; 8cf5: a0 04       ..
     lda #osfind_open_output                                           ; 8cf7: a9 80       ..
     jsr osfind                                                        ; 8cf9: 20 ce ff     ..            ; Open file for output (A=128)
     tay                                                               ; 8cfc: a8          .              ; A=file handle (or zero on failure)
+.close_the_file_we_just_opened
     lda #0                                                            ; 8cfd: a9 00       ..
-    beq loop_c8cf0                                                    ; 8cff: f0 ef       ..             ; ALWAYS branch
+    beq jmp_to_osfind                                                 ; 8cff: f0 ef       ..             ; ALWAYS branch
 
 ; &8d01 referenced 1 time by &8d7f
 .c8d01
@@ -3061,7 +3077,7 @@ l8728 = sub_c8727+1
 ; &8f5c referenced 3 times by &93bb, &9930, &9ff6
 .c8f5c
     bit l004c                                                         ; 8f5c: 24 4c       $L
-    bvc c8f63                                                         ; 8f5e: 50 03       P.
+    bvc c8f63                                                         ; 8f5e: 50 03       P.             ; is bit 6 set
     jmp c8b2f                                                         ; 8f60: 4c 2f 8b    L/.
 
 ; &8f63 referenced 1 time by &8f5e
@@ -3106,7 +3122,7 @@ l8728 = sub_c8727+1
 
 ; &8f96 referenced 2 times by &89b5, &900a
 .sub_c8f96
-    jsr sub_c8fa2                                                     ; 8f96: 20 a2 8f     ..
+    jsr read_bytes_from_file                                          ; 8f96: 20 a2 8f     ..
     bcc return_17                                                     ; 8f99: 90 06       ..
     ldy #0                                                            ; 8f9b: a0 00       ..
     lda #&ff                                                          ; 8f9d: a9 ff       ..
@@ -3115,19 +3131,21 @@ l8728 = sub_c8727+1
 .return_17
     rts                                                               ; 8fa1: 60          `
 
+; ***************************************************************************************
 ; &8fa2 referenced 2 times by &8f96, &9149
-.sub_c8fa2
+.read_bytes_from_file
     jsr check_os_escape_flag                                          ; 8fa2: 20 7e 81     ~.
     jsr check_file_exists                                             ; 8fa5: 20 32 95     2.
-    ldx #<(l006f)                                                     ; 8fa8: a2 6f       .o
-    ldy #>(l006f)                                                     ; 8faa: a0 00       ..
+    ldx #<(file_handle_2)                                             ; 8fa8: a2 6f       .o
+    ldy #>(file_handle_2)                                             ; 8faa: a0 00       ..
     lda #osgbpb_read_bytes_from_current_position                      ; 8fac: a9 04       ..
     jmp osgbpb                                                        ; 8fae: 4c d1 ff    L..            ; read bytes from current position in file (A=4)
 
+; ***************************************************************************************
 ; &8fb1 referenced 3 times by &8249, &8900, &89cc
-.sub_c8fb1
-    ldx #<(l04c4)                                                     ; 8fb1: a2 c4       ..
-    ldy #>(l04c4)                                                     ; 8fb3: a0 04       ..
+.store_filename_address_in_pointer2
+    ldx #<(file_name)                                                 ; 8fb1: a2 c4       ..
+    ldy #>(file_name)                                                 ; 8fb3: a0 04       ..
     bne store_x_y_in_pointer2                                         ; 8fb5: d0 04       ..             ; ALWAYS branch
 
 ; &8fb7 referenced 2 times by &83d6, &8983
@@ -3141,8 +3159,9 @@ l8728 = sub_c8727+1
     sty pointer2+1                                                    ; 8fbd: 84 7e       .~
     rts                                                               ; 8fbf: 60          `
 
+; ***************************************************************************************
 ; &8fc0 referenced 4 times by &869a, &94a3, &9546, &9be9
-.sub_c8fc0
+.increment_x_by_14_set_y_to_4
     lda #&0e                                                          ; 8fc0: a9 0e       ..
     clc                                                               ; 8fc2: 18          .
     adc l040e                                                         ; 8fc3: 6d 0e 04    m..
@@ -3273,9 +3292,10 @@ l8728 = sub_c8727+1
     sta (l003e),y                                                     ; 906a: 91 3e       .>
 ; &906c referenced 1 time by &9068
 .c906c
-    jsr increment_ponter_over_page_boundary                           ; 906c: 20 c9 90     ..
+    jsr increment_pointer_over_page_boundary                          ; 906c: 20 c9 90     ..
+; ***************************************************************************************
 ; &906f referenced 1 time by &90b5
-.c906f
+.increment_another_pointer_over_page_boundary
     inc l003c                                                         ; 906f: e6 3c       .<
     bne c9075                                                         ; 9071: d0 02       ..
     inc l003d                                                         ; 9073: e6 3d       .=
@@ -3324,7 +3344,7 @@ l8728 = sub_c8727+1
 .c90b1
     cmp #1                                                            ; 90b1: c9 01       ..
     beq c906a                                                         ; 90b3: f0 b5       ..
-    bne c906f                                                         ; 90b5: d0 b8       ..             ; ALWAYS branch
+    bne increment_another_pointer_over_page_boundary                  ; 90b5: d0 b8       ..             ; ALWAYS branch
 
 ; &90b7 referenced 2 times by &9079, &909c
 .c90b7
@@ -3344,7 +3364,7 @@ l8728 = sub_c8727+1
 
 ; ***************************************************************************************
 ; &90c9 referenced 5 times by &906c, &97d3, &97ec, &9802, &9826
-.increment_ponter_over_page_boundary
+.increment_pointer_over_page_boundary
     inc l003e                                                         ; 90c9: e6 3e       .>
     bne return_19                                                     ; 90cb: d0 02       ..
     inc l003f                                                         ; 90cd: e6 3f       .?
@@ -3367,7 +3387,7 @@ l8728 = sub_c8727+1
 ; ***************************************************************************************
 ; &90d9 referenced 1 time by &82cc
 .sub_90d9
-    jsr sub_c92c9                                                     ; 90d9: 20 c9 92     ..
+    jsr convert_a_reg_to_uppercase                                    ; 90d9: 20 c9 92     ..            ; converts the a reg to upper case if appropriate
     sta input_buffer,y                                                ; 90dc: 99 84 04    ...
     iny                                                               ; 90df: c8          .
     jsr sub_c92e3                                                     ; 90e0: 20 e3 92     ..
@@ -3427,13 +3447,13 @@ l8728 = sub_c8727+1
 ; &913d referenced 3 times by &910c, &9117, &9119
 .c913d
     jsr open_file_for_input                                           ; 913d: 20 4e 9d     N.
-    sta l006f                                                         ; 9140: 85 6f       .o
+    sta file_handle_2                                                 ; 9140: 85 6f       .o
     jsr c917d                                                         ; 9142: 20 7d 91     }.
 ; &9145 referenced 1 time by &866e
 .sub_c9145
     lda l004f                                                         ; 9145: a5 4f       .O
     bne c9194                                                         ; 9147: d0 4b       .K
-    jsr sub_c8fa2                                                     ; 9149: 20 a2 8f     ..
+    jsr read_bytes_from_file                                          ; 9149: 20 a2 8f     ..
     bcs c9164                                                         ; 914c: b0 16       ..
     lda #&ff                                                          ; 914e: a9 ff       ..
     sta l0008                                                         ; 9150: 85 08       ..
@@ -3709,8 +3729,16 @@ l8728 = sub_c8727+1
     sec                                                               ; 92c7: 38          8
     rts                                                               ; 92c8: 60          `
 
+; ***************************************************************************************
+; converts the a reg to upper case if appropriate
+; 
+; If the A reg is lowercase, change to uppercase
+; 
+; On Entry:
+;     A: Character to check and convert
+; ***************************************************************************************
 ; &92c9 referenced 4 times by &8a5b, &90d9, &9d02, &9d12
-.sub_c92c9
+.convert_a_reg_to_uppercase
     jsr convert_to_upper                                              ; 92c9: 20 e8 92     ..
     bcc return_23                                                     ; 92cc: 90 02       ..
     and #&df                                                          ; 92ce: 29 df       ).
@@ -3816,7 +3844,7 @@ l8728 = sub_c8727+1
     bne check_for_prefix_master                                       ; 933e: d0 06       ..
     lda #0                                                            ; 9340: a9 00       ..
     ldy #&0e                                                          ; 9342: a0 0e       ..
-    bne c9363                                                         ; 9344: d0 1d       ..             ; ALWAYS branch
+    bne check_prefix_length                                           ; 9344: d0 1d       ..             ; ALWAYS branch
 
 ; ***************************************************************************************
 ; &9346 referenced 1 time by &933e
@@ -3825,7 +3853,7 @@ l8728 = sub_c8727+1
     bne check_for_prefix_text                                         ; 9348: d0 06       ..
     lda #&1b                                                          ; 934a: a9 1b       ..
     ldy #&29 ; ')'                                                    ; 934c: a0 29       .)
-    bne c9363                                                         ; 934e: d0 13       ..             ; ALWAYS branch
+    bne check_prefix_length                                           ; 934e: d0 13       ..             ; ALWAYS branch
 
 ; ***************************************************************************************
 ; &9350 referenced 1 time by &9348
@@ -3844,13 +3872,14 @@ l8728 = sub_c8727+1
 .c935f
     lda #&33 ; '3'                                                    ; 935f: a9 33       .3
     ldy #&41 ; 'A'                                                    ; 9361: a0 41       .A
+; ***************************************************************************************
 ; &9363 referenced 2 times by &9344, &934e
-.c9363
+.check_prefix_length
     pha                                                               ; 9363: 48          H
     ldx pointer1                                                      ; 9364: a6 18       ..
     beq c9376                                                         ; 9366: f0 0e       ..
     cpx #&0e                                                          ; 9368: e0 0e       ..
-    bcs c93c6                                                         ; 936a: b0 5a       .Z
+    bcs error_too_long                                                ; 936a: b0 5a       .Z
 ; &936c referenced 1 time by &9374
 .loop_c936c
     dey                                                               ; 936c: 88          .
@@ -3873,7 +3902,7 @@ l8728 = sub_c8727+1
 
     ldy l0429                                                         ; 9387: ac 29 04    .).
     ldx #&29 ; ')'                                                    ; 938a: a2 29       .)
-    jsr sub_c93b4                                                     ; 938c: 20 b4 93     ..
+    jsr print_prefix_text                                             ; 938c: 20 b4 93     ..
 .print_U_bracket_ser
     jsr print_inline_string                                           ; 938f: 20 2e 9c     ..
 ; overlapping: eor l0029,x                                            ; 9392: 55 29       U)
@@ -3882,7 +3911,7 @@ l8728 = sub_c8727+1
 
     ldy l040e                                                         ; 9398: ac 0e 04    ...
     ldx #&0e                                                          ; 939b: a2 0e       ..
-    jsr sub_c93b4                                                     ; 939d: 20 b4 93     ..
+    jsr print_prefix_text                                             ; 939d: 20 b4 93     ..
     jsr print_inline_string                                           ; 93a0: 20 2e 9c     ..
 .print_T_bracket_ext
     equs "T)ext"                                                      ; 93a3: 54 29 65... T)e
@@ -3890,11 +3919,12 @@ l8728 = sub_c8727+1
     ldy #&ac                                                          ; 93a8: a0 ac       ..
     eor (adjusted_xpos,x)                                             ; 93aa: 41 04       A.
     ldx #&41 ; 'A'                                                    ; 93ac: a2 41       .A
-    jsr sub_c93b4                                                     ; 93ae: 20 b4 93     ..
+    jsr print_prefix_text                                             ; 93ae: 20 b4 93     ..
     jmp print_viewspell_heading_details                               ; 93b1: 4c 6b 83    Lk.
 
+; ***************************************************************************************
 ; &93b4 referenced 3 times by &938c, &939d, &93ae
-.sub_c93b4
+.print_prefix_text
     stx pointer1                                                      ; 93b4: 86 18       ..
     bne c93bf                                                         ; 93b6: d0 07       ..
 ; &93b8 referenced 1 time by &93c1
@@ -3908,8 +3938,9 @@ l8728 = sub_c8727+1
     bne loop_c93b8                                                    ; 93c1: d0 f5       ..
     jmp c8f5a                                                         ; 93c3: 4c 5a 8f    LZ.
 
+; ***************************************************************************************
 ; &93c6 referenced 3 times by &936a, &93e8, &9414
-.c93c6
+.error_too_long
     brk                                                               ; 93c6: 00          .
 
     equb 0                                                            ; 93c7: 00          .
@@ -3923,18 +3954,19 @@ l8728 = sub_c8727+1
 ; &93d3 referenced 1 time by &93f1
 .prefix_dictionary_directory
     cpx l001e                                                         ; 93d3: e4 1e       ..
-    bne c93e3                                                         ; 93d5: d0 0c       ..
+    bne copy_input_to_prefix_buffer                                   ; 93d5: d0 0c       ..
     lda #&57 ; 'W'                                                    ; 93d7: a9 57       .W
     sta l041c,y                                                       ; 93d9: 99 1c 04    ...
     lda #&2e ; '.'                                                    ; 93dc: a9 2e       ..
     sta l041d,y                                                       ; 93de: 99 1d 04    ...
     iny                                                               ; 93e1: c8          .
     iny                                                               ; 93e2: c8          .
+; ***************************************************************************************
 ; &93e3 referenced 2 times by &93d5, &9454
-.c93e3
+.copy_input_to_prefix_buffer
     lda input_buffer,x                                                ; 93e3: bd 84 04    ...
     cpy #&0d                                                          ; 93e6: c0 0d       ..
-    bcs c93c6                                                         ; 93e8: b0 dc       ..
+    bcs error_too_long                                                ; 93e8: b0 dc       ..
     sta l041c,y                                                       ; 93ea: 99 1c 04    ...
     inx                                                               ; 93ed: e8          .
     iny                                                               ; 93ee: c8          .
@@ -3971,7 +4003,7 @@ l8728 = sub_c8727+1
 ; &9412 referenced 2 times by &8848, &9420
 .c9412
     cpy #&1b                                                          ; 9412: c0 1b       ..
-    beq c93c6                                                         ; 9414: f0 b0       ..
+    beq error_too_long                                                ; 9414: f0 b0       ..
     lda input_buffer,y                                                ; 9416: b9 84 04    ...
     sta l044f,x                                                       ; 9419: 9d 4f 04    .O.
     iny                                                               ; 941c: c8          .
@@ -3991,52 +4023,58 @@ l8728 = sub_c8727+1
     stx l0003                                                         ; 942a: 86 03       ..
     ldy #0                                                            ; 942c: a0 00       ..
     stx l001e                                                         ; 942e: 86 1e       ..
-    jsr sub_c946e                                                     ; 9430: 20 6e 94     n.
+    jsr check_prefix_for_CR_or_period                                 ; 9430: 20 6e 94     n.
     bcs c93d1                                                         ; 9433: b0 9c       ..
     cpx #2                                                            ; 9435: e0 02       ..
-    bcc no_drive_indicator                                            ; 9437: 90 10       ..
+    bcc check_for_directory_W                                         ; 9437: 90 10       ..             ; is the directory W
     lda l0482,x                                                       ; 9439: bd 82 04    ...
     cmp #&3a ; ':'                                                    ; 943c: c9 3a       .:
-    bne no_drive_indicator                                            ; 943e: d0 09       ..
+    bne check_for_directory_W                                         ; 943e: d0 09       ..             ; is the directory W
     inx                                                               ; 9440: e8          .
     stx l001e                                                         ; 9441: 86 1e       ..
     dex                                                               ; 9443: ca          .
-    jsr c946d                                                         ; 9444: 20 6d 94     m.
+    jsr check_prefix_for_CR_or_period_after_increment                 ; 9444: 20 6d 94     m.
     bcs c93d1                                                         ; 9447: b0 88       ..
 ; ***************************************************************************************
+; is the directory W
+; 
+; Check for directory W, hard coded
+; ***************************************************************************************
 ; &9449 referenced 2 times by &9437, &943e
-.no_drive_indicator
+.check_for_directory_W
     lda l0483,x                                                       ; 9449: bd 83 04    ...
     and #&df                                                          ; 944c: 29 df       ).
     ldx l0003                                                         ; 944e: a6 03       ..
     stx l001e                                                         ; 9450: 86 1e       ..
-    cmp #&57 ; 'W'                                                    ; 9452: c9 57       .W
-    beq c93e3                                                         ; 9454: f0 8d       ..
+    cmp #&57 ; 'W'                                                    ; 9452: c9 57       .W             ; is the directory W?
+    beq copy_input_to_prefix_buffer                                   ; 9454: f0 8d       ..
     jsr print_bad                                                     ; 9456: 20 23 9c     #.
+; overlapping: stz l0069                                              ; 9459: 64 69       di
 .print_directory
-    stz l0069                                                         ; 9459: 64 69       di
-    adc (l0065)                                                       ; 945b: 72 65       re
-    equs "ctory"                                                      ; 945d: 63 74 6f... cto
+    equs "directory"                                                  ; 9459: 64 69 72... dir
+; overlapping: adc (l0065)                                            ; 945b: 72 65       re
     equb &8d                                                          ; 9462: 8d          .
 
     rts                                                               ; 9463: 60          `
 
 ; ***************************************************************************************
 .name_cmd
-    jsr sub_c8876                                                     ; 9464: 20 76 88     v.
+    jsr is_there_a_file_loaded                                        ; 9464: 20 76 88     v.
     jsr sub_c93f9                                                     ; 9467: 20 f9 93     ..
     jmp print_viewspell_heading_details                               ; 946a: 4c 6b 83    Lk.
 
+; ***************************************************************************************
 ; &946d referenced 2 times by &9444, &9477
-.c946d
+.check_prefix_for_CR_or_period_after_increment
     inx                                                               ; 946d: e8          .
+; ***************************************************************************************
 ; &946e referenced 1 time by &9430
-.sub_c946e
+.check_prefix_for_CR_or_period
     lda input_buffer,x                                                ; 946e: bd 84 04    ...
     cmp #&0d                                                          ; 9471: c9 0d       ..
     beq return_25                                                     ; 9473: f0 05       ..
     cmp #&2e ; '.'                                                    ; 9475: c9 2e       ..
-    bne c946d                                                         ; 9477: d0 f4       ..
+    bne check_prefix_for_CR_or_period_after_increment                 ; 9477: d0 f4       ..
     clc                                                               ; 9479: 18          .
 ; &947a referenced 2 times by &9473, &9480
 .return_25
@@ -4068,7 +4106,7 @@ l8728 = sub_c8727+1
 ; ***************************************************************************************
 .create_cmd
     jsr c9bfe                                                         ; 94a0: 20 fe 9b     ..
-    jsr sub_c8fc0                                                     ; 94a3: 20 c0 8f     ..
+    jsr increment_x_by_14_set_y_to_4                                  ; 94a3: 20 c0 8f     ..
     lda #osfind_open_output                                           ; 94a6: a9 80       ..
     jsr osfind                                                        ; 94a8: 20 ce ff     ..            ; Open file for output (A=128)
     sta output_file_handle                                            ; 94ab: 85 62       .b             ; A=file handle (or zero on failure)
@@ -4191,7 +4229,7 @@ l8728 = sub_c8727+1
     jsr sub_9bda                                                      ; 9543: 20 da 9b     ..
 ; &9546 referenced 1 time by &9eb4
 .sub_c9546
-    jsr sub_c8fc0                                                     ; 9546: 20 c0 8f     ..
+    jsr increment_x_by_14_set_y_to_4                                  ; 9546: 20 c0 8f     ..
     jsr get_file_info_then_print_filename_not_found                   ; 9549: 20 54 95     T.
     bcs c9540                                                         ; 954c: b0 f2       ..
     jsr sub_9cd5                                                      ; 954e: 20 d5 9c     ..
@@ -4219,7 +4257,7 @@ l8728 = sub_c8727+1
 .print_found
     jsr print_inline_string                                           ; 9561: 20 2e 9c     ..
 ; overlapping: rol l669c                                              ; 9562: 2e 9c 66    ..f
-; overlapping: ror l006f                                              ; 9564: 66 6f       fo
+; overlapping: ror file_handle_2                                      ; 9564: 66 6f       fo
     equs "found"                                                      ; 9564: 66 6f 75... fou
 ; overlapping: adc l006e,x                                            ; 9566: 75 6e       un
 ; overlapping: stz l008d                                              ; 9568: 64 8d       d.
@@ -4276,11 +4314,11 @@ l8728 = sub_c8727+1
     lda #&ff                                                          ; 95a8: a9 ff       ..
 ; &95aa referenced 1 time by &95b1
 .loop_c95aa
-    sta l04c4,y                                                       ; 95aa: 99 c4 04    ...
+    sta file_name,y                                                   ; 95aa: 99 c4 04    ...
     lda l0483,y                                                       ; 95ad: b9 83 04    ...
     dey                                                               ; 95b0: 88          .
     bne loop_c95aa                                                    ; 95b1: d0 f7       ..
-    sta l04c4                                                         ; 95b3: 8d c4 04    ...
+    sta file_name                                                     ; 95b3: 8d c4 04    ...
     ldx #&c1                                                          ; 95b6: a2 c1       ..
     ldy #4                                                            ; 95b8: a0 04       ..
     stx copy_of_poge                                                  ; 95ba: 86 3a       .:
@@ -4339,8 +4377,8 @@ l8728 = sub_c8727+1
 ; &9605 referenced 2 times by &9bf3, &9c20
 .print_dictionary
     jsr print_inline_string                                           ; 9605: 20 2e 9c     ..
-    stz l0069                                                         ; 9608: 64 69       di
-    equs "ctionar"                                                    ; 960a: 63 74 69... cti
+; overlapping: stz l0069                                              ; 9608: 64 69       di
+    equs "dictionar"                                                  ; 9608: 64 69 63... dic
     equb &f9                                                          ; 9611: f9          .
 
     rts                                                               ; 9612: 60          `
@@ -4623,7 +4661,7 @@ l8728 = sub_c8727+1
 .sub_97cf
     lda #1                                                            ; 97cf: a9 01       ..
     sta l0044                                                         ; 97d1: 85 44       .D
-    jsr increment_ponter_over_page_boundary                           ; 97d3: 20 c9 90     ..
+    jsr increment_pointer_over_page_boundary                          ; 97d3: 20 c9 90     ..
     jsr sub_c9a66                                                     ; 97d6: 20 66 9a     f.
     stx l0042                                                         ; 97d9: 86 42       .B
     sta l0043                                                         ; 97db: 85 43       .C
@@ -4633,7 +4671,7 @@ l8728 = sub_c8727+1
     bcc c9805                                                         ; 97e5: 90 1e       ..
     jsr decrement_pointer_over_page_boundary                          ; 97e7: 20 d0 90     ..
     lda (l003e),y                                                     ; 97ea: b1 3e       .>
-    jsr increment_ponter_over_page_boundary                           ; 97ec: 20 c9 90     ..
+    jsr increment_pointer_over_page_boundary                          ; 97ec: 20 c9 90     ..
     jsr sub_92d1                                                      ; 97ef: 20 d1 92     ..
     bcc c9805                                                         ; 97f2: 90 11       ..
     jsr decrement_pointer_over_page_boundary                          ; 97f4: 20 d0 90     ..
@@ -4644,7 +4682,7 @@ l8728 = sub_c8727+1
     lda (l003e),y                                                     ; 97fc: b1 3e       .>
     cmp #&5f ; '_'                                                    ; 97fe: c9 5f       ._
     bcc loop_c97f7                                                    ; 9800: 90 f5       ..
-    jsr increment_ponter_over_page_boundary                           ; 9802: 20 c9 90     ..
+    jsr increment_pointer_over_page_boundary                          ; 9802: 20 c9 90     ..
 ; &9805 referenced 2 times by &97e5, &97f2
 .c9805
     tya                                                               ; 9805: 98          .
@@ -4671,7 +4709,7 @@ l8728 = sub_c8727+1
     lda #&ff                                                          ; 9821: a9 ff       ..
     sec                                                               ; 9823: 38          8
     sbc (l003e),y                                                     ; 9824: f1 3e       .>
-    jsr increment_ponter_over_page_boundary                           ; 9826: 20 c9 90     ..
+    jsr increment_pointer_over_page_boundary                          ; 9826: 20 c9 90     ..
     dex                                                               ; 9829: ca          .
     bne loop_c981f                                                    ; 982a: d0 f3       ..
     ldy #0                                                            ; 982c: a0 00       ..
@@ -4786,8 +4824,8 @@ l8728 = sub_c8727+1
     tay                                                               ; 98ca: a8          .
     pla                                                               ; 98cb: 68          h
     sec                                                               ; 98cc: 38          8
-    ldx #&47 ; 'G'                                                    ; 98cd: a2 47       .G
-    jsr sub_c9f48                                                     ; 98cf: 20 48 9f     H.
+    ldx #&47 ; 'G'                                                    ; 98cd: a2 47       .G             ; X=offset from &0000
+    jsr add_16bit_number                                              ; 98cf: 20 48 9f     H.            ; adds to a 16 byte number
     bne c98a3                                                         ; 98d2: d0 cf       ..
 ; &98d4 referenced 2 times by &98b0, &98bb
 .c98d4
@@ -5044,7 +5082,7 @@ l9998 = jumptable0_commands+1
 .loop_c9a47
     iny                                                               ; 9a47: c8          .
     lda (l003e),y                                                     ; 9a48: b1 3e       .>
-    jsr sub_c9de4                                                     ; 9a4a: 20 e4 9d     ..
+    jsr check_for_non_printables_and_marker                           ; 9a4a: 20 e4 9d     ..
     bcc loop_c9a47                                                    ; 9a4d: 90 f8       ..
 ; &9a4f referenced 2 times by &9a55, &9a57
 .return_32
@@ -5361,7 +5399,7 @@ l9998 = jumptable0_commands+1
     bne return_37                                                     ; 9be7: d0 f0       ..
 ; &9be9 referenced 1 time by &9c7f
 .sub_c9be9
-    jsr sub_c8fc0                                                     ; 9be9: 20 c0 8f     ..
+    jsr increment_x_by_14_set_y_to_4                                  ; 9be9: 20 c0 8f     ..
     lda l041c                                                         ; 9bec: ad 1c 04    ...
     cmp #&0d                                                          ; 9bef: c9 0d       ..
     bne return_37                                                     ; 9bf1: d0 e6       ..
@@ -5393,9 +5431,9 @@ l9998 = jumptable0_commands+1
     rts                                                               ; 9c14: 60          `
 
 ; ***************************************************************************************
-; check for ` and replace with text
+; check for % and replace with text
 ; 
-; replaces ` with the word ' words'
+; replaces % with the word 'ser'
 ; ***************************************************************************************
 ; &9c15 referenced 1 time by &9c72
 .check_for_percent_token
@@ -5408,7 +5446,7 @@ l9998 = jumptable0_commands+1
     jmp print_dictionary                                              ; 9c20: 4c 05 96    L..
 
 ; ***************************************************************************************
-; &9c23 referenced 6 times by &81fc, &8339, &9354, &9456, &9ccc, &9d60
+; &9c23 referenced 7 times by &81fc, &8339, &9354, &9456, &9ccc, &9d60, &9f86
 .print_bad
     jsr print_inline_string                                           ; 9c23: 20 2e 9c     ..
     equs "Ba", &e4                                                    ; 9c26: 42 61 e4    Ba.
@@ -5484,7 +5522,7 @@ l9998 = jumptable0_commands+1
 ; &9c70 referenced 1 time by &9c61
 .check_for_backtick_token
     cmp #&60 ; '`'                                                    ; 9c70: c9 60       .`
-    bne check_for_percent_token                                       ; 9c72: d0 a1       ..             ; check for ` and replace with text
+    bne check_for_percent_token                                       ; 9c72: d0 a1       ..             ; check for % and replace with text
 ; ***************************************************************************************
 ; &9c74 referenced 3 times by &83e2, &86e1, &9d82
 .print_words
@@ -5606,8 +5644,8 @@ l9998 = jumptable0_commands+1
     ldy #1                                                            ; 9cf9: a0 01       ..
     ldx #0                                                            ; 9cfb: a2 00       ..
     sta pointer1                                                      ; 9cfd: 85 18       ..
-    lda input_buffer                                                  ; 9cff: ad 84 04    ...
-    jsr sub_c92c9                                                     ; 9d02: 20 c9 92     ..
+    lda input_buffer                                                  ; 9cff: ad 84 04    ...            ; A=Character to check and convert
+    jsr convert_a_reg_to_uppercase                                    ; 9d02: 20 c9 92     ..            ; converts the a reg to upper case if appropriate
     sta input_buffer                                                  ; 9d05: 8d 84 04    ...
     bcc c9d22                                                         ; 9d08: 90 18       ..
 ; &9d0a referenced 3 times by &9d20, &9d28, &9d37
@@ -5615,10 +5653,10 @@ l9998 = jumptable0_commands+1
     inx                                                               ; 9d0a: e8          .
 ; &9d0b referenced 1 time by &9d33
 .c9d0b
-    lda input_buffer,y                                                ; 9d0b: b9 84 04    ...
+    lda input_buffer,y                                                ; 9d0b: b9 84 04    ...            ; A=Character to check and convert
     cmp #&21 ; '!'                                                    ; 9d0e: c9 21       .!
     bcc c9d41                                                         ; 9d10: 90 2f       ./
-    jsr sub_c92c9                                                     ; 9d12: 20 c9 92     ..
+    jsr convert_a_reg_to_uppercase                                    ; 9d12: 20 c9 92     ..            ; converts the a reg to upper case if appropriate
 ; &9d15 referenced 1 time by &9d3f
 .c9d15
     sta input_buffer,x                                                ; 9d15: 9d 84 04    ...
@@ -5772,14 +5810,15 @@ l9998 = jumptable0_commands+1
     pla                                                               ; 9de2: 68          h
     rts                                                               ; 9de3: 60          `
 
+; ***************************************************************************************
 ; &9de4 referenced 2 times by &8c93, &9a4a
-.sub_c9de4
+.check_for_non_printables_and_marker
     cmp #&ff                                                          ; 9de4: c9 ff       ..
     beq return_40                                                     ; 9de6: f0 0a       ..
 ; &9de8 referenced 8 times by &87d2, &8c27, &8c3a, &9091, &9929, &9983, &9a41, &9d1d
 .sub_c9de8
     cmp #&21 ; '!'                                                    ; 9de8: c9 21       .!
-    bcc return_40                                                     ; 9dea: 90 06       ..
+    bcc return_40                                                     ; 9dea: 90 06       ..             ; string contains space or non-printables
     cmp #&5f ; '_'                                                    ; 9dec: c9 5f       ._
     ror a                                                             ; 9dee: 6a          j
     eor #&80                                                          ; 9def: 49 80       I.
@@ -5845,7 +5884,7 @@ l9998 = jumptable0_commands+1
     dey                                                               ; 9e48: 88          .              ; Y=&00
 ; &9e49 referenced 2 times by &9e3e, &9e43
 .c9e49
-    jsr c9eff                                                         ; 9e49: 20 ff 9e     ..
+    jsr check_for_single_character_wildcard                           ; 9e49: 20 ff 9e     ..
     bne c9e65                                                         ; 9e4c: d0 17       ..
     inc l004e                                                         ; 9e4e: e6 4e       .N
     bne c9e54                                                         ; 9e50: d0 02       ..
@@ -5858,7 +5897,7 @@ l9998 = jumptable0_commands+1
 .loop_c9e59
     jsr sub_c9925                                                     ; 9e59: 20 25 99     %.
     inx                                                               ; 9e5c: e8          .
-    lda l04c4,x                                                       ; 9e5d: bd c4 04    ...
+    lda file_name,x                                                   ; 9e5d: bd c4 04    ...
     bne loop_c9e59                                                    ; 9e60: d0 f7       ..
     jsr sub_c8f3a                                                     ; 9e62: 20 3a 8f     :.
 ; &9e65 referenced 1 time by &9e4c
@@ -5882,18 +5921,18 @@ l9998 = jumptable0_commands+1
     lda (l003e),y                                                     ; 9e72: b1 3e       .>
     cmp #&21 ; '!'                                                    ; 9e74: c9 21       .!
     bcc loop_c9e6e                                                    ; 9e76: 90 f6       ..
-    sta l04c4,x                                                       ; 9e78: 9d c4 04    ...
+    sta file_name,x                                                   ; 9e78: 9d c4 04    ...
     inx                                                               ; 9e7b: e8          .
     cmp #&5f ; '_'                                                    ; 9e7c: c9 5f       ._
     bcc loop_c9e6f                                                    ; 9e7e: 90 ef       ..
     dex                                                               ; 9e80: ca          .
     lda #0                                                            ; 9e81: a9 00       ..
-    sta l04c4,x                                                       ; 9e83: 9d c4 04    ...
+    sta file_name,x                                                   ; 9e83: 9d c4 04    ...
     stx l0058                                                         ; 9e86: 86 58       .X
     tax                                                               ; 9e88: aa          .              ; X=&00
 ; &9e89 referenced 2 times by &9e98, &9e9d
 .c9e89
-    lda l04c4,x                                                       ; 9e89: bd c4 04    ...
+    lda file_name,x                                                   ; 9e89: bd c4 04    ...
     beq return_42                                                     ; 9e8c: f0 11       ..
     lda input_buffer,x                                                ; 9e8e: bd 84 04    ...
     inx                                                               ; 9e91: e8          .
@@ -5962,15 +6001,16 @@ l9998 = jumptable0_commands+1
     ldy #0                                                            ; 9ef8: a0 00       ..
     jsr c9e11                                                         ; 9efa: 20 11 9e     ..
     beq c9ed8                                                         ; 9efd: f0 d9       ..
+; ***************************************************************************************
 ; &9eff referenced 4 times by &9e49, &9f0b, &9f2d, &9f44
-.c9eff
+.check_for_single_character_wildcard
     lda input_buffer,x                                                ; 9eff: bd 84 04    ...
     inx                                                               ; 9f02: e8          .
     cmp #&3f ; '?'                                                    ; 9f03: c9 3f       .?
-    bne c9f10                                                         ; 9f05: d0 09       ..
+    bne check_for_wildcard                                            ; 9f05: d0 09       ..
     iny                                                               ; 9f07: c8          .
     lda l04c2,y                                                       ; 9f08: b9 c2 04    ...
-    bne c9eff                                                         ; 9f0b: d0 f2       ..
+    bne check_for_single_character_wildcard                           ; 9f0b: d0 f2       ..
 ; &9f0d referenced 1 time by &9f22
 .loop_c9f0d
     lda #1                                                            ; 9f0d: a9 01       ..
@@ -5978,8 +6018,9 @@ l9998 = jumptable0_commands+1
 .return_44
     rts                                                               ; 9f0f: 60          `
 
+; ***************************************************************************************
 ; &9f10 referenced 1 time by &9f05
-.c9f10
+.check_for_wildcard
     cmp #&2a ; '*'                                                    ; 9f10: c9 2a       .*
     bne c9f3d                                                         ; 9f12: d0 29       .)
 ; &9f14 referenced 1 time by &9f1c
@@ -6000,7 +6041,7 @@ l9998 = jumptable0_commands+1
     pha                                                               ; 9f2a: 48          H
     txa                                                               ; 9f2b: 8a          .
     pha                                                               ; 9f2c: 48          H
-    jsr c9eff                                                         ; 9f2d: 20 ff 9e     ..
+    jsr check_for_single_character_wildcard                           ; 9f2d: 20 ff 9e     ..
     beq c9f38                                                         ; 9f30: f0 06       ..
     pla                                                               ; 9f32: 68          h
     tax                                                               ; 9f33: aa          .
@@ -6020,14 +6061,22 @@ l9998 = jumptable0_commands+1
     cmp l04c2,y                                                       ; 9f3e: d9 c2 04    ...
     bne return_44                                                     ; 9f41: d0 cc       ..
     lsr a                                                             ; 9f43: 4a          J
-    bne c9eff                                                         ; 9f44: d0 b9       ..
+    bne check_for_single_character_wildcard                           ; 9f44: d0 b9       ..
     rts                                                               ; 9f46: 60          `
 
 ; &9f47 referenced 9 times by &82e3, &8c1a, &8e75, &90aa, &9a63, &9a9a, &9b16, &9b6a, &9edc
 .c9f47
     clc                                                               ; 9f47: 18          .
+; ***************************************************************************************
+; adds to a 16 byte number
+; 
+; Adds to a 16 bit word, offset in x
+; 
+; On Entry:
+;     X: offset from &0000
+; ***************************************************************************************
 ; &9f48 referenced 1 time by &98cf
-.sub_c9f48
+.add_16bit_number
     adc l0000,x                                                       ; 9f48: 75 00       u.
     sta l0000,x                                                       ; 9f4a: 95 00       ..
     bcc return_45                                                     ; 9f4c: 90 02       ..
@@ -6051,7 +6100,7 @@ l9998 = jumptable0_commands+1
     ldx #&41 ; 'A'                                                    ; 9f60: a2 41       .A
     sec                                                               ; 9f62: 38          8
     sbc #1                                                            ; 9f63: e9 01       ..
-    bne l9f86                                                         ; 9f65: d0 1f       ..
+    bne print_bad_string                                              ; 9f65: d0 1f       ..
 ; &9f67 referenced 1 time by &9f5e
 .c9f67
     stx pointer1+1                                                    ; 9f67: 86 19       ..
@@ -6073,11 +6122,10 @@ l9998 = jumptable0_commands+1
     beq sub_9f90                                                      ; 9f81: f0 0d       ..
     dex                                                               ; 9f83: ca          .
     bne loop_c9f7e                                                    ; 9f84: d0 f8       ..
-; overlapping: jsr print_bad                                          ; 9f86: 20 23 9c     #.
+; ***************************************************************************************
 ; &9f86 referenced 2 times by &9f65, &9f9d
-.l9f86
-    equs " #"                                                         ; 9f86: 20 23        #
-    equb &9c                                                          ; 9f88: 9c          .
+.print_bad_string
+    jsr print_bad                                                     ; 9f86: 20 23 9c     #.
     equs "strin"                                                      ; 9f89: 73 74 72... str
     equb &e7                                                          ; 9f8e: e7          .
 
@@ -6096,7 +6144,7 @@ l9f91 = sub_9f90+1
     sta input_buffer,x                                                ; 9f96: 9d 84 04    ...
     inc l001e                                                         ; 9f99: e6 1e       ..
     cpx #&41 ; 'A'                                                    ; 9f9b: e0 41       .A
-    bcs l9f86                                                         ; 9f9d: b0 e7       ..
+    bcs print_bad_string                                              ; 9f9d: b0 e7       ..
     sbc #&0c                                                          ; 9f9f: e9 0c       ..
     bne c9f6d                                                         ; 9fa1: d0 ca       ..
     ldy pointer1+1                                                    ; 9fa3: a4 19       ..
@@ -6137,6 +6185,7 @@ l9f91 = sub_9f90+1
 ; overlapping: ora (l0000),y                                          ; 9fd9: 11 00       ..
     equb &11, 0, &91, &a9, &87                                        ; 9fd9: 11 00 91... ...
 ; overlapping: sta (l00a9),y                                          ; 9fdb: 91 a9       ..
+; this looks like colour 0, then colour 1
 
     jsr oswrch                                                        ; 9fde: 20 ee ff     ..            ; Write character
     txa                                                               ; 9fe1: 8a          .
@@ -6179,914 +6228,913 @@ l9fea = sub_c9fe9+1
 save pydis_start, pydis_end
 
 ; Label references by decreasing frequency:
-;     input_buffer:                                 59
-;     input_buffer+0:                               59
-;     l003e:                                        53
-;     print_inline_string:                          37
-;     corrected_himem:                              36
-;     corrected_himem+0:                            36
-;     l0008:                                        31
-;     l003f:                                        30
-;     corrected_himem+1:                            29
-;     l000c:                                        28
-;     l000e:                                        28
-;     l0483:                                        25
-;     l004d:                                        23
-;     l003c:                                        21
-;     l003d:                                        20
-;     l0007:                                        17
-;     editing_file_flag:                            16
-;     l004c:                                        14
-;     l0059:                                        14
-;     page_pointer:                                 14
-;     page_pointer+0:                               14
-;     l0042:                                        13
-;     l0043:                                        13
-;     oswrch:                                       13
-;     l002e:                                        12
-;     pointer1:                                     12
-;     pointer1+0:                                   12
-;     text_cursor_xpos:                             12
-;     l001c:                                        11
-;     l002b:                                        11
-;     l000d:                                        10
-;     l0047:                                        10
-;     l04c4:                                        10
-;     osasci:                                       10
-;     c9f47:                                         9
-;     l0009:                                         9
-;     l0014:                                         9
-;     l0021:                                         9
-;     l0032:                                         9
-;     l0055:                                         9
-;     l040e:                                         9
-;     osbyte:                                        9
-;     pass_service_call_to_next_rom:                 9
-;     text_cursor_vpos:                              9
-;     check_os_escape_flag:                          8
-;     l0000:                                         8
-;     l0010:                                         8
-;     l001e:                                         8
-;     l004a:                                         8
-;     l005a:                                         8
-;     sub_c9de8:                                     8
-;     c8144:                                         7
-;     c8ce6:                                         7
-;     convert_to_upper:                              7
-;     further_corrected_himem:                       7
-;     further_corrected_himem+0:                     7
-;     further_corrected_himem+1:                     7
-;     l0005:                                         7
-;     l0006:                                         7
-;     l0049:                                         7
-;     l0056:                                         7
-;     l0063:                                         7
-;     l0064:                                         7
-;     l0069:                                         7
-;     l0088:                                         7
-;     output_file_handle:                            7
-;     pointer1+1:                                    7
-;     print_CR_if_cursor_not_start_of_line:          7
-;     sub_c9bc5:                                     7
-;     c8fd6:                                         6
-;     c9789:                                         6
-;     check_file_exists:                             6
-;     copy_of_poge+1:                                6
-;     l0003:                                         6
-;     l0012:                                         6
-;     l0031:                                         6
-;     l0038:                                         6
-;     l0044:                                         6
-;     l0050:                                         6
-;     l0058:                                         6
-;     l0060:                                         6
-;     l0068:                                         6
-;     l0074:                                         6
-;     l0526:                                         6
-;     page_pointer+1:                                6
-;     print_bad:                                     6
-;     print_viewspell_heading_details:               6
-;     return_10:                                     6
-;     return_22:                                     6
-;     c8f5a:                                         5
-;     c8f6b:                                         5
-;     c9a3e:                                         5
-;     copy_of_poge:                                  5
-;     copy_of_poge+0:                                5
-;     increment_ponter_over_page_boundary:           5
-;     l0016:                                         5
-;     l001b:                                         5
-;     l0035:                                         5
-;     l0039:                                         5
-;     l0046:                                         5
-;     l0048:                                         5
-;     l004f:                                         5
-;     l0061:                                         5
-;     l006a:                                         5
-;     l0075:                                         5
-;     l0087:                                         5
-;     l008f:                                         5
-;     l041c:                                         5
-;     osfind:                                        5
-;     page+1:                                        5
-;     pointer2:                                      5
-;     pointer2+0:                                    5
-;     print_full_stop:                               5
-;     sub_c9a61:                                     5
-;     sub_c9bad:                                     5
-;     adjusted_xpos:                                 4
-;     c8281:                                         4
-;     c8c8d:                                         4
-;     c9058:                                         4
-;     c917d:                                         4
-;     c9216:                                         4
-;     c9224:                                         4
-;     c9acf:                                         4
-;     c9b70:                                         4
-;     c9ee8:                                         4
-;     c9eff:                                         4
-;     decrement_pointer_over_page_boundary:          4
-;     fixup_page:                                    4
-;     get_cursor_position:                           4
-;     input_buffer+1:                                4
-;     l0001:                                         4
-;     l000a:                                         4
-;     l000b:                                         4
-;     l000f:                                         4
-;     l002c:                                         4
-;     l002f:                                         4
-;     l0036:                                         4
-;     l0037:                                         4
-;     l0041:                                         4
-;     l0052:                                         4
-;     l0053:                                         4
-;     l005b:                                         4
-;     l0067:                                         4
-;     l0070:                                         4
-;     l0078:                                         4
-;     l0079:                                         4
-;     l0429:                                         4
-;     l04c3:                                         4
-;     l04e6:                                         4
-;     l0546:                                         4
-;     l05c9:                                         4
-;     pointer2+1:                                    4
-;     return_18:                                     4
-;     sub_c8876:                                     4
-;     sub_c8888:                                     4
-;     sub_c8fc0:                                     4
-;     sub_c92c9:                                     4
-;     sub_c92f8:                                     4
-;     sub_c9324:                                     4
-;     sub_c9867:                                     4
-;     sub_c9925:                                     4
-;     sub_c9c7f:                                     4
-;     c864a:                                         3
-;     c8746:                                         3
-;     c887d:                                         3
-;     c8b54:                                         3
-;     c8c33:                                         3
-;     c8d65:                                         3
-;     c8f5c:                                         3
-;     c906a:                                         3
-;     c913d:                                         3
-;     c91e4:                                         3
-;     c93c6:                                         3
-;     c998e:                                         3
-;     c9b4c:                                         3
-;     c9d0a:                                         3
-;     c9e11:                                         3
-;     fix_up_input_buffer:                           3
-;     get_file_info_then_print_filename_not_found:   3
-;     get_oshwm:                                     3
-;     l0002:                                         3
-;     l0015:                                         3
-;     l001d:                                         3
-;     l0029:                                         3
-;     l002a:                                         3
-;     l0030:                                         3
-;     l0054:                                         3
-;     l0071:                                         3
-;     l0081:                                         3
-;     l0082:                                         3
-;     l0083:                                         3
-;     l0089:                                         3
-;     l008a:                                         3
-;     l0103:                                         3
-;     l0400:                                         3
-;     l0401:                                         3
-;     l04c2:                                         3
-;     open_file_for_input:                           3
-;     os_text_ptr:                                   3
-;     osgbpb:                                        3
-;     page:                                          3
-;     page+0:                                        3
-;     print_bad_mode:                                3
-;     print_newline_save_cursor:                     3
-;     print_ser:                                     3
-;     print_words:                                   3
-;     read_user_command_from_prompt:                 3
-;     return_30:                                     3
-;     return_37:                                     3
-;     return_41:                                     3
-;     return_42:                                     3
-;     store_x_y_in_pointer2:                         3
-;     sub_89c1:                                      3
-;     sub_9428:                                      3
-;     sub_9a25:                                      3
-;     sub_9a50:                                      3
-;     sub_9a80:                                      3
-;     sub_9cd5:                                      3
-;     sub_9d48:                                      3
-;     sub_c85da:                                     3
-;     sub_c85e1:                                     3
-;     sub_c8844:                                     3
-;     sub_c889c:                                     3
-;     sub_c88af:                                     3
-;     sub_c8bb0:                                     3
-;     sub_c8bc3:                                     3
-;     sub_c8fb1:                                     3
-;     sub_c9277:                                     3
-;     sub_c9289:                                     3
-;     sub_c92f6:                                     3
-;     sub_c93b4:                                     3
-;     sub_c93f5:                                     3
-;     sub_c9dc7:                                     3
-;     acknowledge_escape_pressed:                    2
-;     c810d:                                         2
-;     c81af:                                         2
-;     c81cf:                                         2
-;     c81dd:                                         2
-;     c8204:                                         2
-;     c8231:                                         2
-;     c82be:                                         2
-;     c82c9:                                         2
-;     c84a1:                                         2
-;     c8567:                                         2
-;     c856d:                                         2
-;     c85bc:                                         2
-;     c85d1:                                         2
-;     c8611:                                         2
-;     c861e:                                         2
-;     c862c:                                         2
-;     c86d5:                                         2
-;     c8718:                                         2
-;     c877c:                                         2
-;     c87ab:                                         2
-;     c87b6:                                         2
-;     c87c3:                                         2
-;     c87ca:                                         2
-;     c8807:                                         2
-;     c89d4:                                         2
-;     c8a15:                                         2
-;     c8a44:                                         2
-;     c8a4d:                                         2
-;     c8a84:                                         2
-;     c8b1c:                                         2
-;     c8b31:                                         2
-;     c8b74:                                         2
-;     c8bfd:                                         2
-;     c8c6a:                                         2
-;     c8d30:                                         2
-;     c8d33:                                         2
-;     c8d50:                                         2
-;     c8d92:                                         2
-;     c8ddf:                                         2
-;     c8dff:                                         2
-;     c8e30:                                         2
-;     c8ee3:                                         2
-;     c8f8d:                                         2
-;     c8ff3:                                         2
-;     c9024:                                         2
-;     c9036:                                         2
-;     c9075:                                         2
-;     c90b7:                                         2
-;     c91b9:                                         2
-;     c91ee:                                         2
-;     c921e:                                         2
-;     c9363:                                         2
-;     c93d1:                                         2
-;     c93e3:                                         2
-;     c9412:                                         2
-;     c946d:                                         2
-;     c94c3:                                         2
-;     c9540:                                         2
-;     c9622:                                         2
-;     c963e:                                         2
-;     c966b:                                         2
-;     c976f:                                         2
-;     c97cc:                                         2
-;     c9805:                                         2
-;     c980b:                                         2
-;     c98d4:                                         2
-;     c98df:                                         2
-;     c98e2:                                         2
-;     c9965:                                         2
-;     c9ae2:                                         2
-;     c9afd:                                         2
-;     c9bfe:                                         2
-;     c9ccc:                                         2
-;     c9d41:                                         2
-;     c9d60:                                         2
-;     c9e49:                                         2
-;     c9e89:                                         2
-;     c9ea0:                                         2
-;     c9f1e:                                         2
-;     c9f6d:                                         2
-;     c9ff9:                                         2
-;     call_osasci:                                   2
-;     call_osbyte:                                   2
-;     call_osfind_with_block:                        2
-;     call_osgbpb_with_block:                        2
-;     change_screen_mode:                            2
-;     command_table:                                 2
-;     data_table1:                                   2
-;     directory_name:                                2
-;     get_current_screen_mode:                       2
-;     get_file_information:                          2
-;     l0011:                                         2
-;     l0013:                                         2
-;     l001a:                                         2
-;     l0045:                                         2
-;     l004e:                                         2
-;     l0057:                                         2
-;     l005e:                                         2
-;     l005f:                                         2
-;     l0065:                                         2
-;     l0066:                                         2
-;     l006f:                                         2
-;     l007a:                                         2
-;     l007c:                                         2
-;     l007f:                                         2
-;     l0080:                                         2
-;     l0102:                                         2
-;     l0104:                                         2
-;     l043f:                                         2
-;     l0441:                                         2
-;     l044e:                                         2
-;     l044f:                                         2
-;     l0482:                                         2
-;     l052b:                                         2
-;     l052d:                                         2
-;     l052e:                                         2
-;     l9f86:                                         2
-;     lff2f:                                         2
-;     lff37:                                         2
-;     lff6f:                                         2
-;     load_file_with_block:                          2
-;     no_drive_indicator:                            2
-;     os_escape_flag_set:                            2
-;     osfile_with_block:                             2
-;     osnewl:                                        2
-;     osword:                                        2
-;     print_Word:                                    2
-;     print_dictionary:                              2
-;     print_filename:                                2
-;     print_found:                                   2
-;     print_input_cursor:                            2
-;     print_insert_disk_press_key:                   2
-;     print_memory_full:                             2
-;     print_not_space:                               2
-;     print_space:                                   2
-;     read_bytes_from_files:                         2
-;     return_12:                                     2
-;     return_14:                                     2
-;     return_17:                                     2
-;     return_20:                                     2
-;     return_21:                                     2
-;     return_24:                                     2
-;     return_25:                                     2
-;     return_3:                                      2
-;     return_32:                                     2
-;     return_4:                                      2
-;     return_40:                                     2
-;     return_44:                                     2
-;     return_45:                                     2
-;     return_6:                                      2
-;     return_8:                                      2
-;     rom_command:                                   2
-;     rom_workspace_array:                           2
-;     save_file:                                     2
-;     set_cursor_thick_and_fast_blink:               2
-;     sub_8515:                                      2
-;     sub_89bb:                                      2
-;     sub_8c5b:                                      2
-;     sub_8cca:                                      2
-;     sub_92d1:                                      2
-;     sub_9a83:                                      2
-;     sub_9aa3:                                      2
-;     sub_9bda:                                      2
-;     sub_c842e:                                     2
-;     sub_c857d:                                     2
-;     sub_c85c4:                                     2
-;     sub_c8786:                                     2
-;     sub_c8863:                                     2
-;     sub_c892f:                                     2
-;     sub_c8b07:                                     2
-;     sub_c8b7a:                                     2
-;     sub_c8b9e:                                     2
-;     sub_c8c0a:                                     2
-;     sub_c8c14:                                     2
-;     sub_c8c46:                                     2
-;     sub_c8cb8:                                     2
-;     sub_c8ce8:                                     2
-;     sub_c8d82:                                     2
-;     sub_c8e0b:                                     2
-;     sub_c8e19:                                     2
-;     sub_c8f22:                                     2
-;     sub_c8f30:                                     2
-;     sub_c8f3a:                                     2
-;     sub_c8f96:                                     2
-;     sub_c8fa2:                                     2
-;     sub_c8fb7:                                     2
-;     sub_c8fcb:                                     2
-;     sub_c9011:                                     2
-;     sub_c929c:                                     2
-;     sub_c92b5:                                     2
-;     sub_c92dd:                                     2
-;     sub_c92e3:                                     2
-;     sub_c92fb:                                     2
-;     sub_c93f9:                                     2
-;     sub_c990e:                                     2
-;     sub_c994c:                                     2
-;     sub_c9a1e:                                     2
-;     sub_c9a66:                                     2
-;     sub_c9b38:                                     2
-;     sub_c9ba4:                                     2
-;     sub_c9bb6:                                     2
-;     sub_c9c06:                                     2
-;     sub_c9de4:                                     2
-;     sub_c9df3:                                     2
-;     sub_c9fc8:                                     2
-;     sub_c9fed:                                     2
-;     sub_c9ff1:                                     2
-;     brkv:                                          1
-;     c807d:                                         1
-;     c8102:                                         1
-;     c81e5:                                         1
-;     c81ef:                                         1
-;     c8212:                                         1
-;     c822e:                                         1
-;     c8252:                                         1
-;     c8259:                                         1
-;     c8260:                                         1
-;     c827e:                                         1
-;     c82af:                                         1
-;     c82d7:                                         1
-;     c82e0:                                         1
-;     c82eb:                                         1
-;     c8316:                                         1
-;     c8368:                                         1
-;     c83a5:                                         1
-;     c83b7:                                         1
-;     c83c6:                                         1
-;     c8449:                                         1
-;     c85e9:                                         1
-;     c8604:                                         1
-;     c8643:                                         1
-;     c8647:                                         1
-;     c8651:                                         1
-;     c8655:                                         1
-;     c8693:                                         1
-;     c86b5:                                         1
-;     c86bb:                                         1
-;     c86f4:                                         1
-;     c8706:                                         1
-;     c8709:                                         1
-;     c8733:                                         1
-;     c873d:                                         1
-;     c877f:                                         1
-;     c87b5:                                         1
-;     c87b9:                                         1
-;     c8824:                                         1
-;     c882a:                                         1
-;     c882d:                                         1
-;     c886e:                                         1
-;     c8874:                                         1
-;     c8892:                                         1
-;     c88b5:                                         1
-;     c88c6:                                         1
-;     c88f6:                                         1
-;     c8911:                                         1
-;     c8929:                                         1
-;     c893e:                                         1
-;     c89a5:                                         1
-;     c89de:                                         1
-;     c89e1:                                         1
-;     c89ef:                                         1
-;     c8a08:                                         1
-;     c8a11:                                         1
-;     c8a1e:                                         1
-;     c8a38:                                         1
-;     c8a4a:                                         1
-;     c8a58:                                         1
-;     c8a81:                                         1
-;     c8a99:                                         1
-;     c8ab6:                                         1
-;     c8ad0:                                         1
-;     c8ae2:                                         1
-;     c8afa:                                         1
-;     c8b00:                                         1
-;     c8b19:                                         1
-;     c8b2f:                                         1
-;     c8b39:                                         1
-;     c8b3b:                                         1
-;     c8b65:                                         1
-;     c8b8a:                                         1
-;     c8c1d:                                         1
-;     c8c4f:                                         1
-;     c8c56:                                         1
-;     c8c6e:                                         1
-;     c8ca5:                                         1
-;     c8cd1:                                         1
-;     c8d01:                                         1
-;     c8d06:                                         1
-;     c8d16:                                         1
-;     c8d1b:                                         1
-;     c8d22:                                         1
-;     c8d41:                                         1
-;     c8d5a:                                         1
-;     c8d70:                                         1
-;     c8d79:                                         1
-;     c8d7f:                                         1
-;     c8d95:                                         1
-;     c8d99:                                         1
-;     c8d9d:                                         1
-;     c8dbc:                                         1
-;     c8dca:                                         1
-;     c8dd0:                                         1
-;     c8df7:                                         1
-;     c8e42:                                         1
-;     c8e59:                                         1
-;     c8e7c:                                         1
-;     c8eb2:                                         1
-;     c8ec8:                                         1
-;     c8edd:                                         1
-;     c8ef3:                                         1
-;     c8f2d:                                         1
-;     c8f63:                                         1
-;     c8f8f:                                         1
-;     c900f:                                         1
-;     c9044:                                         1
-;     c904a:                                         1
-;     c906c:                                         1
-;     c906f:                                         1
-;     c90ad:                                         1
-;     c90b1:                                         1
-;     c90c3:                                         1
-;     c9164:                                         1
-;     c9194:                                         1
-;     c91df:                                         1
-;     c9206:                                         1
-;     c920f:                                         1
-;     c921c:                                         1
-;     c923f:                                         1
-;     c9255:                                         1
-;     c925e:                                         1
-;     c9262:                                         1
-;     c92c7:                                         1
-;     c9319:                                         1
-;     c935f:                                         1
-;     c9376:                                         1
-;     c93bf:                                         1
-;     c93fb:                                         1
-;     c9410:                                         1
-;     c948b:                                         1
-;     c94d2:                                         1
-;     c94d4:                                         1
-;     c9571:                                         1
-;     c9590:                                         1
-;     c961f:                                         1
-;     c9645:                                         1
-;     c964f:                                         1
-;     c9683:                                         1
-;     c96a4:                                         1
-;     c9728:                                         1
-;     c9797:                                         1
-;     c981c:                                         1
-;     c9860:                                         1
-;     c9877:                                         1
-;     c9887:                                         1
-;     c9898:                                         1
-;     c98a3:                                         1
-;     c98ec:                                         1
-;     c98f1:                                         1
-;     c9933:                                         1
-;     c9946:                                         1
-;     c996c:                                         1
-;     c9a23:                                         1
-;     c9a96:                                         1
-;     c9b0d:                                         1
-;     c9b12:                                         1
-;     c9b31:                                         1
-;     c9b49:                                         1
-;     c9b7c:                                         1
-;     c9c3d:                                         1
-;     c9d0b:                                         1
-;     c9d15:                                         1
-;     c9d22:                                         1
-;     c9d5d:                                         1
-;     c9d8f:                                         1
-;     c9dac:                                         1
-;     c9db1:                                         1
-;     c9dcc:                                         1
-;     c9ddb:                                         1
-;     c9ddd:                                         1
-;     c9e16:                                         1
-;     c9e54:                                         1
-;     c9e65:                                         1
-;     c9e72:                                         1
-;     c9ec1:                                         1
-;     c9ed8:                                         1
-;     c9f10:                                         1
-;     c9f38:                                         1
-;     c9f3d:                                         1
-;     c9f67:                                         1
-;     c9f94:                                         1
-;     c9faa:                                         1
-;     c9fbc:                                         1
-;     c9fd6:                                         1
-;     check_for_backtick_token:                      1
-;     check_for_mode_7:                              1
-;     check_for_percent_token:                       1
-;     check_for_prefix_master:                       1
-;     check_for_prefix_text:                         1
-;     check_for_tokens:                              1
-;     check_for_underline_token:                     1
-;     check_screen_mode_and_enough_memory:           1
-;     clear_carry_as_lowercase:                      1
-;     data_table2:                                   1
-;     data_table3:                                   1
-;     decremented_LSB_still_in_page:                 1
-;     default_master_dictionary:                     1
-;     end_of_rom_command:                            1
-;     get_himem_store_corrected_values:              1
-;     jumptable0_commands:                           1
-;     l0017:                                         1
-;     l0022:                                         1
-;     l002d:                                         1
-;     l0033:                                         1
-;     l0034:                                         1
-;     l0040:                                         1
-;     l0072:                                         1
-;     l0073:                                         1
-;     l0076:                                         1
-;     l0077:                                         1
-;     l008b:                                         1
-;     l008c:                                         1
-;     l008d:                                         1
-;     l008e:                                         1
-;     l00a0:                                         1
-;     l00a9:                                         1
-;     l00fd:                                         1
-;     l041b:                                         1
-;     l041d:                                         1
-;     l044d:                                         1
-;     l04c5:                                         1
-;     l04e5:                                         1
-;     l0527:                                         1
-;     l0528:                                         1
-;     l052c:                                         1
-;     l0545:                                         1
-;     l0547:                                         1
-;     l0549:                                         1
-;     l0588:                                         1
-;     l08ff:                                         1
-;     l5ec9:                                         1
-;     l6369:                                         1
-;     l8213:                                         1
-;     l8728:                                         1
-;     l969c:                                         1
-;     l9998:                                         1
-;     l99c2:                                         1
-;     l9f53:                                         1
-;     l9f91:                                         1
-;     l9fea:                                         1
-;     language_handler:                              1
-;     last_osbyte_a_register:                        1
-;     last_osbyte_x_register:                        1
-;     last_osbyte_y_register:                        1
-;     lff6b:                                         1
-;     lff8b:                                         1
-;     loop_c8045:                                    1
-;     loop_c81a8:                                    1
-;     loop_c8264:                                    1
-;     loop_c826b:                                    1
-;     loop_c845b:                                    1
-;     loop_c8469:                                    1
-;     loop_c84b1:                                    1
-;     loop_c8535:                                    1
-;     loop_c85ac:                                    1
-;     loop_c85ce:                                    1
-;     loop_c85fa:                                    1
-;     loop_c863f:                                    1
-;     loop_c8750:                                    1
-;     loop_c87cc:                                    1
-;     loop_c8802:                                    1
-;     loop_c887a:                                    1
-;     loop_c89ae:                                    1
-;     loop_c89d6:                                    1
-;     loop_c8a2a:                                    1
-;     loop_c8a6b:                                    1
-;     loop_c8ad1:                                    1
-;     loop_c8b09:                                    1
-;     loop_c8bb8:                                    1
-;     loop_c8be5:                                    1
-;     loop_c8c21:                                    1
-;     loop_c8c72:                                    1
-;     loop_c8cf0:                                    1
-;     loop_c8dad:                                    1
-;     loop_c8dfc:                                    1
-;     loop_c8e5c:                                    1
-;     loop_c8f03:                                    1
-;     loop_c8f0d:                                    1
-;     loop_c8f17:                                    1
-;     loop_c8f4a:                                    1
-;     loop_c8f4f:                                    1
-;     loop_c8ffe:                                    1
-;     loop_c908e:                                    1
-;     loop_c9097:                                    1
-;     loop_c91b5:                                    1
-;     loop_c9211:                                    1
-;     loop_c9249:                                    1
-;     loop_c9266:                                    1
-;     loop_c9279:                                    1
-;     loop_c928c:                                    1
-;     loop_c9302:                                    1
-;     loop_c936c:                                    1
-;     loop_c93b8:                                    1
-;     loop_c9402:                                    1
-;     loop_c9482:                                    1
-;     loop_c94b7:                                    1
-;     loop_c94f1:                                    1
-;     loop_c951b:                                    1
-;     loop_c952f:                                    1
-;     loop_c9592:                                    1
-;     loop_c95aa:                                    1
-;     loop_c95da:                                    1
-;     loop_c95e6:                                    1
-;     loop_c9628:                                    1
-;     loop_c96ac:                                    1
-;     loop_c96bb:                                    1
-;     loop_c96cb:                                    1
-;     loop_c972a:                                    1
-;     loop_c973e:                                    1
-;     loop_c97f7:                                    1
-;     loop_c981f:                                    1
-;     loop_c9853:                                    1
-;     loop_c98bf:                                    1
-;     loop_c98ef:                                    1
-;     loop_c98f3:                                    1
-;     loop_c9910:                                    1
-;     loop_c9919:                                    1
-;     loop_c9942:                                    1
-;     loop_c997e:                                    1
-;     loop_c9a47:                                    1
-;     loop_c9b5d:                                    1
-;     loop_c9ba8:                                    1
-;     loop_c9bb8:                                    1
-;     loop_c9bfb:                                    1
-;     loop_c9c08:                                    1
-;     loop_c9c32:                                    1
-;     loop_c9c8f:                                    1
-;     loop_c9cdd:                                    1
-;     loop_c9db6:                                    1
-;     loop_c9df5:                                    1
-;     loop_c9dff:                                    1
-;     loop_c9e04:                                    1
-;     loop_c9e2f:                                    1
-;     loop_c9e59:                                    1
-;     loop_c9e6e:                                    1
-;     loop_c9e6f:                                    1
-;     loop_c9f0d:                                    1
-;     loop_c9f14:                                    1
-;     loop_c9f7e:                                    1
-;     loop_c9fab:                                    1
-;     loop_c9ff5:                                    1
-;     move_cursor:                                   1
-;     move_page_value_to_next_integer_page:          1
-;     not_a_page_boundary:                           1
-;     not_star_command:                              1
-;     os_escape_flag:                                1
-;     osargs:                                        1
-;     oscli:                                         1
-;     osfile:                                        1
-;     osrdch:                                        1
-;     prefix_array:                                  1
-;     prefix_dictionary_directory:                   1
-;     prepare_to_move_cursor:                        1
-;     print_All:                                     1
-;     print_CR_filename_not_found:                   1
-;     print_CR_then_filename:                        1
-;     print_LF_CR:                                   1
-;     print_Mistake:                                 1
-;     print_master:                                  1
-;     print_name:                                    1
-;     print_prefix_settings:                         1
-;     print_rom_title_and_version:                   1
-;     print_screen_mode:                             1
-;     print_u_expand_ser:                            1
-;     reset_directory_name:                          1
-;     reset_rom_workspace_in_array:                  1
-;     reset_variables_4c_to_5b_to_zero:              1
-;     return_1:                                      1
-;     return_11:                                     1
-;     return_13:                                     1
-;     return_15:                                     1
-;     return_16:                                     1
-;     return_19:                                     1
-;     return_2:                                      1
-;     return_23:                                     1
-;     return_26:                                     1
-;     return_27:                                     1
-;     return_28:                                     1
-;     return_29:                                     1
-;     return_31:                                     1
-;     return_33:                                     1
-;     return_34:                                     1
-;     return_35:                                     1
-;     return_36:                                     1
-;     return_38:                                     1
-;     return_39:                                     1
-;     return_43:                                     1
-;     return_5:                                      1
-;     return_7:                                      1
-;     return_9:                                      1
-;     service_handler:                               1
-;     service_help_command:                          1
-;     service_unknown_osbyte:                        1
-;     set_carry_flag_based_on_case:                  1
-;     shuffle_down_input_buffer:                     1
-;     skip_over_space:                               1
-;     start_as_language:                             1
-;     store_page:                                    1
-;     store_page_in_variables:                       1
-;     sub_8504:                                      1
-;     sub_8895:                                      1
-;     sub_88b8:                                      1
-;     sub_8983:                                      1
-;     sub_8be3:                                      1
-;     sub_90d9:                                      1
-;     sub_9543:                                      1
-;     sub_97cf:                                      1
-;     sub_984c:                                      1
-;     sub_9a70:                                      1
-;     sub_9ad4:                                      1
-;     sub_9aef:                                      1
-;     sub_9ca4:                                      1
-;     sub_9cf7:                                      1
-;     sub_9f90:                                      1
-;     sub_c80d8:                                     1
-;     sub_c8628:                                     1
-;     sub_c8788:                                     1
-;     sub_c889f:                                     1
-;     sub_c88ba:                                     1
-;     sub_c88fa:                                     1
-;     sub_c8986:                                     1
-;     sub_c8b2b:                                     1
-;     sub_c8ba0:                                     1
-;     sub_c8bfa:                                     1
-;     sub_c8da1:                                     1
-;     sub_c8e27:                                     1
-;     sub_c8e4d:                                     1
-;     sub_c8efe:                                     1
-;     sub_c8f11:                                     1
-;     sub_c8f1b:                                     1
-;     sub_c8f24:                                     1
-;     sub_c8f33:                                     1
-;     sub_c90f3:                                     1
-;     sub_c9145:                                     1
-;     sub_c91a1:                                     1
-;     sub_c9284:                                     1
-;     sub_c942a:                                     1
-;     sub_c946e:                                     1
-;     sub_c9546:                                     1
-;     sub_c9613:                                     1
-;     sub_c9917:                                     1
-;     sub_c992e:                                     1
-;     sub_c9ab2:                                     1
-;     sub_c9b25:                                     1
-;     sub_c9b2d:                                     1
-;     sub_c9b36:                                     1
-;     sub_c9b53:                                     1
-;     sub_c9b7f:                                     1
-;     sub_c9bb1:                                     1
-;     sub_c9be9:                                     1
-;     sub_c9cf9:                                     1
-;     sub_c9d8a:                                     1
-;     sub_c9da6:                                     1
-;     sub_c9e6a:                                     1
-;     sub_c9f48:                                     1
-;     title:                                         1
-;     wipe_variables_from_00_to_8f:                  1
+;     input_buffer:                                   59
+;     input_buffer+0:                                 59
+;     l003e:                                          53
+;     print_inline_string:                            37
+;     corrected_himem:                                36
+;     corrected_himem+0:                              36
+;     l0008:                                          31
+;     l003f:                                          30
+;     corrected_himem+1:                              29
+;     l000c:                                          28
+;     l000e:                                          28
+;     l0483:                                          25
+;     l004d:                                          23
+;     l003c:                                          21
+;     l003d:                                          20
+;     l0007:                                          17
+;     editing_file_flag:                              16
+;     l004c:                                          14
+;     l0059:                                          14
+;     page_pointer:                                   14
+;     page_pointer+0:                                 14
+;     l0042:                                          13
+;     l0043:                                          13
+;     oswrch:                                         13
+;     l002e:                                          12
+;     pointer1:                                       12
+;     pointer1+0:                                     12
+;     text_cursor_xpos:                               12
+;     l001c:                                          11
+;     l002b:                                          11
+;     file_name:                                      10
+;     l000d:                                          10
+;     l0047:                                          10
+;     osasci:                                         10
+;     c9f47:                                           9
+;     l0009:                                           9
+;     l0014:                                           9
+;     l0021:                                           9
+;     l0032:                                           9
+;     l0055:                                           9
+;     l040e:                                           9
+;     osbyte:                                          9
+;     pass_service_call_to_next_rom:                   9
+;     text_cursor_vpos:                                9
+;     check_os_escape_flag:                            8
+;     l0000:                                           8
+;     l0010:                                           8
+;     l001e:                                           8
+;     l004a:                                           8
+;     l005a:                                           8
+;     sub_c9de8:                                       8
+;     c8144:                                           7
+;     c8ce6:                                           7
+;     convert_to_upper:                                7
+;     further_corrected_himem:                         7
+;     further_corrected_himem+0:                       7
+;     further_corrected_himem+1:                       7
+;     l0005:                                           7
+;     l0006:                                           7
+;     l0049:                                           7
+;     l0056:                                           7
+;     l0063:                                           7
+;     l0064:                                           7
+;     l0088:                                           7
+;     output_file_handle:                              7
+;     pointer1+1:                                      7
+;     print_CR_if_cursor_not_start_of_line:            7
+;     print_bad:                                       7
+;     sub_c9bc5:                                       7
+;     c8fd6:                                           6
+;     c9789:                                           6
+;     check_file_exists:                               6
+;     copy_of_poge+1:                                  6
+;     l0003:                                           6
+;     l0012:                                           6
+;     l0031:                                           6
+;     l0038:                                           6
+;     l0044:                                           6
+;     l0050:                                           6
+;     l0058:                                           6
+;     l0060:                                           6
+;     l0068:                                           6
+;     l0074:                                           6
+;     l0526:                                           6
+;     page_pointer+1:                                  6
+;     print_viewspell_heading_details:                 6
+;     return_10:                                       6
+;     return_22:                                       6
+;     c8f5a:                                           5
+;     c8f6b:                                           5
+;     c9a3e:                                           5
+;     copy_of_poge:                                    5
+;     copy_of_poge+0:                                  5
+;     increment_pointer_over_page_boundary:            5
+;     l0016:                                           5
+;     l001b:                                           5
+;     l0035:                                           5
+;     l0039:                                           5
+;     l0046:                                           5
+;     l0048:                                           5
+;     l004f:                                           5
+;     l0061:                                           5
+;     l0069:                                           5
+;     l006a:                                           5
+;     l0075:                                           5
+;     l0087:                                           5
+;     l008f:                                           5
+;     l041c:                                           5
+;     osfind:                                          5
+;     page+1:                                          5
+;     pointer2:                                        5
+;     pointer2+0:                                      5
+;     print_full_stop:                                 5
+;     sub_c9a61:                                       5
+;     sub_c9bad:                                       5
+;     adjusted_xpos:                                   4
+;     c8281:                                           4
+;     c8c8d:                                           4
+;     c9058:                                           4
+;     c917d:                                           4
+;     c9216:                                           4
+;     c9224:                                           4
+;     c9acf:                                           4
+;     c9b70:                                           4
+;     c9ee8:                                           4
+;     check_for_single_character_wildcard:             4
+;     convert_a_reg_to_uppercase:                      4
+;     decrement_pointer_over_page_boundary:            4
+;     fixup_page:                                      4
+;     get_cursor_position:                             4
+;     increment_x_by_14_set_y_to_4:                    4
+;     input_buffer+1:                                  4
+;     is_there_a_file_loaded:                          4
+;     l0001:                                           4
+;     l000a:                                           4
+;     l000b:                                           4
+;     l000f:                                           4
+;     l002c:                                           4
+;     l002f:                                           4
+;     l0036:                                           4
+;     l0037:                                           4
+;     l0041:                                           4
+;     l0052:                                           4
+;     l0053:                                           4
+;     l005b:                                           4
+;     l0067:                                           4
+;     l0070:                                           4
+;     l0078:                                           4
+;     l0079:                                           4
+;     l0429:                                           4
+;     l04c3:                                           4
+;     l04e6:                                           4
+;     l0546:                                           4
+;     l05c9:                                           4
+;     pointer2+1:                                      4
+;     return_18:                                       4
+;     sub_c8888:                                       4
+;     sub_c92f8:                                       4
+;     sub_c9324:                                       4
+;     sub_c9867:                                       4
+;     sub_c9925:                                       4
+;     sub_c9c7f:                                       4
+;     c864a:                                           3
+;     c8746:                                           3
+;     c887d:                                           3
+;     c8b54:                                           3
+;     c8c33:                                           3
+;     c8d65:                                           3
+;     c8f5c:                                           3
+;     c906a:                                           3
+;     c913d:                                           3
+;     c91e4:                                           3
+;     c998e:                                           3
+;     c9b4c:                                           3
+;     c9d0a:                                           3
+;     c9e11:                                           3
+;     error_too_long:                                  3
+;     fix_up_input_buffer:                             3
+;     get_file_info_then_print_filename_not_found:     3
+;     get_oshwm:                                       3
+;     l0002:                                           3
+;     l0015:                                           3
+;     l001d:                                           3
+;     l0029:                                           3
+;     l002a:                                           3
+;     l0030:                                           3
+;     l0054:                                           3
+;     l0071:                                           3
+;     l0081:                                           3
+;     l0082:                                           3
+;     l0083:                                           3
+;     l0089:                                           3
+;     l008a:                                           3
+;     l0103:                                           3
+;     l0400:                                           3
+;     l0401:                                           3
+;     l04c2:                                           3
+;     open_file_for_input:                             3
+;     os_text_ptr:                                     3
+;     osgbpb:                                          3
+;     page:                                            3
+;     page+0:                                          3
+;     print_bad_mode:                                  3
+;     print_newline_save_cursor:                       3
+;     print_prefix_text:                               3
+;     print_ser:                                       3
+;     print_words:                                     3
+;     read_user_command_from_prompt:                   3
+;     return_30:                                       3
+;     return_37:                                       3
+;     return_41:                                       3
+;     return_42:                                       3
+;     store_filename_address_in_pointer2:              3
+;     store_x_y_in_pointer2:                           3
+;     sub_89c1:                                        3
+;     sub_9428:                                        3
+;     sub_9a25:                                        3
+;     sub_9a50:                                        3
+;     sub_9a80:                                        3
+;     sub_9cd5:                                        3
+;     sub_9d48:                                        3
+;     sub_c85da:                                       3
+;     sub_c85e1:                                       3
+;     sub_c8844:                                       3
+;     sub_c889c:                                       3
+;     sub_c88af:                                       3
+;     sub_c8bb0:                                       3
+;     sub_c8bc3:                                       3
+;     sub_c9277:                                       3
+;     sub_c9289:                                       3
+;     sub_c92f6:                                       3
+;     sub_c93f5:                                       3
+;     sub_c9dc7:                                       3
+;     acknowledge_escape_pressed:                      2
+;     c810d:                                           2
+;     c81af:                                           2
+;     c81cf:                                           2
+;     c81dd:                                           2
+;     c8204:                                           2
+;     c8231:                                           2
+;     c82be:                                           2
+;     c82c9:                                           2
+;     c84a1:                                           2
+;     c8567:                                           2
+;     c856d:                                           2
+;     c85d1:                                           2
+;     c8611:                                           2
+;     c861e:                                           2
+;     c86d5:                                           2
+;     c8718:                                           2
+;     c877c:                                           2
+;     c87ab:                                           2
+;     c87b6:                                           2
+;     c87c3:                                           2
+;     c87ca:                                           2
+;     c8807:                                           2
+;     c89d4:                                           2
+;     c8a15:                                           2
+;     c8a44:                                           2
+;     c8a4d:                                           2
+;     c8a84:                                           2
+;     c8b1c:                                           2
+;     c8b31:                                           2
+;     c8b74:                                           2
+;     c8bfd:                                           2
+;     c8c6a:                                           2
+;     c8d30:                                           2
+;     c8d33:                                           2
+;     c8d50:                                           2
+;     c8d92:                                           2
+;     c8ddf:                                           2
+;     c8dff:                                           2
+;     c8e30:                                           2
+;     c8ee3:                                           2
+;     c8f8d:                                           2
+;     c8ff3:                                           2
+;     c9024:                                           2
+;     c9036:                                           2
+;     c9075:                                           2
+;     c90b7:                                           2
+;     c91b9:                                           2
+;     c91ee:                                           2
+;     c921e:                                           2
+;     c93d1:                                           2
+;     c9412:                                           2
+;     c94c3:                                           2
+;     c9540:                                           2
+;     c9622:                                           2
+;     c963e:                                           2
+;     c966b:                                           2
+;     c976f:                                           2
+;     c97cc:                                           2
+;     c9805:                                           2
+;     c980b:                                           2
+;     c98d4:                                           2
+;     c98df:                                           2
+;     c98e2:                                           2
+;     c9965:                                           2
+;     c9ae2:                                           2
+;     c9afd:                                           2
+;     c9bfe:                                           2
+;     c9ccc:                                           2
+;     c9d41:                                           2
+;     c9d60:                                           2
+;     c9e49:                                           2
+;     c9e89:                                           2
+;     c9ea0:                                           2
+;     c9f1e:                                           2
+;     c9f6d:                                           2
+;     c9ff9:                                           2
+;     call_osasci:                                     2
+;     call_osbyte:                                     2
+;     call_osfind_with_block:                          2
+;     call_osgbpb_with_block:                          2
+;     change_screen_mode:                              2
+;     check_for_directory_W:                           2
+;     check_for_non_printables_and_marker:             2
+;     check_prefix_for_CR_or_period_after_increment:   2
+;     check_prefix_length:                             2
+;     close_file_by_handle:                            2
+;     command_table:                                   2
+;     copy_input_to_prefix_buffer:                     2
+;     data_table1:                                     2
+;     data_table4:                                     2
+;     directory_name:                                  2
+;     file_handle_2:                                   2
+;     file_handle_3:                                   2
+;     get_current_screen_mode:                         2
+;     get_file_information:                            2
+;     jump_to_oswrch:                                  2
+;     l0011:                                           2
+;     l0013:                                           2
+;     l001a:                                           2
+;     l0045:                                           2
+;     l004e:                                           2
+;     l0057:                                           2
+;     l005e:                                           2
+;     l005f:                                           2
+;     l0066:                                           2
+;     l007a:                                           2
+;     l007f:                                           2
+;     l0080:                                           2
+;     l0102:                                           2
+;     l0104:                                           2
+;     l043f:                                           2
+;     l0441:                                           2
+;     l044e:                                           2
+;     l044f:                                           2
+;     l0482:                                           2
+;     l052b:                                           2
+;     l052d:                                           2
+;     l052e:                                           2
+;     lff2f:                                           2
+;     lff37:                                           2
+;     lff6f:                                           2
+;     load_file_with_block:                            2
+;     os_escape_flag_set:                              2
+;     osfile_with_block:                               2
+;     osnewl:                                          2
+;     osword:                                          2
+;     print_Word:                                      2
+;     print_bad_string:                                2
+;     print_dictionary:                                2
+;     print_filename:                                  2
+;     print_found:                                     2
+;     print_input_cursor:                              2
+;     print_insert_disk_press_key:                     2
+;     print_memory_full:                               2
+;     print_not_space:                                 2
+;     print_space:                                     2
+;     read_bytes_from_file:                            2
+;     read_bytes_from_files:                           2
+;     return_12:                                       2
+;     return_14:                                       2
+;     return_17:                                       2
+;     return_20:                                       2
+;     return_21:                                       2
+;     return_24:                                       2
+;     return_25:                                       2
+;     return_3:                                        2
+;     return_32:                                       2
+;     return_4:                                        2
+;     return_40:                                       2
+;     return_44:                                       2
+;     return_45:                                       2
+;     return_6:                                        2
+;     return_8:                                        2
+;     rom_command:                                     2
+;     rom_workspace_array:                             2
+;     save_file:                                       2
+;     set_cursor_thick_and_fast_blink:                 2
+;     sub_8515:                                        2
+;     sub_89bb:                                        2
+;     sub_8c5b:                                        2
+;     sub_8cca:                                        2
+;     sub_92d1:                                        2
+;     sub_9a83:                                        2
+;     sub_9aa3:                                        2
+;     sub_9bda:                                        2
+;     sub_c842e:                                       2
+;     sub_c857d:                                       2
+;     sub_c85c4:                                       2
+;     sub_c8786:                                       2
+;     sub_c8863:                                       2
+;     sub_c892f:                                       2
+;     sub_c8b07:                                       2
+;     sub_c8b7a:                                       2
+;     sub_c8b9e:                                       2
+;     sub_c8c0a:                                       2
+;     sub_c8c14:                                       2
+;     sub_c8c46:                                       2
+;     sub_c8cb8:                                       2
+;     sub_c8d82:                                       2
+;     sub_c8e0b:                                       2
+;     sub_c8e19:                                       2
+;     sub_c8f22:                                       2
+;     sub_c8f30:                                       2
+;     sub_c8f3a:                                       2
+;     sub_c8f96:                                       2
+;     sub_c8fb7:                                       2
+;     sub_c8fcb:                                       2
+;     sub_c9011:                                       2
+;     sub_c929c:                                       2
+;     sub_c92b5:                                       2
+;     sub_c92dd:                                       2
+;     sub_c92e3:                                       2
+;     sub_c92fb:                                       2
+;     sub_c93f9:                                       2
+;     sub_c990e:                                       2
+;     sub_c994c:                                       2
+;     sub_c9a1e:                                       2
+;     sub_c9a66:                                       2
+;     sub_c9b38:                                       2
+;     sub_c9ba4:                                       2
+;     sub_c9bb6:                                       2
+;     sub_c9c06:                                       2
+;     sub_c9df3:                                       2
+;     sub_c9fc8:                                       2
+;     sub_c9fed:                                       2
+;     sub_c9ff1:                                       2
+;     add_16bit_number:                                1
+;     brkv:                                            1
+;     c807d:                                           1
+;     c8102:                                           1
+;     c81e5:                                           1
+;     c81ef:                                           1
+;     c8212:                                           1
+;     c822e:                                           1
+;     c8252:                                           1
+;     c8259:                                           1
+;     c8260:                                           1
+;     c827e:                                           1
+;     c82af:                                           1
+;     c82d7:                                           1
+;     c82e0:                                           1
+;     c82eb:                                           1
+;     c8316:                                           1
+;     c8368:                                           1
+;     c83a5:                                           1
+;     c83b7:                                           1
+;     c83c6:                                           1
+;     c8449:                                           1
+;     c85e9:                                           1
+;     c8604:                                           1
+;     c8643:                                           1
+;     c8647:                                           1
+;     c8651:                                           1
+;     c8693:                                           1
+;     c86b5:                                           1
+;     c86bb:                                           1
+;     c86f4:                                           1
+;     c8706:                                           1
+;     c8709:                                           1
+;     c8733:                                           1
+;     c873d:                                           1
+;     c877f:                                           1
+;     c87b5:                                           1
+;     c87b9:                                           1
+;     c8824:                                           1
+;     c882a:                                           1
+;     c882d:                                           1
+;     c886e:                                           1
+;     c8874:                                           1
+;     c88b5:                                           1
+;     c88c6:                                           1
+;     c88f6:                                           1
+;     c8911:                                           1
+;     c8929:                                           1
+;     c893e:                                           1
+;     c89a5:                                           1
+;     c89de:                                           1
+;     c89e1:                                           1
+;     c89ef:                                           1
+;     c8a08:                                           1
+;     c8a11:                                           1
+;     c8a1e:                                           1
+;     c8a38:                                           1
+;     c8a4a:                                           1
+;     c8a58:                                           1
+;     c8a81:                                           1
+;     c8a99:                                           1
+;     c8ab6:                                           1
+;     c8ad0:                                           1
+;     c8ae2:                                           1
+;     c8afa:                                           1
+;     c8b00:                                           1
+;     c8b19:                                           1
+;     c8b2f:                                           1
+;     c8b39:                                           1
+;     c8b3b:                                           1
+;     c8b65:                                           1
+;     c8b8a:                                           1
+;     c8c1d:                                           1
+;     c8c4f:                                           1
+;     c8c56:                                           1
+;     c8c6e:                                           1
+;     c8ca5:                                           1
+;     c8cd1:                                           1
+;     c8d01:                                           1
+;     c8d06:                                           1
+;     c8d16:                                           1
+;     c8d1b:                                           1
+;     c8d22:                                           1
+;     c8d41:                                           1
+;     c8d5a:                                           1
+;     c8d70:                                           1
+;     c8d79:                                           1
+;     c8d7f:                                           1
+;     c8d95:                                           1
+;     c8d99:                                           1
+;     c8d9d:                                           1
+;     c8dbc:                                           1
+;     c8dca:                                           1
+;     c8dd0:                                           1
+;     c8df7:                                           1
+;     c8e42:                                           1
+;     c8e59:                                           1
+;     c8e7c:                                           1
+;     c8eb2:                                           1
+;     c8ec8:                                           1
+;     c8edd:                                           1
+;     c8ef3:                                           1
+;     c8f2d:                                           1
+;     c8f63:                                           1
+;     c8f8f:                                           1
+;     c900f:                                           1
+;     c9044:                                           1
+;     c904a:                                           1
+;     c906c:                                           1
+;     c90ad:                                           1
+;     c90b1:                                           1
+;     c90c3:                                           1
+;     c9164:                                           1
+;     c9194:                                           1
+;     c91df:                                           1
+;     c9206:                                           1
+;     c920f:                                           1
+;     c921c:                                           1
+;     c923f:                                           1
+;     c9255:                                           1
+;     c925e:                                           1
+;     c9262:                                           1
+;     c92c7:                                           1
+;     c9319:                                           1
+;     c935f:                                           1
+;     c9376:                                           1
+;     c93bf:                                           1
+;     c93fb:                                           1
+;     c9410:                                           1
+;     c948b:                                           1
+;     c94d2:                                           1
+;     c94d4:                                           1
+;     c9571:                                           1
+;     c9590:                                           1
+;     c961f:                                           1
+;     c9645:                                           1
+;     c964f:                                           1
+;     c9683:                                           1
+;     c96a4:                                           1
+;     c9728:                                           1
+;     c9797:                                           1
+;     c981c:                                           1
+;     c9860:                                           1
+;     c9877:                                           1
+;     c9887:                                           1
+;     c9898:                                           1
+;     c98a3:                                           1
+;     c98ec:                                           1
+;     c98f1:                                           1
+;     c9933:                                           1
+;     c9946:                                           1
+;     c996c:                                           1
+;     c9a23:                                           1
+;     c9a96:                                           1
+;     c9b0d:                                           1
+;     c9b12:                                           1
+;     c9b31:                                           1
+;     c9b49:                                           1
+;     c9b7c:                                           1
+;     c9c3d:                                           1
+;     c9d0b:                                           1
+;     c9d15:                                           1
+;     c9d22:                                           1
+;     c9d5d:                                           1
+;     c9d8f:                                           1
+;     c9dac:                                           1
+;     c9db1:                                           1
+;     c9dcc:                                           1
+;     c9ddb:                                           1
+;     c9ddd:                                           1
+;     c9e16:                                           1
+;     c9e54:                                           1
+;     c9e65:                                           1
+;     c9e72:                                           1
+;     c9ec1:                                           1
+;     c9ed8:                                           1
+;     c9f38:                                           1
+;     c9f3d:                                           1
+;     c9f67:                                           1
+;     c9f94:                                           1
+;     c9faa:                                           1
+;     c9fbc:                                           1
+;     c9fd6:                                           1
+;     check_for_backtick_token:                        1
+;     check_for_mode_7:                                1
+;     check_for_percent_token:                         1
+;     check_for_prefix_master:                         1
+;     check_for_prefix_text:                           1
+;     check_for_tokens:                                1
+;     check_for_underline_token:                       1
+;     check_for_wildcard:                              1
+;     check_page_is_consistent:                        1
+;     check_prefix_for_CR_or_period:                   1
+;     check_screen_mode_and_enough_memory:             1
+;     clear_carry_as_lowercase:                        1
+;     convert_hex_to_digit:                            1
+;     data_table2:                                     1
+;     data_table3:                                     1
+;     decremented_LSB_still_in_page:                   1
+;     default_master_dictionary:                       1
+;     end_of_rom_command:                              1
+;     get_himem_store_corrected_values:                1
+;     have_file_loaded:                                1
+;     increment_another_pointer_over_page_boundary:    1
+;     jmp_to_osfind:                                   1
+;     jumptable0_commands:                             1
+;     l0017:                                           1
+;     l0022:                                           1
+;     l002d:                                           1
+;     l0033:                                           1
+;     l0034:                                           1
+;     l0040:                                           1
+;     l0065:                                           1
+;     l0072:                                           1
+;     l0073:                                           1
+;     l0076:                                           1
+;     l0077:                                           1
+;     l008b:                                           1
+;     l008c:                                           1
+;     l008d:                                           1
+;     l008e:                                           1
+;     l00a0:                                           1
+;     l00a9:                                           1
+;     l00fd:                                           1
+;     l041b:                                           1
+;     l041d:                                           1
+;     l044d:                                           1
+;     l04c5:                                           1
+;     l04e5:                                           1
+;     l0527:                                           1
+;     l0528:                                           1
+;     l052c:                                           1
+;     l0545:                                           1
+;     l0547:                                           1
+;     l0549:                                           1
+;     l0588:                                           1
+;     l08ff:                                           1
+;     l5ec9:                                           1
+;     l6369:                                           1
+;     l8213:                                           1
+;     l8728:                                           1
+;     l969c:                                           1
+;     l9998:                                           1
+;     l99c2:                                           1
+;     l9f53:                                           1
+;     l9f91:                                           1
+;     l9fea:                                           1
+;     language_handler:                                1
+;     last_osbyte_a_register:                          1
+;     last_osbyte_x_register:                          1
+;     last_osbyte_y_register:                          1
+;     lff6b:                                           1
+;     lff8b:                                           1
+;     loop_c81a8:                                      1
+;     loop_c8264:                                      1
+;     loop_c826b:                                      1
+;     loop_c8469:                                      1
+;     loop_c8535:                                      1
+;     loop_c85ac:                                      1
+;     loop_c85ce:                                      1
+;     loop_c85fa:                                      1
+;     loop_c863f:                                      1
+;     loop_c8750:                                      1
+;     loop_c87cc:                                      1
+;     loop_c8802:                                      1
+;     loop_c89ae:                                      1
+;     loop_c89d6:                                      1
+;     loop_c8a2a:                                      1
+;     loop_c8a6b:                                      1
+;     loop_c8ad1:                                      1
+;     loop_c8b09:                                      1
+;     loop_c8bb8:                                      1
+;     loop_c8be5:                                      1
+;     loop_c8c21:                                      1
+;     loop_c8c72:                                      1
+;     loop_c8dad:                                      1
+;     loop_c8dfc:                                      1
+;     loop_c8e5c:                                      1
+;     loop_c8f03:                                      1
+;     loop_c8f0d:                                      1
+;     loop_c8f17:                                      1
+;     loop_c8f4a:                                      1
+;     loop_c8f4f:                                      1
+;     loop_c8ffe:                                      1
+;     loop_c908e:                                      1
+;     loop_c9097:                                      1
+;     loop_c91b5:                                      1
+;     loop_c9211:                                      1
+;     loop_c9249:                                      1
+;     loop_c9266:                                      1
+;     loop_c9279:                                      1
+;     loop_c928c:                                      1
+;     loop_c9302:                                      1
+;     loop_c936c:                                      1
+;     loop_c93b8:                                      1
+;     loop_c9402:                                      1
+;     loop_c9482:                                      1
+;     loop_c94b7:                                      1
+;     loop_c94f1:                                      1
+;     loop_c951b:                                      1
+;     loop_c952f:                                      1
+;     loop_c9592:                                      1
+;     loop_c95aa:                                      1
+;     loop_c95da:                                      1
+;     loop_c95e6:                                      1
+;     loop_c9628:                                      1
+;     loop_c96ac:                                      1
+;     loop_c96bb:                                      1
+;     loop_c96cb:                                      1
+;     loop_c972a:                                      1
+;     loop_c973e:                                      1
+;     loop_c97f7:                                      1
+;     loop_c981f:                                      1
+;     loop_c9853:                                      1
+;     loop_c98bf:                                      1
+;     loop_c98ef:                                      1
+;     loop_c98f3:                                      1
+;     loop_c9910:                                      1
+;     loop_c9919:                                      1
+;     loop_c9942:                                      1
+;     loop_c997e:                                      1
+;     loop_c9a47:                                      1
+;     loop_c9b5d:                                      1
+;     loop_c9ba8:                                      1
+;     loop_c9bb8:                                      1
+;     loop_c9bfb:                                      1
+;     loop_c9c08:                                      1
+;     loop_c9c32:                                      1
+;     loop_c9c8f:                                      1
+;     loop_c9cdd:                                      1
+;     loop_c9db6:                                      1
+;     loop_c9df5:                                      1
+;     loop_c9dff:                                      1
+;     loop_c9e04:                                      1
+;     loop_c9e2f:                                      1
+;     loop_c9e59:                                      1
+;     loop_c9e6e:                                      1
+;     loop_c9e6f:                                      1
+;     loop_c9f0d:                                      1
+;     loop_c9f14:                                      1
+;     loop_c9f7e:                                      1
+;     loop_c9fab:                                      1
+;     loop_c9ff5:                                      1
+;     move_cursor:                                     1
+;     move_page_value_to_next_integer_page:            1
+;     not_a_page_boundary:                             1
+;     not_star_command:                                1
+;     os_escape_flag:                                  1
+;     osargs:                                          1
+;     oscli:                                           1
+;     osfile:                                          1
+;     osrdch:                                          1
+;     populate_prefix_array:                           1
+;     prefix_array:                                    1
+;     prefix_dictionary_directory:                     1
+;     prepare_to_move_cursor:                          1
+;     print_All:                                       1
+;     print_CR_filename_not_found:                     1
+;     print_CR_then_filename:                          1
+;     print_LF_CR:                                     1
+;     print_Mistake:                                   1
+;     print_master:                                    1
+;     print_name:                                      1
+;     print_prefix_settings:                           1
+;     print_rom_title_and_version:                     1
+;     print_screen_mode:                               1
+;     print_space_loop:                                1
+;     print_u_expand_ser:                              1
+;     reset_directory_name:                            1
+;     reset_rom_workspace_in_array:                    1
+;     reset_stack_pointer:                             1
+;     reset_variables_4c_to_5b_to_zero:                1
+;     return_1:                                        1
+;     return_11:                                       1
+;     return_13:                                       1
+;     return_15:                                       1
+;     return_16:                                       1
+;     return_19:                                       1
+;     return_2:                                        1
+;     return_23:                                       1
+;     return_26:                                       1
+;     return_27:                                       1
+;     return_28:                                       1
+;     return_29:                                       1
+;     return_31:                                       1
+;     return_33:                                       1
+;     return_34:                                       1
+;     return_35:                                       1
+;     return_36:                                       1
+;     return_38:                                       1
+;     return_39:                                       1
+;     return_43:                                       1
+;     return_5:                                        1
+;     return_7:                                        1
+;     return_9:                                        1
+;     service_handler:                                 1
+;     service_help_command:                            1
+;     service_unknown_osbyte:                          1
+;     set_carry_flag_based_on_case:                    1
+;     shuffle_down_input_buffer:                       1
+;     skip_over_space:                                 1
+;     start_as_language:                               1
+;     store_page:                                      1
+;     store_page_in_variables:                         1
+;     sub_8895:                                        1
+;     sub_88b8:                                        1
+;     sub_8983:                                        1
+;     sub_8be3:                                        1
+;     sub_90d9:                                        1
+;     sub_9543:                                        1
+;     sub_97cf:                                        1
+;     sub_984c:                                        1
+;     sub_9a70:                                        1
+;     sub_9ad4:                                        1
+;     sub_9aef:                                        1
+;     sub_9ca4:                                        1
+;     sub_9cf7:                                        1
+;     sub_9f90:                                        1
+;     sub_c80d8:                                       1
+;     sub_c8788:                                       1
+;     sub_c889f:                                       1
+;     sub_c88ba:                                       1
+;     sub_c88fa:                                       1
+;     sub_c8986:                                       1
+;     sub_c8b2b:                                       1
+;     sub_c8ba0:                                       1
+;     sub_c8bfa:                                       1
+;     sub_c8da1:                                       1
+;     sub_c8e27:                                       1
+;     sub_c8e4d:                                       1
+;     sub_c8efe:                                       1
+;     sub_c8f11:                                       1
+;     sub_c8f1b:                                       1
+;     sub_c8f24:                                       1
+;     sub_c8f33:                                       1
+;     sub_c90f3:                                       1
+;     sub_c9145:                                       1
+;     sub_c91a1:                                       1
+;     sub_c9284:                                       1
+;     sub_c942a:                                       1
+;     sub_c9546:                                       1
+;     sub_c9613:                                       1
+;     sub_c9917:                                       1
+;     sub_c992e:                                       1
+;     sub_c9ab2:                                       1
+;     sub_c9b25:                                       1
+;     sub_c9b2d:                                       1
+;     sub_c9b36:                                       1
+;     sub_c9b53:                                       1
+;     sub_c9b7f:                                       1
+;     sub_c9bb1:                                       1
+;     sub_c9be9:                                       1
+;     sub_c9cf9:                                       1
+;     sub_c9d8a:                                       1
+;     sub_c9da6:                                       1
+;     sub_c9e6a:                                       1
+;     title:                                           1
+;     was_that_me:                                     1
+;     wipe_variables_from_00_to_8e:                    1
 
 ; Stats:
 ;     Total size (Code + Data) = 8192 bytes
-;     Code                     = 7611 bytes (93%)
-;     Data                     = 581 bytes (7%)
+;     Code                     = 7605 bytes (93%)
+;     Data                     = 587 bytes (7%)
 ;
-;     Number of instructions   = 3753
-;     Number of data bytes     = 176 bytes
+;     Number of instructions   = 3749
+;     Number of data bytes     = 178 bytes
 ;     Number of data words     = 42 bytes
-;     Number of string bytes   = 363 bytes
-;     Number of strings        = 68
+;     Number of string bytes   = 367 bytes
+;     Number of strings        = 67

@@ -140,15 +140,7 @@ entry(0x9f8e)
 comment(0x9f50, "*** probably data")
 byte(0x9fd7,5)
 entry(0x9fdc)
-entry(0x8983)
-entry(0x89b8)
-entry(0x89be)
-entry(0x89c6)
-subroutine(0x8a15, "ukn_cmd_3")
 
-expr_label(0x99bf, "command_table")
-expr_label(0x9995, "jumptable_commands")
-wordentry(0x9995,21)
 
 
 
